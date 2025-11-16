@@ -4,14 +4,14 @@ namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 use App\Models\EventModel;
-use App\Models\TicketTypeModel; // Pastikan ini ada
+use App\Models\TicketTypeModel;
 
 class EventSeeder extends Seeder
 {
     public function run()
     {
         $model = new EventModel();
-        $ticketModel = new TicketTypeModel(); // Pastikan ini ada
+        $ticketModel = new TicketTypeModel(); 
         $path = APPPATH . 'Database/Seeds/data/';
 
         // 1. Matikan Foreign Key Checks
@@ -38,12 +38,12 @@ class EventSeeder extends Seeder
                 continue;
             }
 
-            // 7. Baca isi file JSON dan HTML
+            // 6. Baca isi file JSON dan HTML
             $jsonString = file_get_contents($jsonFile);
             $data = json_decode($jsonString, true);
             $description = file_get_contents($htmlFile);
 
-            // 8. Siapkan data event
+            // 7. Siapkan data event
             $insertData = [
                 'name'          => $data['name'],
                 'event_date'    => $data['event_date'],
@@ -53,22 +53,22 @@ class EventSeeder extends Seeder
                 'description'   => $description
             ];
 
-            // 9. Masukkan EVENT ke database
+            // 8. Masukkan EVENT ke database
             $model->insert($insertData);
             
             // ======================================================
             //    BAGIAN BARU UNTUK MEMASUKKAN TIKET
             // ======================================================
             
-            // 10. Dapatkan ID dari event yang BARU SAJA dimasukkan
+            // 9. Dapatkan ID dari event yang BARU SAJA dimasukkan
             $newEventId = $model->insertID();
 
-            // 11. Cek apakah data tiket ada di file JSON
+            // 10. Cek apakah data tiket ada di file JSON
             if (isset($data['ticket_types']) && is_array($data['ticket_types'])) {
                 
-                // 12. Loop semua data tiket
+                // 11. Loop semua data tiket
                 foreach ($data['ticket_types'] as $ticket) {
-                    // 13. Siapkan data tiket
+                    // 12. Siapkan data tiket
                     $ticketData = [
                         'event_id'       => $newEventId, // <-- Sambungkan ke ID event
                         'name'           => $ticket['name'],
@@ -76,7 +76,7 @@ class EventSeeder extends Seeder
                         'quantity_total' => $ticket['quantity_total']
                     ];
                     
-                    // 14. Masukkan TIKET ke database
+                    // 13. Masukkan TIKET ke database
                     $ticketModel->insert($ticketData);
                 }
             }

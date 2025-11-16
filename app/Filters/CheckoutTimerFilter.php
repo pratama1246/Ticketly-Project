@@ -14,21 +14,17 @@ class CheckoutTimerFilter implements FilterInterface
 
         // Cek apakah proses checkout sedang berlangsung
         if (!$session->has('checkout_process')) {
-            // Jika tidak ada session, paksa kembali ke halaman utama
             return redirect()->to('/');
         }
 
         // Cek Waktu
         $checkoutData = $session->get('checkout_process');
         $startTime = $checkoutData['start_time'];
-        $maxTime = 300; // 5 menit x 60 detik
+        $maxTime = 300;
 
         if ((time() - $startTime) > $maxTime) {
             // WAKTU HABIS!
-            // Hancurkan session checkout dan kirim ke halaman "waktu habis"
             $session->remove('checkout_process');
-
-            // Buat view 'checkout_timeout' untuk pesan error
             return redirect()->to('/checkout/timeout'); 
         }
 
@@ -40,6 +36,5 @@ class CheckoutTimerFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Tidak perlu melakukan apa-apa setelahnya
     }
 }
