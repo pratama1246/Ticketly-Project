@@ -4,23 +4,23 @@
         
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
             <a href="event/1">
-            <img src="./assets/banner/tds-4.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="..."></a>
+            <img src="<?= base_url('assets/banner/tds-4.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="..."></a>
         </div>
 
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="./assets/banner/riizing-loud.png" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+            <img src="<?= base_url('assets/banner/riizing-loud.png') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
         </div>
 
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="./assets/banner/deadline-tour.webp" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+            <img src="<?= base_url('assets/banner/deadline-tour.webp') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
         </div>
         
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="./assets/banner/aesix-aespa.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+            <img src="<?= base_url('assets/banner/aesix-aespa.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
         </div>
         
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="./assets/banner/wish-login.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+            <img src="<?= base_url('assets/banner/wish-login.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
         </div>
     </div>
 

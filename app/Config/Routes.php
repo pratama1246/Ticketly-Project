@@ -37,6 +37,7 @@ $routes->group('checkout', ['filter' => 'checkout_timer'], static function ($rou
 // Halaman ini tidak perlu filter timer
 $routes->get('/checkout/timeout', 'CheckoutController::timeout');
 $routes->get('/order/success', 'CheckoutController::orderSuccess');
+$routes->get('/checkout/cancel', 'CheckoutController::cancel');
 
 // 5. Rute Autentikasi (Login, Register, dll.)
 service('auth')->routes($routes);

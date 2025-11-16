@@ -288,4 +288,14 @@ class CheckoutController extends BaseController
         echo view('checkout_timeout');
         echo view('layout/footer');
     }
+
+    public function cancel()
+    {
+        // Hancurkan semua data checkout dari session
+        session()->remove('checkout_process');
+        session()->remove('checkout_time_left');
+
+        // Kembalikan pengguna ke halaman utama
+        return redirect()->to('/');
+    }
 }

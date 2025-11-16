@@ -72,5 +72,18 @@
     </div>
 </footer>
 
+<script>
+    // Hanya set variabel ini jika session aktif dan timer ada
+    <?php if (session()->has('checkout_time_left')): ?>
+        const CI_TIME_LEFT = <?= session('checkout_time_left') ?>;
+        
+        // Cek apakah modal perlu ditampilkan (jika session ada dan bukan di rute checkout)
+        const currentPath = window.location.pathname;
+        const CI_SHOW_MODAL = !currentPath.includes('/checkout');
+    <?php endif; ?>
+</script>
+
+<script src="<?= base_url('js/app.js') ?>"></script>
+
 </body>
 </html>

@@ -1,43 +1,33 @@
 <main class="w-full pt-24">
-    <div class="max-w-4xl mx-auto p-4">
+    <div class="max-w-4xl mx-auto p-4 border border-solid-black rounded-lg">
+        <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6 text-center" role="alert">
             <strong class="font-bold">Sisa waktu untuk memesan tiket: </strong>
             <span class="font-mono text-lg" id="checkout-timer">
                 <?php
-                    $timeLeft = session('checkout_time_left') ?? 900;
+                    $timeLeft = session('checkout_time_left') ?? 300;
                     echo floor($timeLeft / 60) . ':' . str_pad($timeLeft % 60, 2, '0', STR_PAD_LEFT);
                 ?>
             </span>
         </div>
 
-        <ol class="items-center w-full space-y-4 sm:flex sm:space-x-8 sm:space-y-0 rtl:space-x-reverse mb-8">
-            <li class="flex items-center text-green-600 space-x-3 rtl:space-x-reverse">
-                <span class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full lg:h-12 lg:w-12 shrink-0">
-                    <svg class="w-5 h-5 text-green-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/></svg>
-                </span>
-                <span>
-                    <h3 class="font-medium leading-tight">Data Diri</h3>
-                    <p class="text-sm">Info personal diisi</p>
+        <ol class="flex items-center w-full text-sm font-medium text-center text-body sm:text-base mb-8">
+            <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
+                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
+                    <svg class="w-5 h-5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    Data <span class="hidden sm:inline-flex sm:ms-2">Diri</span>
                 </span>
             </li>
-            <li class="flex items-center text-blue-600 space-x-3 rtl:space-x-reverse">
-                <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
-                    <svg class="w-5 h-5 text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M6 14h2m3 0h5M3 7v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/></svg>
-                </span>
-                <span>
-                    <h3 class="font-medium leading-tight">Pembayaran</h3>
-                    <p class="text-sm">Pilih metode bayar</p>
+            <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
+                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
+                    <span class="me-2">2</span>
+                    Pembayaran <span class="hidden sm:inline-flex sm:ms-2"></span>
                 </span>
             </li>
-            <li class="flex items-center text-gray-500 space-x-3 rtl:space-x-reverse">
-                <span class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 shrink-0">
-                    <svg class="w-5 h-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.5 11.5 2.071 2.071M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/></svg>
-                </span>
-                <span>
-                    <h3 class="font-medium leading-tight">Konfirmasi</h3>
-                    <p class="text-sm">Review pesanan</p>
-                </span>
+            <li class="flex items-center">
+                <span class="me-2">3</span>
+                Konfirmasi
             </li>
         </ol>
 
@@ -80,7 +70,7 @@
                             ];
                         ?>
                         <?php foreach ($vas as $key => $va): ?>
-                        <label for="<?= $key ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                        <label for="<?= $key ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer">
                             <input type="radio" id="<?= $key ?>" name="payment_method" value="<?= $key ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
                             <span class="ml-4 text-md font-medium text-gray-900"><?= $va['name'] ?></span>
                         </label>
@@ -89,31 +79,15 @@
                 </div>
             </div>
 
-            <div class="mt-8 text-right">
-                <button type="submit" class="bg-blue-600 text-white font-bold text-lg py-3 px-10 rounded-lg hover:bg-blue-700 transition duration-300">
-                    Lanjut ke Konfirmasi
+           <div class="mt-8 text-right">
+                <button type="button" onclick="window.location.href='<?=  base_url('/checkout/cancel') ?>'" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                    Batal
+                </button>
+                <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                    Lanjut ke Pembayaran
                 </button>
             </div>
         </form>
-
+        </div>
     </div>
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const timerElement = document.getElementById('checkout-timer');
-        if (timerElement) {
-            let totalSeconds = <?= session('checkout_time_left') ?? 900 ?>;
-            const timerInterval = setInterval(() => {
-                totalSeconds--;
-                if (totalSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    window.location.reload(); // Filter akan menangani redirect
-                }
-                let minutes = Math.floor(totalSeconds / 60);
-                let seconds = totalSeconds % 60;
-                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-    });
-</script>
