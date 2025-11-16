@@ -1,0 +1,26 @@
+{
+    "name": "NCT DREAM: THE DREAM SHOW 4 WORLD TOUR",
+    "event_date": "2026-01-01 19:00:00",
+    "venue": "Stadium Utama Gelora Bung Karno",
+    "poster_image": "banner/tds-4.jpg",
+    "seatmap_image": "seatmap/nct-seatmap.png",
+    "description_file": "description.html",
+    
+    "ticket_types": [
+        {
+            "name": "DREAM A (Standing)",
+            "price": 3350000,
+            "quantity_total": 1000
+        },
+        {
+            "name": "CAT 1 (Numbered Seating)",
+            "price": 2900000,
+            "quantity_total": 2000
+        },
+        {
+            "name": "CAT 3 (Numbered Seating)",
+            "price": 1500000,
+            "quantity_total": 3000
+        }
+    ]
+}

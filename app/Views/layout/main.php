@@ -1,0 +1,102 @@
+<!-- CAROUSEL -->
+<div id="default-carousel" class="relative w-full pt-20" data-carousel="slide">
+    <div class="relative overflow-hidden aspect-video">
+        
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <a href="event/1">
+            <img src="./assets/banner/tds-4.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="..."></a>
+        </div>
+
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="./assets/banner/riizing-loud.png" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+        </div>
+
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="./assets/banner/deadline-tour.webp" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+        </div>
+        
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="./assets/banner/aesix-aespa.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+        </div>
+        
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="./assets/banner/wish-login.jpg" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
+        </div>
+    </div>
+
+    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+    </div>
+
+    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/></svg>
+            <span class="sr-only">Previous</span>
+        </span>
+    </button>
+    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+            <span class="sr-only">Next</span>
+        </span>
+    </button>
+</div>
+
+<!-- EVENT LIST -->
+
+<div class="max-w-9xl my-10 p-2">
+    <h1 class="text-3xl font-bold text-black p-4 ps-4">Cari Event Favorit</h1>
+    
+    <div class="w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
+    <div class="flex flex-nowrap space-x-4 p-4 items-stretch">
+
+        <?php foreach ($events as $event): ?>
+
+        <div class="shrink-0 w-96 bg-neutral-primary-soft flex flex-col border border-default rounded-base shadow-xs overflow-hidden">
+            
+            <a href="/event/<?= $event['id'] ?>" class="block aspect-video">
+                <img class="w-full h-full object-cover" 
+                     src="<?= base_url('assets/' . esc($event['poster_image'])) ?>" 
+                     alt="<?= esc($event['name']) ?>" />
+            </a>
+            
+            <div class="p-6 grow">
+                <a href="/event/<?= $event['id'] ?>">
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-heading">
+                        <?= esc($event['name']) ?>
+                    </h5>
+                </a>
+                
+                <p class="mb-6 text-body">
+                    <?php 
+                        $date = new \DateTime(esc($event['event_date']));
+                        echo $date->format('d F Y'); 
+                    ?>
+                </p>
+            </div>
+            
+            <div class="p-6 pt-0"> <a href="/event/<?= $event['id'] ?>" class="inline-flex items-center text-body bg-neutral-secondary-medium box-border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                    Lihat Detail
+                    <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+                </a>
+            </div>
+        </div>
+        <?php endforeach; ?>
+
+    </div>
+</div>
+</div>
+
+<!-- ABOUT US -->
+<div class="max-w-8xl mx-auto p-4">
+        <div class="p-6 md:p-10 rounded-lg border border-solid-black">
+            <h1 class="text-2xl font-bold text-black">Tentang Kami</h1>
+            <p class="mt-4 text-body">Ticketly adalah platform penjualan tiket daring terkemuka yang didedikasikan untuk memberikan pengalaman terbaik bagi para penggemar acara di seluruh dunia. Kami memahami betapa pentingnya momen spesial dalam hidup Anda, dan itulah mengapa kami berkomitmen untuk menyediakan akses mudah dan aman ke berbagai acara, mulai dari konser musik, pertunjukan teater, festival budaya, hingga acara olahraga.</p>
+            <p class="mt-4 text-body">Dengan antarmuka yang ramah pengguna dan sistem pembayaran yang aman, Ticketly memudahkan Anda untuk menemukan, memilih, dan membeli tiket untuk acara favorit Anda dengan cepat dan nyaman. Kami juga menawarkan berbagai fitur tambahan, seperti notifikasi acara, rekomendasi personal, dan dukungan pelanggan 24/7 untuk memastikan pengalaman Anda bersama kami selalu menyenangkan.</p>
+            <p class="mt-4 text-body">Bergabunglah dengan jutaan pengguna yang telah mempercayai Ticketly sebagai mitra mereka dalam menikmati hiburan berkualitas. Kami berkomitmen untuk terus meningkatkan layanan kami dan menghadirkan inovasi terbaru agar setiap momen bersama Ticketly menjadi kenangan tak terlupakan.</p>
+        </div>
+</div>

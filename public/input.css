@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+@theme {
+
+  --font-default: 'Poppins', sans-serif;
+
+  /* --- Halaman 1: Biru Abu-abu (Soft Blue) --- */
+  --color-blue-soft-light: #f6fbfe;
+  --color-blue-soft-light-hover: #f1f9fe;
+  --color-blue-soft-light-active: #e2f2fd;
+  --color-blue-soft-normal: #a2d6f9;
+  --color-blue-soft-normal-hover: #92c1e0;
+  --color-blue-soft-normal-active: #82abc7;
+  --color-blue-soft-dark: #7aa1bb;
+  --color-blue-soft-dark-hover: #618095;
+  --color-blue-soft-dark-active: #496070;
+  --color-blue-soft-darker: #394b57;
+
+  /* --- Halaman 2: Biru Utama (Primary Blue) --- */
+  --color-blue-primary-light: #e6eafa;
+  --color-blue-primary-light-hover: #dadff7;
+  --color-blue-primary-light-active: #b2bdee;
+  --color-blue-primary-normal: #072ac8;
+  --color-blue-primary-normal-hover: #0626b4;
+  --color-blue-primary-normal-active: #0622a0;
+  --color-blue-primary-dark: #052096;
+  --color-blue-primary-dark-hover: #041978;
+  --color-blue-primary-dark-active: #03135a;
+  --color-blue-primary-darker: #020f46;
+  
+  /* --- Halaman 3: Biru Sekunder (Secondary Blue) --- */
+  --color-blue-secondary-light: #e9f5ff;
+  --color-blue-secondary-light-hover: #ddefff;
+  --color-blue-secondary-light-active: #b9defe;
+  --color-blue-secondary-normal: #1e96fc;
+  --color-blue-secondary-normal-hover: #1b87e3;
+  --color-blue-secondary-normal-active: #1878ca;
+  --color-blue-secondary-dark: #1771bd;
+  --color-blue-secondary-dark-hover: #125a97;
+  --color-blue-secondary-dark-active: #0d4471;
+  --color-blue-secondary-darker: #0b3558;
+
+  /* --- Halaman 4: Kuning Aksen (Accent Yellow) --- */
+  --color-yellow-accent-light: #fff9e6;
+  --color-yellow-accent-light-hover: #fff6d9;
+  --color-yellow-accent-light-active: #ffedb0;
+  --color-yellow-accent-normal: #ffc600;
+  --color-yellow-accent-normal-hover: #e6b200;
+  --color-yellow-accent-normal-active: #cc9e00;
+  --color-yellow-accent-dark: #bf9500;
+  --color-yellow-accent-dark-hover: #997700;
+  --color-yellow-accent-dark-active: #735900;
+  --color-yellow-accent-darker: #594500;
+
+  /* --- Halaman 5: Kuning Terang (Bright Yellow) --- */
+  --color-yellow-bright-light: #fffee6;
+  --color-yellow-bright-light-hover: #fffdd9;
+  --color-yellow-bright-light-active: #fefbb0;
+  --color-yellow-bright-normal: #fcf300;
+  --color-yellow-bright-normal-hover: #e3db00;
+  --color-yellow-bright-normal-active: #cac200;
+  --color-yellow-bright-dark: #bdb600;
+  --color-yellow-bright-dark-hover: #979200;
+  --color-yellow-bright-dark-active: #716d00;
+  --color-yellow-bright-darker: #585500;
+  
+  /* --- Halaman 6: Oranye (Orange) --- */
+  --color-palette-orange-light: #fef7e6;
+  --color-palette-orange-light-hover: #fdf3d9;
+  --color-palette-orange-light-active: #fce6b0;
+  --color-palette-orange-normal: #f4ae00;
+  --color-palette-orange-normal-hover: #dc9d00;
+  --color-palette-orange-normal-active: #c38b00;
+  --color-palette-orange-dark: #b78300;
+  --color-palette-orange-dark-hover: #926800;
+  --color-palette-orange-dark-active: #6e4e00;
+  --color-palette-orange-darker: #553d00;
+  
+  /* --- Halaman 7: Ungu (Purple) --- */
+  --color-palette-purple-light: #eeecff;
+  --color-palette-purple-light-hover: #e5e2ff;
+  --color-palette-purple-light-active: #c9c3fe;
+  --color-palette-purple-normal: #523ffc;
+  --color-palette-purple-normal-hover: #4a39e3;
+  --color-palette-purple-normal-active: #4232ca;
+  --color-palette-purple-dark: #3e2fbd;
+  --color-palette-purple-dark-hover: #312697;
+  --color-palette-purple-dark-active: #251c71;
+  --color-palette-purple-darker: #1d1658;
+}

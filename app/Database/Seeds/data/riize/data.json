@@ -1,0 +1,21 @@
+{
+    "name": "RIIZE: RIIZING DAY in Jakarta",
+    "event_date": "2026-02-15 15:00:00",
+    "venue": "ICE BSD Hall 5",
+    "poster_image": "banner/riizing-loud.png",
+    "seatmap_image": "seatmap/riize-seatmap.png",
+    "description_file": "description.html",
+
+    "ticket_types": [
+        {
+            "name": "CAT 1 (Standing)",
+            "price": 2500000,
+            "quantity_total": 1500
+        },
+        {
+            "name": "CAT 2 (Numbered Seating)",
+            "price": 1750000,
+            "quantity_total": 2500
+        }
+    ]
+}
