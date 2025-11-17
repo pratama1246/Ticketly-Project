@@ -7,15 +7,23 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Tests\\Support\\' => array($baseDir . '/tests/_support'),
+    'Svg\\' => array($vendorDir . '/dompdf/php-svg-lib/src/Svg'),
+    'SimpleSoftwareIO\\QrCode\\' => array($vendorDir . '/simplesoftwareio/simple-qrcode/src'),
+    'Sabberworm\\CSS\\' => array($vendorDir . '/sabberworm/php-css-parser/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'Masterminds\\' => array($vendorDir . '/masterminds/html5/src'),
     'Laminas\\Escaper\\' => array($vendorDir . '/laminas/laminas-escaper/src'),
+    'FontLib\\' => array($vendorDir . '/dompdf/php-font-lib/src/FontLib'),
     'Faker\\' => array($vendorDir . '/fakerphp/faker/src/Faker'),
+    'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),
     'Config\\' => array($baseDir . '/app/Config'),
     'CodeIgniter\\Shield\\' => array($vendorDir . '/codeigniter4/shield/src'),
     'CodeIgniter\\Settings\\' => array($vendorDir . '/codeigniter4/settings/src'),
     'CodeIgniter\\' => array($vendorDir . '/codeigniter4/framework/system'),
+    'BaconQrCode\\' => array($vendorDir . '/bacon/bacon-qr-code/src'),
     'App\\' => array($baseDir . '/app'),
 );

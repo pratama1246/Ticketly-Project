@@ -7,6 +7,9 @@ use App\Models\TicketTypeModel;
 use App\Models\OrderModel;
 use App\Models\OrderItemsModel;
 
+use Dompdf\Dompdf;
+use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
+
 class CheckoutController extends BaseController
 {
     /**
@@ -183,6 +186,9 @@ class CheckoutController extends BaseController
     /**
      * Langkah 5 (POST): Submit Order ke Database
      */
+    /**
+     * Langkah 5 (POST): Submit Order, BUAT PDF, dan KIRIM EMAIL
+     */
     public function submitOrder()
     {
         $session = session();
@@ -195,11 +201,16 @@ class CheckoutController extends BaseController
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $ticketTypeModel = new TicketTypeModel();
+        $eventModel = new EventModel(); // Kita butuh ini untuk info event
 
+        // --- 1. Validasi Data & Hitung Total (Sama seperti sebelumnya) ---
         $totalPrice = 0;
         $ticketDetails = [];
         $ticketTypes = $ticketTypeModel->whereIn('id', array_keys($checkoutData['selected_tickets']))
                                        ->findAll();
+        
+        // Ambil info event
+        $event = $eventModel->find($checkoutData['event_id']);
 
         foreach ($ticketTypes as $ticketType) {
             $quantity = $checkoutData['selected_tickets'][$ticketType['id']];
@@ -209,12 +220,14 @@ class CheckoutController extends BaseController
             $subtotal = $ticketType['price'] * $quantity;
             $ticketDetails[] = [
                 'id'       => $ticketType['id'],
+                'name'     => $ticketType['name'], // Nama tiket untuk PDF
                 'quantity' => $quantity,
                 'price'    => $ticketType['price']
             ];
             $totalPrice += $subtotal;
         }
 
+        // --- 2. Mulai Transaksi Database (Sama seperti sebelumnya) ---
         $db = \Config\Database::connect();
         $db->transStart();
 
@@ -228,10 +241,10 @@ class CheckoutController extends BaseController
             'identity_number' => $personalData['identity_number'],
             'birth_date'      => $personalData['birth_date'],
             'order_total'     => $totalPrice,
-            'status'          => 'completed'
+            'status'          => 'completed' 
         ];
         $orderModel->insert($orderData);
-        $newOrderId = $orderModel->getInsertID();
+        $newOrderId = $orderModel->getInsertID(); // Ambil ID pesanan baru
 
         foreach ($ticketDetails as $ticket) {
             $itemData = [
@@ -249,12 +262,88 @@ class CheckoutController extends BaseController
         
         $db->transComplete();
 
+        // --- 3. Cek Transaksi Gagal (Sama seperti sebelumnya) ---
         if ($db->transStatus() === false) {
             return redirect()->to('/checkout/review_order')->with('error', 'Terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi.');
         }
 
+        // ======================================================
+        // LANGKAH BARU: BUAT PDF & KIRIM EMAIL
+        // ======================================================
+        
+        // --- 4. Siapkan Data untuk PDF & Email ---
+        
+        // Kita hanya akan membuat 1 PDF gabungan untuk 1 TIPE tiket
+        // (Jika beli 2 VIP, jadi 1 PDF untuk 2 tiket VIP)
+        // Kita ambil tiket pertama sebagai contoh
+        $firstTicket = $ticketDetails[0];
+        $ticketCode = 'T-' . $newOrderId . '-' . $firstTicket['id']; // Kode unik tiket
+
+        // Generate QR Code
+        $qrCode = new QrCodeGenerator();
+        $qrCodeBase64 = base64_encode($qrCode->format('png')->size(150)->generate($ticketCode));
+
+        // Format tanggal event
+        $eventDate = new \DateTime($event['event_date']);
+
+        $pdfData = [
+            'eventName'     => $event['name'],
+            'buyerName'     => $personalData['first_name'] . ' ' . $personalData['last_name'],
+            'eventDate'     => $eventDate->format('d F Y, H:i') . ' WIB',
+            'venue'         => $event['venue'],
+            'ticketType'    => $firstTicket['name'],
+            'quantity'      => $firstTicket['quantity'],
+            'orderId'       => $newOrderId,
+            'qrCodeBase64'  => $qrCodeBase64,
+            'ticketCode'    => $ticketCode
+        ];
+
+        // --- 5. Render HTML Tiket ---
+        $html = view('ticket_template', $pdfData);
+
+        // --- 6. Buat PDF menggunakan Dompdf ---
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        // Ambil output PDF sebagai string
+        $pdfOutput = $dompdf->output();
+        
+        // --- 7. Konfigurasi & Kirim Email ---
+        $email = \Config\Services::email();
+        
+        // Ambil konfigurasi dari file .env
+        // PASTIKAN kamu sudah setting ini di .env:
+        // email.fromEmail = 'emailmu@gmail.com'
+        // email.fromName = 'Ticketly'
+        // email.SMTPHost = 'smtp.gmail.com'
+        // email.SMTPUser = 'emailmu@gmail.com'
+        // email.SMTPPass = 'password_app_gmailmu'
+        // email.SMTPPort = 465
+        // email.SMTPCrypto = 'ssl'
+        
+        $email->setTo($personalData['email']);
+        $email->setSubject('E-Tiket Anda untuk ' . $event['name']);
+        $email->setMessage('Terima kasih telah memesan! Terlampir adalah e-tiket Anda.');
+        
+        // Lampirkan PDF
+        $email->attach($pdfOutput, 'attachment', 'E-Ticket-Order-'.$newOrderId.'.pdf', 'application/pdf');
+
+        if (! $email->send()) {
+            // Gagal kirim email, tapi transaksi SUDAH berhasil.
+            // Kita bisa log error ini, tapi tetap lanjutkan.
+            log_message('error', 'Gagal mengirim email tiket untuk order: ' . $newOrderId . ' - ' . $email->printDebugger(['headers']));
+        }
+        
+        // ======================================================
+        // AKHIR LANGKAH BARU
+        // ======================================================
+
+        // Hancurkan session checkout
         $session->remove('checkout_process');
         $session->remove('checkout_time_left');
+
+        // Simpan order_id ke flash session untuk halaman sukses
         $session->setFlashdata('success_order_id', $newOrderId);
         
         return redirect()->to('/order/success');
@@ -262,6 +351,9 @@ class CheckoutController extends BaseController
     
     /**
      * Halaman Sukses (setelah submit)
+     */
+    /**
+     * Halaman yang ditampilkan setelah checkout berhasil
      */
     public function orderSuccess()
     {
@@ -273,6 +365,14 @@ class CheckoutController extends BaseController
 
         $orderModel = new OrderModel();
         $data['order'] = $orderModel->find($orderId);
+
+        // Jika order tidak ditemukan (misal pengguna refresh halaman)
+        if (empty($data['order'])) {
+            return redirect()->to('/');
+        }
+        
+        // Kirim data tambahan ke view
+        $data['email'] = $data['order']['email'];
 
         echo view('layout/header');
         echo view('checkout_success', $data);
