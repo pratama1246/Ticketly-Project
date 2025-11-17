@@ -1,4 +1,4 @@
-<main class="w-full pt-24 flex-grow">
+<main class="w-full pt-24 grow">
     <div class="max-w-4xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
@@ -67,7 +67,7 @@
                     <input id="birth_date" name="birth_date" 
                         datepicker datepicker-autohide datepicker-orientation="top" 
                         type="text" 
-                        class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body" 
+                        class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body" 
                         placeholder="Select date">
                 </div>
 

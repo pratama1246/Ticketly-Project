@@ -1,5 +1,5 @@
 <!-- Halaman Detail Event -->
-<main class="w-full pt-24 flex-grow">
+<main class="w-full pt-24 grow">
     <div class="max-w-7xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
         
