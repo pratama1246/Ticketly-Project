@@ -56,10 +56,6 @@ class EventSeeder extends Seeder
             // 8. Masukkan EVENT ke database
             $model->insert($insertData);
             
-            // ======================================================
-            //    BAGIAN BARU UNTUK MEMASUKKAN TIKET
-            // ======================================================
-            
             // 9. Dapatkan ID dari event yang BARU SAJA dimasukkan
             $newEventId = $model->insertID();
 

@@ -1,4 +1,4 @@
-<main class="w-full pt-24">
+<main class="w-full pt-24 flex-grow">
     <div class="max-w-4xl mx-auto p-4 text-center">
         
         <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-8 rounded-lg relative shadow-md">

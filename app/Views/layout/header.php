@@ -10,19 +10,13 @@
 </head>
 
 <!-- NAVBAR -->
-<body class="font-default bg-yellow-bright-light text-heading">
+<<body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
 <nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-default">
   <div class="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
          <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
     </a>
     <div class="flex md:order-2 space-x-3 md:space-x-3 rtl:space-x-reverse">
-        <div class="relative hidden md:block">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
-            </div>
-            <input type="text" id="input-group-1" class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border-yellow-accent-normal text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-2.5 shadow-xs placeholder:text-body" placeholder="Search">
-        </div>
 
         <!-- LOGIN LOGIC -->
         <?php if (auth()->loggedIn()): ?>
@@ -76,12 +70,6 @@
                 <li>
                     <a href="#" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Festival</a>
                 </li>
-                <div class="relative mt-3 md:hidden">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
-                    </div>
-                    <input type="text" id="input-group-1" class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-2.5 shadow-xs placeholder:text-body" placeholder="Search">
-                </div>
             </ul>
         </div>
   </div>

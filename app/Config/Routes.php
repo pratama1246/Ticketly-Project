@@ -17,7 +17,6 @@ $routes->get('/event/(:num)/select', 'EventController::select/$1');
 // Rute ini memulai proses checkout dan TIDAK perlu filter timer
 $routes->post('/checkout/start', 'CheckoutController::start');
 
-// Grup untuk semua halaman checkout yang DILINDUNGI timer
 // Grup untuk semua halaman checkout yang DILINDUNGI timer DAN LOGIN
 $routes->group('checkout', ['filter' => 'checkout_timer'], static function ($routes) {
     // Step 1: Data Diri
@@ -34,7 +33,6 @@ $routes->group('checkout', ['filter' => 'checkout_timer'], static function ($rou
 });
 
 // 4. Rute Status Pesanan (Setelah Checkout Selesai)
-// Halaman ini tidak perlu filter timer
 $routes->get('/checkout/timeout', 'CheckoutController::timeout');
 $routes->get('/order/success', 'CheckoutController::orderSuccess');
 $routes->get('/checkout/cancel', 'CheckoutController::cancel');

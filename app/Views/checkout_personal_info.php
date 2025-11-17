@@ -1,6 +1,18 @@
-<main class="w-full pt-24">
+<main class="w-full pt-24 flex-grow">
     <div class="max-w-4xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
+
+        <!-- Timer Sisa Waktu -->
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6 text-center" role="alert">
+            <strong class="font-bold">Sisa waktu untuk memesan tiket: </strong>
+            <span class="font-mono text-lg" id="checkout-timer">
+                <?php
+                    // Ambil sisa waktu dari session
+                    $timeLeft = session('checkout_time_left') ?? 300;
+                    echo floor($timeLeft / 60) . ':' . str_pad($timeLeft % 60, 2, '0', STR_PAD_LEFT);
+                ?>
+            </span>
+        </div>
 
         <!-- Progress Bar Checkout -->
         <ol class="flex items-center w-full text-sm font-medium text-center text-body sm:text-base mb-8">
@@ -20,18 +32,6 @@
                 Konfirmasi
             </li>
         </ol>
-
-        <!-- Timer Sisa Waktu -->
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6 text-center" role="alert">
-            <strong class="font-bold">Sisa waktu untuk memesan tiket: </strong>
-            <span class="font-mono text-lg" id="checkout-timer">
-                <?php
-                    // Ambil sisa waktu dari session
-                    $timeLeft = session('checkout_time_left') ?? 300;
-                    echo floor($timeLeft / 60) . ':' . str_pad($timeLeft % 60, 2, '0', STR_PAD_LEFT);
-                ?>
-            </span>
-        </div>
 
         <!-- Form Data Diri -->
         <h2 class="text-2xl font-bold text-black mb-4">Informasi Personal</h2>
@@ -59,10 +59,18 @@
                     <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Identitas (KTP/SIM/NIK/Paspor, dll) *</label>
                     <input type="text" id="identity_number" name="identity_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
-                <div>
-                    <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Lahir</label>
-                    <input type="date" id="birth_date" name="birth_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <div class="relative max-w-sm">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/></svg>
+                    </div>
+                    
+                    <input id="birth_date" name="birth_date" 
+                        datepicker datepicker-autohide datepicker-orientation="top" 
+                        type="text" 
+                        class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body" 
+                        placeholder="Select date">
                 </div>
+
             </div>
 
             <!-- Tombol Lanjut ke Pembayaran -->

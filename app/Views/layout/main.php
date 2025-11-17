@@ -1,5 +1,34 @@
+<main class="w-full pt-24 grow">
+<div class="max-w-9xl my-10 p-2 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
+            Temukan Pengalaman <span class="bg-blue-secondary-normal text-white p-2.5 inline-block">Seru</span> Berikutnya
+        </h1>
+        <p class="text-lg text-gray-600 mb-8">
+            Beli tiket konser, festival, dan event favoritmu di Ticketly.
+        </p>
+
+        <div class="max-w-2xl mx-auto">
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+                </div>
+                <input type="search" id="hero-search" 
+                       class="block w-full p-4 ps-12 text-md text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-yellow-accent-normal focus:border-yellow-accent-normal" 
+                       placeholder="Cari sesuatu...">
+                <button type="submit" class="text-black absolute end-2.5 bottom-2.5 bg-yellow-accent-normal hover:bg-yellow-accent-dark font-medium rounded-lg text-sm px-4 py-2">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-center gap-2">
+           
+        </div>
+    </div>
+</div>
+
 <!-- CAROUSEL -->
-<div id="default-carousel" class="relative w-full pt-20" data-carousel="slide">
+<div id="default-carousel" class="relative w-full" data-carousel="slide">
     <div class="relative overflow-hidden aspect-video">
         
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
@@ -100,3 +129,4 @@
             <p class="mt-4 text-body">Bergabunglah dengan jutaan pengguna yang telah mempercayai Ticketly sebagai mitra mereka dalam menikmati hiburan berkualitas. Kami berkomitmen untuk terus meningkatkan layanan kami dan menghadirkan inovasi terbaru agar setiap momen bersama Ticketly menjadi kenangan tak terlupakan.</p>
         </div>
 </div>
+</main>
