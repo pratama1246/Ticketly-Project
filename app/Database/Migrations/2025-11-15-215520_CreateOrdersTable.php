@@ -6,7 +6,7 @@ class CreateOrdersTable extends Migration
 {
     public function up()
     {
-        // INI ADALAH FUNGSI UNTUK TABEL 'orders'
+        // Tabel orders
         $this->forge->addField([
             'id' => [
                 'type'           => 'INT',
@@ -65,7 +65,6 @@ class CreateOrdersTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->createTable('orders'); 
-        // HANYA INI, JANGAN ADA createTable('order_items') DI SINI
     }
 
     public function down()

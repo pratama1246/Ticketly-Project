@@ -4,6 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
+// Tabel ticket_types
 class CreateTicketTypesTable extends Migration
 {
     public function up()
@@ -42,9 +43,7 @@ class CreateTicketTypesTable extends Migration
         ]);
         $this->forge->addKey('id', true); // Primary Key
 
-        // Menambahkan Foreign Key
-        // Ini akan menyambungkan ticket_types.event_id ke events.id
-        // 'CASCADE' berarti jika event dihapus, tiketnya juga ikut terhapus
+        // Foreign Key ke tabel events
         $this->forge->addForeignKey('event_id', 'events', 'id', 'CASCADE', 'CASCADE');
 
         $this->forge->createTable('ticket_types');

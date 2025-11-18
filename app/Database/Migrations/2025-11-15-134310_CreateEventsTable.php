@@ -4,6 +4,8 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
+
+// Tabel events
 class CreateEventsTable extends Migration
 {
     public function up()

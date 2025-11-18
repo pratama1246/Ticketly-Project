@@ -6,7 +6,7 @@ class CreateOrderItemsTable extends Migration
 {
     public function up()
     {
-        // INI ADALAH FUNGSI UNTUK TABEL 'order_items'
+        // TABEL 'order_items'
         $this->forge->addField([
             'id' => [
                 'type'           => 'INT',
@@ -35,6 +35,7 @@ class CreateOrderItemsTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
+        // Menambahkan Foreign Key ke tabel orders dan ticket_types
         $this->forge->addForeignKey('order_id', 'orders', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('ticket_type_id', 'ticket_types', 'id', 'SET NULL', 'SET NULL');
         

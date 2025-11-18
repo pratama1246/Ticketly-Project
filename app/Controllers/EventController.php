@@ -7,9 +7,8 @@ use App\Models\TicketTypeModel;
 
 class EventController extends BaseController
 {
-    /**
-     * Menampilkan halaman detail event DINAMIS berdasarkan ID
-     */
+
+    // Menampilkan halaman detail event DINAMIS berdasarkan ID
     public function detail($id = null)
     {
         $eventModel = new EventModel();
@@ -26,9 +25,8 @@ class EventController extends BaseController
         echo view('layout/footer');
     }
 
-    /**
-     * Dibuat untuk halaman pemilihan tiket.
-     */
+
+    // Dibuat untuk halaman pemilihan tiket.
     public function select($id = null)
     {
         $eventModel = new EventModel();
