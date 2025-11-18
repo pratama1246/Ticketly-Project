@@ -54,9 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // LOGIKA 3: INISIALISASI FLOWBITE (Wajib)
+    // LOGIKA 4: INISIALISASI FLOWBITE (Wajib)
     // ----------------------------------------------------
     // Flowbite perlu diinisialisasi untuk Dropdown, Carousel, dll.
     // Jika kamu menggunakan Vite, ini mungkin sudah dihandle, tapi ini cara manualnya.
-    initFlowbite();
+    if (typeof initFlowbite === 'function') {
+        initFlowbite();
+    }
 });

@@ -30,23 +30,20 @@
             </span>
 
         <!-- Gambar Poster Event -->
-            <img src="<?= base_url('assets/' . esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
+            <img src="<?= base_url(esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
 
         <!-- Seat Map Event -->
             <div class="bg-blue-900 p-6 rounded-lg">
                 <h2 class="text-2xl font-bold text-white mb-4 text-center">
                     SEAT MAP <?= esc($event['name']) ?>
                 </h2>
-                <img src="<?= base_url('assets/' . esc($event['seatmap_image'])) ?>" alt="Seat Map" class="w-full rounded-lg my-6">
+                <img src="<?= base_url(esc($event['seatmap_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
             </div>
 
         <!-- Deskripsi Event -->
-            <div class="mt-10">
-                <div class="prose dark:prose-invert max-w-none text-black">
+            <div class="prose max-w-none mt-10">
                     <?= $event['description'] ?>
                 </div>
-            </div>
-
         </div>
     </div>
 </main>

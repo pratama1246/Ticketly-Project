@@ -37,5 +37,35 @@ $routes->get('/checkout/timeout', 'CheckoutController::timeout');
 $routes->get('/order/success', 'CheckoutController::orderSuccess');
 $routes->get('/checkout/cancel', 'CheckoutController::cancel');
 
+$routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
+    
+    // Rute default untuk /admin
+    $routes->get('/', 'Admin\DashboardController::index');
+
+    // ======================================================
+    // MANAJEMEN EVENT (Secara Manual, BUKAN resource)
+    // ======================================================
+    
+    // R (Read): Menampilkan daftar event
+    $routes->get('events', 'Admin\EventController::index');
+    
+    // C (Create): Menampilkan form 'new'
+    $routes->get('events/new', 'Admin\EventController::new');
+    // C (Create): Memproses form 'new'
+    $routes->post('events', 'Admin\EventController::create');
+
+    // R (Read): Menampilkan satu event (kita redirect ke edit)
+    $routes->get('events/([0-9]+)', 'Admin\EventController::show/$1');
+
+    // U (Update): Menampilkan form 'edit' (INI YANG MEMPERBAIKI ERROR-MU)
+    $routes->get('events/edit/([0-9]+)', 'Admin\EventController::edit/$1');
+    // U (Update): Memproses form 'edit'
+    $routes->put('events/([0-9]+)', 'Admin\EventController::update/$1');
+    $routes->post('events/update/([0-9]+)', 'Admin\EventController::update/$1'); // Fallback jika PUT gagal
+
+    // D (Delete): Menghapus event
+    $routes->delete('events/([0-9]+)', 'Admin\EventController::delete/$1');
+});
+
 // 5. Rute Autentikasi (Login, Register, dll.)
 service('auth')->routes($routes);

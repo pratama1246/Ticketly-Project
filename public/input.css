@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "flowbite/src/themes/default";
+@plugin '@tailwindcss/typography'; 
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
 
@@ -94,84 +95,3 @@
   --color-palette-purple-darker: #1d1658;
 }
 
-/* Container untuk card yang akan dianimasikan */
-.animated-border-card {
-  position: relative;
-  overflow: hidden; /* Sembunyikan garis saat di luar batas */
-  /* Kita pindahkan transisi dari inline ke sini agar lebih rapi */
-  transition: all 0.3s ease-out;
-}
-
-/* Saat di-hover, kita tetap jalankan efek scale dan shadow
-  Ini akan berjalan BERSAMAAN dengan animasi garis
-*/
-.animated-border-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-
-/* Kita buat 4 elemen 'span' yang akan menjadi garis.
-  Masing-masing kita letakkan di setiap sisi (atas, kanan, bawah, kiri)
-*/
-
-.animated-border-card .line {
-  position: absolute;
-  background-color: #CAEB1D; /* Ganti dengan warna brand-mu (biru) */
-  box-shadow: 0 0 10px #CAEB1D;
-}
-
-/* 1. Garis Atas (line-top) */
-.animated-border-card .line-top {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  /* Animasi: bergerak dari kiri ke kanan */
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-out 0s;
-}
-.animated-border-card:hover .line-top {
-  transform: translateX(0);
-}
-
-/* 2. Garis Kanan (line-right) */
-.animated-border-card .line-right {
-  top: 0;
-  right: 0;
-  width: 2px;
-  height: 100%;
-  /* Animasi: bergerak dari atas ke bawah */
-  transform: translateY(-100%);
-  transition: transform 0.3s ease-out 0.3s; /* Delay 0.3s (setelah garis atas) */
-}
-.animated-border-card:hover .line-right {
-  transform: translateY(0);
-}
-
-/* 3. Garis Bawah (line-bottom) */
-.animated-border-card .line-bottom {
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  /* Animasi: bergerak dari kanan ke kiri */
-  transform: translateX(100%);
-  transition: transform 0.3s ease-out 0.6s; /* Delay 0.6s (setelah garis kanan) */
-}
-.animated-border-card:hover .line-bottom {
-  transform: translateX(0);
-}
-
-/* 4. Garis Kiri (line-left) */
-.animated-border-card .line-left {
-  top: 0;
-  left: 0;
-  width: 2px;
-  height: 100%;
-  /* Animasi: bergerak dari bawah ke atas */
-  transform: translateY(100%);
-  transition: transform 0.3s ease-out 0.9s; /* Delay 0.9s (setelah garis bawah) */
-}
-.animated-border-card:hover .line-left {
-  transform: translateY(0);
-}

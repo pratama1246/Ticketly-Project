@@ -89,7 +89,7 @@
             
             <a href="/event/<?= $event['id'] ?>" class="block aspect-video">
                 <img class="w-full h-full object-cover" 
-                     src="<?= base_url('assets/' . esc($event['poster_image'])) ?>" 
+                     src="<?= base_url(esc($event['poster_image'])) ?>" 
                      alt="<?= esc($event['name']) ?>" />
             </a>
             
