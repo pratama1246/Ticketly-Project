@@ -24,7 +24,7 @@
         <!-- LOGIN LOGIC -->
         <?php if (auth()->loggedIn()): ?>
             <button type="button" class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
-                <span class="sr-only">Open user menu</span>
+                <span class="sr-only">Buka menu pengguna</span>
                 <img class="w-10 h-10 rounded-full" src="<?= base_url('assets/profile_default.png') ?>" alt="user photo">
             </button>
 
@@ -47,7 +47,7 @@
             </div>
             <?php else: ?>
             <button type="button" onclick="window.location.href='<?= base_url('login') ?>'" class="text-black bg-yellow-accent-normal hover:bg-yellow-accent-strong box-border border border-transparent focus:ring-4 focus:ring-yellow-accent-medium shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none">
-                Login or Sign Up
+                Masuk atau Daftar
             </button>
         <?php endif; ?>
 

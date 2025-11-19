@@ -441,12 +441,15 @@ class Auth extends ShieldAuth
      */
     public function loginRedirect(): string
     {
-        $session = session();
-        $url     = $session->getTempdata('beforeLoginUrl') ?? setting('Auth.redirects')['login'];
+        // Memeriksa apakah pengguna yang sedang login termasuk dalam grup 'admin'
+        if (auth()->user()->inGroup('admin')) {
+            return '/admin'; // Arahkan ke dashboard admin
+        }
 
+        // Jika bukan admin, arahkan ke URL default atau halaman lain
+        $url = setting('Auth.redirects')['login'] ?? '/';
         return $this->getUrl($url);
     }
-
     /**
      * Returns the URL that a user should be redirected
      * to after they are logged out.
