@@ -9,6 +9,7 @@
     <script src="https://cdn.tiny.cloud/1/o9x8q1gyscpyjvhjh1e6iurf4bdsr8lip0piuc59rsr5e85v/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
 </head>
+
 <body class="bg-gray-50"> <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-between">

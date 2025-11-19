@@ -236,23 +236,29 @@ class EventController extends BaseController
         $event = $eventModel->find($id);
 
         if ($event) {
-            // 1. Hapus File Poster (jika ada)
+            // Hapus File Fisik (Poster & Seatmap) - Kode lama tetap dipakai
             if (!empty($event['poster_image']) && file_exists(FCPATH . $event['poster_image'])) {
                 unlink(FCPATH . $event['poster_image']);
             }
-
-            // 2. Hapus File Seatmap (jika ada)
             if (!empty($event['seatmap_image']) && file_exists(FCPATH . $event['seatmap_image'])) {
                 unlink(FCPATH . $event['seatmap_image']);
             }
 
-            // 3. Hapus Data dari Database
+            // Hapus Data DB
             $eventModel->delete($id);
 
-            return redirect()->to('/admin/events')->with('message', 'Event berhasil dihapus.');
+            // --- PERUBAHAN DI SINI ---
+            // Jangan redirect! Kembalikan JSON.
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Event berhasil dihapus.'
+            ]);
         }
 
-        return redirect()->to('/admin/events')->with('error', 'Event tidak ditemukan.');
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Event tidak ditemukan.'
+        ])->setStatusCode(404);
     }
     
     /**

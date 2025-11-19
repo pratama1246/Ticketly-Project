@@ -44,7 +44,7 @@
                 </tr>
             <?php else: ?>
                 <?php foreach ($events as $event): ?>
-                <tr class="bg-white border-b hover:bg-gray-50">
+                <tr id="row-event-<?= $event['id'] ?>" class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         <?= esc($event['name']) ?>
                     </th>
@@ -56,13 +56,11 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="/admin/events/edit/<?= $event['id'] ?>" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Edit</a>
-                    <form action="/admin/events/<?= $event['id'] ?>" method="post" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus event ini? Data yang dihapus tidak bisa dikembalikan.');">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                                Hapus
-                            </button>
-                        </form>    
+                        <button type="button" 
+                                onclick="deleteEvent(<?= $event['id'] ?>)" 
+                                class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                            Hapus
+                        </button>   
                     </td>
                 </tr>
                 <?php endforeach; ?>

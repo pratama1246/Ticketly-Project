@@ -207,9 +207,6 @@
                                 <p class="mb-2 text-body text-sm">
                                     <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
                                 </p>
-                                <p class="mb-2 text-body text-sm">
-                                    <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
-                                </p>
                                 <p class="mb-6 text-gray-500 text-sm line-clamp-1">
                                     📍 <?= esc($event['venue']) ?>
                                 </p>
