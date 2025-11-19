@@ -60,6 +60,8 @@ class EventController extends BaseController
                     . '|mime_in[poster_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[poster_image,2048]',
             ],
+            'category' => 'required|in_list[concert,festival,event]',
+            'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
                 'rules' => 'permit_empty|uploaded[seatmap_image]'
@@ -79,6 +81,10 @@ class EventController extends BaseController
             'event_date'  => $this->request->getPost('event_date'),
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
+            
+            'category'    => $this->request->getPost('category'),
+            'status'      => $this->request->getPost('status'),
+            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0, 
         ];
 
         // Upload Poster (Ke folder 'banners' sesuai strukturmu)
@@ -160,6 +166,8 @@ class EventController extends BaseController
                     . '|mime_in[poster_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[poster_image,2048]',
             ],
+            'category' => 'required|in_list[concert,festival,event]',
+            'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
                 'rules' => 'permit_empty|uploaded[seatmap_image]' 
@@ -179,6 +187,10 @@ class EventController extends BaseController
             'event_date'  => $this->request->getPost('event_date'),
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
+            
+            'category'    => $this->request->getPost('category'),
+            'status'      => $this->request->getPost('status'),
+            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0, 
         ];
 
         // Cek Upload Poster Baru

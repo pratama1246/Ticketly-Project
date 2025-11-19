@@ -17,7 +17,10 @@ class EventModel extends Model
         'venue', 
         'event_date', 
         'poster_image',
-        'seatmap_image' // Tambahkan ini
+        'seatmap_image',
+        'category',
+        'is_featured',
+        'status'
     ];
 
     // Menggunakan created_at dan updated_at secara otomatis

@@ -1,3 +1,4 @@
+initFlowbite();
 document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // LOGIKA 1: TIMER CHECKOUT

@@ -35,6 +35,32 @@
                           placeholder="Tulis deskripsi event..."><?= old('description', $event['description']) ?></textarea>
             </div>
 
+            <div>
+                <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
+                <select id="category" name="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="event" <?= $event['category'] == 'event' ? 'selected' : '' ?>>Event</option>
+                    <option value="concert" <?= $event['category'] == 'concert' ? 'selected' : '' ?>>Konser</option>
+                    <option value="festival" <?= $event['category'] == 'festival' ? 'selected' : '' ?>>Festival</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
+                <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="published" <?= $event['status'] == 'published' ? 'selected' : '' ?>>Published</option>
+                    <option value="draft" <?= $event['status'] == 'draft' ? 'selected' : '' ?>>Draft</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2 flex items-center">
+                <input id="is_featured" name="is_featured" type="checkbox" value="1" 
+                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                       <?= $event['is_featured'] == 1 ? 'checked' : '' ?>>
+                <label for="is_featured" class="ms-2 text-sm font-medium text-gray-900">
+                    Tampilkan di Carousel Utama (Featured)
+                </label>
+            </div>
+
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-medium text-gray-900" for="poster_image">Upload Poster Event</label>
                 <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" 

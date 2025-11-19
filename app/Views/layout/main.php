@@ -75,53 +75,162 @@
     </button>
 </div>
 
+
 <!-- EVENT LIST -->
-
-<div class="max-w-9xl my-10 p-2">
-    <h1 class="text-3xl font-bold text-black p-4 ps-4">Cari Event Favorit</h1>
-    
-    <div class="w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
-    <div class="flex flex-nowrap space-x-4 p-4 items-stretch">
-
-        <?php foreach ($events as $event): ?>
-
-        <div class="shrink-0 w-96 bg-neutral-primary-soft flex flex-col border border-default rounded-base shadow-xs overflow-hidden">
-            
-            <a href="/event/<?= $event['id'] ?>" class="block aspect-video">
-                <img class="w-full h-full object-cover" 
-                     src="<?= base_url(esc($event['poster_image'])) ?>" 
-                     alt="<?= esc($event['name']) ?>" />
-            </a>
-            
-            <div class="p-6 grow">
-                <a href="/event/<?= $event['id'] ?>">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-heading">
-                        <?= esc($event['name']) ?>
-                    </h5>
-                </a>
+    <div class="max-w-9xl mx-auto my-4 p-2 mt-10">
+        <div class="flex justify-between items-center px-4">
+            <h1 class="text-3xl font-bold text-black mb-4">Temukan Konser Terbaru</h1>
+            <a href="#" class="text-blue-600 hover:underline font-medium">Lihat Semua</a>
+        </div>
+        
+        <div class="w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
+            <div class="flex flex-nowrap space-x-4 p-4 items-stretch">
                 
-                <p class="mb-6 text-body">
-                    <?php 
-                        $date = new \DateTime(esc($event['event_date']));
-                        echo $date->format('d F Y'); 
-                    ?>
-                </p>
-            </div>
-            
-            <div class="p-6 pt-0"> <a href="/event/<?= $event['id'] ?>" class="inline-flex items-center text-body bg-neutral-secondary-medium box-border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                    Lihat Detail
-                    <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-                </a>
+                <?php if (empty($concerts)): ?>
+                    <div class="w-full text-center py-10 text-gray-500">Belum ada konser tersedia.</div>
+                <?php else: ?>
+                    <?php foreach ($concerts as $event): ?>
+                        <div class="shrink-0 w-80 md:w-96 bg-neutral-primary-soft flex flex-col border border-default rounded-base shadow-xs overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                            <a href="/event/<?= $event['id'] ?>" class="block aspect-video relative">
+                                <img class="w-full h-full object-cover" 
+                                     src="<?= base_url($event['poster_image']) ?>" 
+                                     alt="<?= esc($event['name']) ?>" />
+                                <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-black shadow">
+                                    <?= (new \DateTime($event['event_date']))->format('d M') ?>
+                                </div>
+                            </a>
+                            
+                            <div class="p-6 grow flex flex-col">
+                                <a href="/event/<?= $event['id'] ?>">
+                                    <h5 class="mb-2 text-xl md:text-2xl font-semibold tracking-tight text-heading line-clamp-2">
+                                        <?= esc($event['name']) ?>
+                                    </h5>
+                                </a>
+                                <p class="mb-2 text-body text-sm">
+                                    <?= (new \DateTime($event['event_date']))->format('d F Y, H:i') ?> WIB
+                                </p>
+                                <p class="mb-6 text-gray-500 text-sm line-clamp-1">
+                                    📍 <?= esc($event['venue']) ?>
+                                </p>
+                            </div>
+                            
+                            <div class="p-6 pt-0 mt-auto"> 
+                                <a href="/event/<?= $event['id'] ?>" class="inline-flex items-center justify-center w-full text-body bg-neutral-secondary-medium box-border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none transition-colors">
+                                    Lihat Detail
+                                    <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
             </div>
         </div>
-        <?php endforeach; ?>
-
     </div>
-</div>
-</div>
+
+    <div class="max-w-9xl mx-auto my-4 p-2">
+        <div class="flex justify-between items-center px-4">
+            <h1 class="text-3xl font-bold text-black mb-4">Jelajahi Festival Yang Seru</h1>
+            <a href="#" class="text-blue-600 hover:underline font-medium">Lihat Semua</a>
+        </div>
+        
+        <div class="w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
+            <div class="flex flex-nowrap space-x-4 p-4 items-stretch">
+                
+                <?php if (empty($festivals)): ?>
+                    <div class="w-full text-center py-10 text-gray-500">Belum ada festival tersedia.</div>
+                <?php else: ?>
+                    <?php foreach ($festivals as $event): ?>
+                        <div class="shrink-0 w-80 md:w-96 bg-neutral-primary-soft flex flex-col border border-default rounded-base shadow-xs overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                            <a href="/event/<?= $event['id'] ?>" class="block aspect-video relative">
+                                <img class="w-full h-full object-cover" src="<?= base_url($event['poster_image']) ?>" alt="<?= esc($event['name']) ?>" />
+                                <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-black shadow">
+                                    <?= (new \DateTime($event['event_date']))->format('d M') ?>
+                                </div>
+                            </a>
+                            
+                            <div class="p-6 grow flex flex-col">
+                                <a href="/event/<?= $event['id'] ?>">
+                                    <h5 class="mb-2 text-xl md:text-2xl font-semibold tracking-tight text-heading line-clamp-2">
+                                        <?= esc($event['name']) ?>
+                                    </h5>
+                                </a>
+                                <p class="mb-2 text-body text-sm">
+                                    <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
+                                </p>
+                                <p class="mb-6 text-gray-500 text-sm line-clamp-1">
+                                    📍 <?= esc($event['venue']) ?>
+                                </p>
+                            </div>
+                            
+                            <div class="p-6 pt-0 mt-auto"> 
+                                <a href="/event/<?= $event['id'] ?>" class="inline-flex items-center justify-center w-full text-body bg-neutral-secondary-medium box-border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none transition-colors">
+                                    Lihat Detail
+                                    <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-9xl mx-auto my-4 p-2 mb-20">
+        <div class="flex justify-between items-center px-4">
+            <h1 class="text-3xl font-bold text-black mb-4">Lihat Event Lainnya</h1>
+            <a href="#" class="text-blue-600 hover:underline font-medium">Lihat Semua</a>
+        </div>
+        
+        <div class="w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
+            <div class="flex flex-nowrap space-x-4 p-4 items-stretch">
+                
+                <?php if (empty($events)): ?>
+                    <div class="w-full text-center py-10 text-gray-500">Belum ada event lainnya.</div>
+                <?php else: ?>
+                    <?php foreach ($events as $event): ?>
+                        <div class="shrink-0 w-80 md:w-96 bg-neutral-primary-soft flex flex-col border border-default rounded-base shadow-xs overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                            <a href="/event/<?= $event['id'] ?>" class="block aspect-video relative">
+                                <img class="w-full h-full object-cover" src="<?= base_url($event['poster_image']) ?>" alt="<?= esc($event['name']) ?>" />
+                                <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-black shadow">
+                                    <?= (new \DateTime($event['event_date']))->format('d M') ?>
+                                </div>
+                            </a>
+                            
+                            <div class="p-6 grow flex flex-col">
+                                <a href="/event/<?= $event['id'] ?>">
+                                    <h5 class="mb-2 text-xl md:text-2xl font-semibold tracking-tight text-heading line-clamp-2">
+                                        <?= esc($event['name']) ?>
+                                    </h5>
+                                </a>
+                                <p class="mb-2 text-body text-sm">
+                                    <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
+                                </p>
+                                <p class="mb-2 text-body text-sm">
+                                    <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
+                                </p>
+                                <p class="mb-6 text-gray-500 text-sm line-clamp-1">
+                                    📍 <?= esc($event['venue']) ?>
+                                </p>
+                            </div>
+                            
+                            <div class="p-6 pt-0 mt-auto"> 
+                                <a href="/event/<?= $event['id'] ?>" class="inline-flex items-center justify-center w-full text-body bg-neutral-secondary-medium box-border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none transition-colors">
+                                    Lihat Detail
+                                    <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
 
 <!-- ABOUT US -->
-<div class="max-w-8xl mx-auto p-4">
+<div class="max-w-8xl mx-auto p-4 mb-20">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
             <h1 class="text-2xl font-bold text-black">Tentang Kami</h1>
             <p class="mt-4 text-body">Ticketly adalah platform penjualan tiket daring terkemuka yang didedikasikan untuk memberikan pengalaman terbaik bagi para penggemar acara di seluruh dunia. Kami memahami betapa pentingnya momen spesial dalam hidup Anda, dan itulah mengapa kami berkomitmen untuk menyediakan akses mudah dan aman ke berbagai acara, mulai dari konser musik, pertunjukan teater, festival budaya, hingga acara olahraga.</p>

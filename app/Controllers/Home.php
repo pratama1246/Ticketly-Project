@@ -2,19 +2,50 @@
 
 namespace App\Controllers;
 
-use App\Models\EventModel; 
+use App\Models\EventModel;
 
 class Home extends BaseController
 {
     public function index()
     {
-        $eventModel = new EventModel(); 
+        $eventModel = new EventModel();
 
-        $data['events'] = $eventModel->findAll(); 
+        // 1. Ambil Event untuk Carousel (Featured & Published)
+        $featuredEvents = $eventModel
+            ->where('is_featured', 1)
+            ->where('status', 'published')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
 
-        // 4. Kirim $data ke dalam view
-        echo view('layout/header');
-        echo view('layout/main', $data); 
-        echo view('layout/footer');
+        // 2. Ambil Event per Kategori (Limit 4 agar tidak kepanjangan)
+        $concerts = $eventModel
+            ->where('category', 'concert')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        $festivals = $eventModel
+            ->where('category', 'festival')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        $otherEvents = $eventModel
+            ->where('category', 'event')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        $data = [
+            'title'     => 'Home',
+            'featured'  => $featuredEvents,
+            'concerts'  => $concerts,
+            'festivals' => $festivals,
+            'events'    => $otherEvents,
+        ];
+
+        return view('layout/header', $data)
+             . view('layout/main', $data)
+             . view('layout/footer');
     }
 }

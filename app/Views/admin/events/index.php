@@ -55,11 +55,11 @@
                         <?= esc($event['venue']) ?>
                     </td>
                     <td class="px-6 py-4">
-                        <a href="/admin/events/edit/<?= $event['id'] ?>" class="font-medium text-blue-600 hover:underline">Edit</a>
+                        <a href="/admin/events/edit/<?= $event['id'] ?>" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Edit</a>
                     <form action="/admin/events/<?= $event['id'] ?>" method="post" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus event ini? Data yang dihapus tidak bisa dikembalikan.');">
                             <?= csrf_field() ?>
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="font-medium text-red-600 hover:underline bg-transparent border-none cursor-pointer">
+                            <button type="submit" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
                                 Hapus
                             </button>
                         </form>    
