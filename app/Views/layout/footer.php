@@ -1,3 +1,4 @@
+<!-- Footer Utama -->
 <footer class="border border-solid-black">
     <div class="mx-auto w-full max-w-7xl p-4 py-6 lg:py-8">
         <div class="md:flex md:justify-between">
@@ -72,18 +73,5 @@
     </div>
 </footer>
 
-<script>
-    // Hanya set variabel ini jika session aktif dan timer ada
-    <?php if (session()->has('checkout_time_left')): ?>
-        const CI_TIME_LEFT = <?= session('checkout_time_left') ?>;
-        
-        // Cek apakah modal perlu ditampilkan (jika session ada dan bukan di rute checkout)
-        const currentPath = window.location.pathname;
-        const CI_SHOW_MODAL = !currentPath.includes('/checkout');
-    <?php endif; ?>
-</script>
-
-<script src="<?= base_url('js/app.js') ?>"></script>
-
-</body>
+    </body>
 </html>

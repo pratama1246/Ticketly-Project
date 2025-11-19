@@ -1,9 +1,13 @@
+<!-- HALAMAN EDIT EVENT -->
+
+<!-- Judul Halaman -->
 <h1 class="text-3xl font-bold text-black mb-6">
     <?= esc($title) ?>
 </h1>
 
 <?= $validation->listErrors('list') ?>
 
+<!-- FORM EDIT EVENT -->
 <form action="/admin/events/<?= $event['id'] ?>" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
     <input type="hidden" name="_method" value="PUT"> 
@@ -11,30 +15,35 @@
     <div class="bg-white p-6 rounded-lg shadow-md">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
+            <!-- Nama Event -->
             <div class="md:col-span-2">
                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nama Event*</label>
                 <input type="text" id="name" name="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
                        value="<?= old('name', $event['name']) ?>" required>
             </div>
 
+            <!-- Venue -->
             <div>
                 <label for="venue" class="block mb-2 text-sm font-medium text-gray-900">Venue</label>
                 <input type="text" id="venue" name="venue" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                        value="<?= old('venue', $event['venue']) ?>">
             </div>
 
+            <!-- Tanggal & Waktu Event -->
             <div>
                 <label for="event_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal & Waktu Event*</label>
                 <input type="datetime-local" id="event_date" name="event_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                        value="<?= old('event_date', $event['event_date']) ?>" required>
             </div>
-
+            
+            <!-- Deskripsi Event -->
             <div class="md:col-span-2">
                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Event</label>
                 <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" 
                           placeholder="Tulis deskripsi event..."><?= old('description', $event['description']) ?></textarea>
             </div>
 
+            <!-- Kategori Event -->
             <div>
                 <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
                 <select id="category" name="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -44,6 +53,7 @@
                 </select>
             </div>
 
+            <!-- Status Event -->
             <div>
                 <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
                 <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -52,6 +62,7 @@
                 </select>
             </div>
 
+            <!-- Featured Checkbox -->
             <div class="md:col-span-2 flex items-center">
                 <input id="is_featured" name="is_featured" type="checkbox" value="1" 
                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
@@ -61,6 +72,7 @@
                 </label>
             </div>
 
+            <!-- Upload Poster Image -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-medium text-gray-900" for="poster_image">Upload Poster Event</label>
                 <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" 
@@ -75,6 +87,7 @@
                 <?php endif; ?>
             </div>
             
+            <!-- Upload Seatmap Image -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-medium text-gray-900" for="seatmap_image">Upload Seat Map</label>
                 <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" 
@@ -88,9 +101,9 @@
                     </div>
                 <?php endif; ?>
             </div>
-
         </div>
-
+        
+        <!-- Tombol Submit dan Batal -->
         <div class="mt-6">
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Update Event

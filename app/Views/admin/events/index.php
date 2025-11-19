@@ -7,6 +7,7 @@
     </a>
 </div>
 
+<!-- PESAN EROR DAN SUKSES -->
 <?php if (session()->getFlashdata('message')): ?>
         <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
             <span class="font-medium">Sukses!</span> <?= session()->getFlashdata('message') ?>
@@ -17,6 +18,7 @@
         </div>
     <?php endif; ?>
 
+<!-- TABEL EVENT -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">

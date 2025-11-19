@@ -7,11 +7,13 @@
         <link href="<?= base_url('output.css') ?>" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script src="<?= base_url('flowbite.min.js') ?>"></script>
+        <script src="<?= base_url('js/app.js') ?>"></script>
     <title>Ticketly - Nikmati Konsermu</title>
 </head>
 
-<!-- NAVBAR -->
 <<body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
+
+<!-- NAVBAR -->
 <nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-default">
   <div class="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">

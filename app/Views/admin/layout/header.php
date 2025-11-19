@@ -8,9 +8,13 @@
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/o9x8q1gyscpyjvhjh1e6iurf4bdsr8lip0piuc59rsr5e85v/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
+    <script src="<?= base_url('js/app.js') ?>"></script>
 </head>
 
-<body class="bg-gray-50"> <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
+<body class="bg-gray-50">
+
+<!-- NAVBAR ADMIN -->
+<nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
@@ -42,6 +46,7 @@
   </div>
 </nav>
 
+<!-- SIDEBAR ADMIN -->
 <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0" aria-label="Sidebar">
    <div class="h-full px-3 pb-4 overflow-y-auto bg-white">
       <ul class="space-y-2 font-medium">

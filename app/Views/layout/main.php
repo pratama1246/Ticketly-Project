@@ -1,4 +1,6 @@
 <main class="w-full pt-24 grow">
+
+<!-- JUDUL SECTION -->
 <div class="max-w-9xl my-10 p-2 text-center">
     <h1 class="text-4xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
             Temukan Pengalaman <span class="bg-blue-secondary-normal text-white p-2.5 inline-block">Seru</span> Berikutnya
