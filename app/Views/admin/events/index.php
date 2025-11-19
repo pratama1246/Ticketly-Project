@@ -31,6 +31,9 @@
                     Venue
                 </th>
                 <th scope="col" class="px-6 py-3">
+                    Status
+                </th>
+                <th scope="col" class="px-6 py-3">
                     Aksi
                 </th>
             </tr>
@@ -38,8 +41,20 @@
         <tbody>
             <?php if (empty($events)): ?>
                 <tr class="bg-white border-b">
-                    <td colspan="4" class="px-6 py-4 text-center">
-                        Belum ada event.
+                    <td colspan="5" class="px-6 py-10 text-center">
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="p-3 bg-gray-100 rounded-full mb-3">
+                                <svg class="w-10 h-10 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 13h16M4 17h16M4 21h16M4 9h16M4 5h16"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Belum ada event</h3>
+                            <p class="text-gray-500 mb-4">Mulai buat event pertamamu untuk ditampilkan di website.</p>
+                            
+                            <a href="/admin/events/new" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                                + Buat Event Sekarang
+                            </a>
+                        </div>
                     </td>
                 </tr>
             <?php else: ?>
@@ -53,6 +68,23 @@
                     </td>
                     <td class="px-6 py-4">
                         <?= esc($event['venue']) ?>
+                    </td>
+                    <td class="px-6 py-4">
+                        <?php if ($event['status'] === 'published'): ?>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-green-400">
+                                Tayang (Published)
+                            </span>
+                        <?php else: ?>
+                            <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-500">
+                                Draft (Sembunyi)
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ($event['is_featured']): ?>
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded border border-purple-400">
+                                Featured
+                            </span>
+                        <?php endif; ?>
                     </td>
                     <td class="px-6 py-4">
                         <a href="/admin/events/edit/<?= $event['id'] ?>" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Edit</a>

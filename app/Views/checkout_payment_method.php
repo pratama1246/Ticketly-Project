@@ -1,4 +1,4 @@
-<main class="w-full pt-24 grow">
+<main class="w-full pt-24 grow mb-20">
     <div class="max-w-4xl mx-auto p-4 border border-solid-black rounded-lg">
         <div class="p-6 md:p-10">
 
@@ -38,22 +38,25 @@
             <?= csrf_field() ?>
             
             <div class="space-y-6">
+                
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-3">E-Wallet</h3>
                     <div class="space-y-3">
                         <?php 
-                            // Daftar E-Wallet dari Mockup
                             $ewallets = [
-                                'ovo' => ['name' => 'OVO', 'logo' => 'assets/payment/ovo.png'],
-                                'dana' => ['name' => 'DANA', 'logo' => 'assets/payment/dana.png'],
-                                'gopay' => ['name' => 'GoPay', 'logo' => 'assets/payment/gopay.png'],
-                                'shopeepay' => ['name' => 'ShopeePay', 'logo' => 'assets/payment/shopeepay.png']
+                                'ovo' => ['name' => 'OVO', 'logo' => 'assets/payment/ovo.svg'],
+                                'dana' => ['name' => 'DANA', 'logo' => 'assets/payment/dana.svg'],
+                                'gopay' => ['name' => 'GoPay', 'logo' => 'assets/payment/gopay.svg'],
+                                'shopeepay' => ['name' => 'ShopeePay', 'logo' => 'assets/payment/shopeepay.svg']
                             ];
                         ?>
                         <?php foreach ($ewallets as $key => $wallet): ?>
                         <label for="<?= $key ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer">
                             <input type="radio" id="<?= $key ?>" name="payment_method" value="<?= $key ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
-                            <span class="ml-4 text-md font-medium text-gray-900"><?= $wallet['name'] ?></span>
+                            
+                            <img src="<?= base_url($wallet['logo']) ?>" alt="<?= $wallet['name'] ?>" class="ml-4 h-8 w-auto object-contain">
+                            
+                            <span class="ml-3 text-md font-medium text-gray-900"><?= $wallet['name'] ?></span>
                         </label>
                         <?php endforeach; ?>
                     </div>
@@ -63,17 +66,19 @@
                     <h3 class="text-lg font-semibold text-gray-800 mb-3">Virtual Account</h3>
                     <div class="space-y-3">
                         <?php 
-                            // Daftar VA dari Mockup
                             $vas = [
-                                'bca_va' => ['name' => 'BCA Virtual Account', 'logo' => 'assets/payment/bca.png'],
-                                'bri_va' => ['name' => 'BRI Virtual Account', 'logo' => 'assets/payment/bri.png'],
-                                'bni_va' => ['name' => 'BNI Virtual Account', 'logo' => 'assets/payment/bni.png']
+                                'bca_va' => ['name' => 'BCA Virtual Account', 'logo' => 'assets/payment/bca.svg'],
+                                'bri_va' => ['name' => 'BRI Virtual Account', 'logo' => 'assets/payment/bri.svg'],
+                                'bni_va' => ['name' => 'BNI Virtual Account', 'logo' => 'assets/payment/bni.svg']
                             ];
                         ?>
                         <?php foreach ($vas as $key => $va): ?>
                         <label for="<?= $key ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer">
                             <input type="radio" id="<?= $key ?>" name="payment_method" value="<?= $key ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
-                            <span class="ml-4 text-md font-medium text-gray-900"><?= $va['name'] ?></span>
+                            
+                            <img src="<?= base_url($va['logo']) ?>" alt="<?= $va['name'] ?>" class="ml-4 h-8 w-auto object-contain">
+
+                            <span class="ml-3 text-md font-medium text-gray-900"><?= $va['name'] ?></span>
                         </label>
                         <?php endforeach; ?>
                     </div>

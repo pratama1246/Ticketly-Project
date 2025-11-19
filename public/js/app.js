@@ -103,7 +103,80 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const ticketInputs = document.querySelectorAll('.ticket-input');
+    
+    if (ticketInputs.length > 0) {
+        const cartContainer = document.getElementById('cartItems');
+        const totalLabel = document.getElementById('totalPrice');
+        const btnCheckout = document.getElementById('btnCheckout');
+
+        // Fungsi Hitung Total
+        function calculateTotal() {
+            let grandTotal = 0;
+            let totalQty = 0;
+            let cartHtml = '';
+
+            ticketInputs.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const price = parseInt(input.dataset.price);
+                const name = input.dataset.name;
+
+                if (qty > 0) {
+                    const subtotal = qty * price;
+                    grandTotal += subtotal;
+                    totalQty += qty;
+
+                    // Buat HTML ringkas untuk sidebar
+                    cartHtml += `
+                        <div class="flex justify-between items-center animate-fade-in">
+                            <span class="text-gray-800 font-medium">${qty}x <span class="text-gray-600 font-normal">${name}</span></span>
+                            <span class="font-bold text-gray-900">Rp ${subtotal.toLocaleString('id-ID')}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            // Update Tampilan Sidebar
+            if (totalQty === 0) {
+                cartContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                        <svg class="w-6 h-6 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                        <p class="text-xs">Belum ada tiket dipilih</p>
+                    </div>
+                `;
+            } else {
+                cartContainer.innerHTML = cartHtml;
+            }
+
+            // Update Label Total
+            if (totalLabel) {
+                totalLabel.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+            }
+
+            // Update Tombol Checkout
+            if (btnCheckout) {
+                if (totalQty > 0) {
+                    btnCheckout.disabled = false;
+                    btnCheckout.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    btnCheckout.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'shadow-lg');
+                } else {
+                    btnCheckout.disabled = true;
+                    btnCheckout.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    btnCheckout.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'shadow-lg');
+                }
+            }
+        }
+
+        // Pasang Event Listener ke semua input
+        ticketInputs.forEach(input => {
+            // Saat angka diketik/diubah
+            input.addEventListener('input', calculateTotal);
+            // Saat panah up/down diklik (browser support)
+            input.addEventListener('change', calculateTotal);
+        });
+    }
 });
+
 
 // ----------------------------------------------------
 // FUNGSI GLOBAL (Bisa dipanggil dari onclick HTML)

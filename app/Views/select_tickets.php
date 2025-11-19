@@ -1,104 +1,158 @@
 <main class="w-full pt-24 grow">
-    <div class="max-w-4xl mx-auto p-4">
+    <div class="max-w-7xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
+        <img src="<?= base_url(esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
+
         <div class="mb-6">
-            <h1 class="text-3xl font-bold text-black">
-                Pilih Tiket - <?= esc($event['name']) ?>
+            <h1 class="text-3xl lg:text-5xl font-bold text-black">
+                <?= esc($event['name']) ?>
             </h1>
-            <p class="text-lg text-gray-600 mt-2">
+
+            <!-- Tanggal Event -->
+            <p class="text-gray-500 text-s font-medium flex items-center gap-1 mt-4">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+            </svg>
                 <?php 
-                    $date = new \DateTime(esc($event['event_date']));
-                    echo $date->format('d F Y'); 
+                    use CodeIgniter\I18n\Time; // Import class Time
+                    $time = Time::parse($event['event_date']);
+                    echo $time->toLocalizedString('EEEE, d MMMM yyyy'); 
                 ?>
             </p>
-            <a href="/event/<?= esc($event['id']) ?>" class="mt-4 inline-block hover:underline">Kembali ke Detail Event</a>
-        </div>
 
-        <form action="/checkout/start" method="post">
-            <?= csrf_field() ?> <input type="hidden" name="eventId" value="<?= $event['id'] ?>">
-            <div class="space-y-4">
-
-                <?php if (empty($ticket_types)): ?>
-                    <p class="text-center text-gray-500">Tiket untuk event ini belum tersedia.</p>
-                <?php else: ?>
+            <!-- Waktu Event: -->
+            <p class="text-gray-500 text-s font-medium flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                    <?= (new \DateTime($event['event_date']))->format('H:i') ?> WIB
+            </p>
+            
+            <!-- Lokasi Event -->
+            <p class="text-gray-500 text-s font-medium flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                    <?= esc($event['venue']) ?>
+            </p>
+                <a href="/event/<?= esc($event['id']) ?>" class="mt-4 inline-block hover:underline">Kembali ke Detail Event</a>
+            </div>
+        
+        <form action="/checkout/start" method="post" id="ticketForm">
+            <?= csrf_field() ?> 
+            <input type="hidden" name="eventId" value="<?= $event['id'] ?>">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <div class="lg:col-span-2 space-y-6">
                     
-                    <?php
-                        // Definisikan palet warna (sesuai mockup)
-                        $colorSchemes = [
-                            ['bg' => 'bg-green-300', 'text' => 'text-green-900', 'price_color' => 'text-green-700'],
-                            ['bg' => 'bg-blue-300', 'text' => 'text-blue-900', 'price_color' => 'text-blue-700'],
-                            ['bg' => 'bg-yellow-300', 'text' => 'text-yellow-900', 'price_color' => 'text-yellow-700'],
-                            ['bg' => 'bg-purple-300', 'text' => 'text-purple-900', 'price_color' => 'text-purple-700'],
-                            ['bg' => 'bg-red-300', 'text' => 'text-red-900', 'price_color' => 'text-red-700'],
-                        ];
-                        $colorIndex = 0;
-                    ?>
-
-                    <?php foreach ($ticket_types as $ticket): ?>
+                    <?php if (empty($ticket_types)): ?>
+                        <div class="bg-white p-8 rounded-xl text-center shadow-sm border border-dashed border-gray-300">
+                            <p class="text-gray-500">Tiket belum tersedia.</p>
+                        </div>
+                    <?php else: ?>
                         
                         <?php
-                            // Ambil skema warna untuk card ini
-                            $scheme = $colorSchemes[$colorIndex % count($colorSchemes)];
-                            $colorIndex++;
-                            
-                            $isSoldOut = ($ticket['quantity_total'] - $ticket['quantity_sold']) <= 0;
+                            // Palet Warna
+                            $colorSchemes = [
+                                ['bg' => 'bg-green-300', 'text' => 'text-green-900', 'price_color' => 'text-green-700'],
+                                ['bg' => 'bg-blue-300', 'text' => 'text-blue-900', 'price_color' => 'text-blue-700'],
+                                ['bg' => 'bg-yellow-300', 'text' => 'text-yellow-900', 'price_color' => 'text-yellow-700'],
+                                ['bg' => 'bg-purple-300', 'text' => 'text-purple-900', 'price_color' => 'text-purple-700'],
+                                ['bg' => 'bg-red-300', 'text' => 'text-red-900', 'price_color' => 'text-red-700'],
+                            ];
+                            $colorIndex = 0;
                         ?>
 
-                        <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-300 
-                                    transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
-                            
-                            <div class="p-3 text-center <?= $isSoldOut ? 'bg-gray-300' : $scheme['bg'] ?> <?= $isSoldOut ? 'text-gray-600' : $scheme['text'] ?>">
-                                <h3 class="text-xl font-semibold">
-                                    <?= esc($ticket['name']) ?>
-                                </h3>
-                            </div>
+                        <?php foreach ($ticket_types as $ticket): ?>
+                            <?php
+                                $scheme = $colorSchemes[$colorIndex % count($colorSchemes)];
+                                $colorIndex++;
+                                $isSoldOut = ($ticket['quantity_total'] - $ticket['quantity_sold']) <= 0;
+                            ?>
 
-                            <div class="p-6">
-                                <ul class="list-disc list-inside text-gray-700 mb-4">
-                                    <li>Tempat duduk di area <?= strtolower(esc($ticket['name'])) ?></li>
-                                </ul>
+                            <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg group">
                                 
-                                <p class="text-sm text-blue-600 mb-4 flex items-center">
-                                    <svg class="w-4 h-4 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm.13 14.242a.908.908 0 0 1-1.313.046l-3.036-2.923a.909.909 0 0 1 1.286-1.287l2.378 2.296 5.068-5.067a.909.909 0 0 1 1.286 1.287l-5.716 5.716a.89.89 0 0 1-.04.033Z"/></svg>
-                                    Penjualan berakhir 3 Juli 2025 (19:59 WIB)
-                                </p>
+                                <div class="p-3 text-center <?= $isSoldOut ? 'bg-gray-300' : $scheme['bg'] ?> <?= $isSoldOut ? 'text-gray-600' : $scheme['text'] ?>">
+                                    <h3 class="text-xl font-semibold"><?= esc($ticket['name']) ?></h3>
+                                </div>
 
-                                <hr class="my-4">
-
-                                <div class="flex justify-between items-center">
-                                    <p class="text-2xl font-bold <?= $isSoldOut ? 'text-gray-500' : $scheme['price_color'] ?>">
-                                        Rp <?= number_format($ticket['price'], 0, ',', '.') ?>
-                                    </p>
+                                <div class="p-6">
+                                    <ul class="list-disc list-inside text-gray-700 mb-4 text-sm">
+                                        <li>Tempat duduk di area <?= strtolower(esc($ticket['name'])) ?></li>
+                                        <li>Harga sudah termasuk pajak</li>
+                                    </ul>
                                     
-                                    <div class="w-32 text-right">
-                                        <?php if ($isSoldOut): ?>
-                                            <span class="inline-block px-6 py-2.5 bg-gray-400 text-white font-medium text-sm rounded-lg cursor-not-allowed">
-                                                Habis
-                                            </span>
-                                        <?php else: ?>
-                                            <label for="ticket_<?= $ticket['id'] ?>" class="block text-sm font-medium text-gray-700 mb-1 text-right">Jumlah</label>
-                                            <input type="number" 
-                                                   name="quantity[<?= $ticket['id'] ?>]" 
-                                                   id="ticket_<?= $ticket['id'] ?>"
-                                                   class="w-full border-gray-300 rounded-md shadow-sm text-center"
-                                                   value="0" 
-                                                   min="0" 
-                                                   max="4">
-                                        <?php endif; ?>
+                                    <p class="text-xs text-gray-500 mb-4 flex items-center gap-1 bg-gray-50 w-fit px-2 py-1 rounded">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm.13 14.242a.908.908 0 0 1-1.313.046l-3.036-2.923a.909.909 0 0 1 1.286-1.287l2.378 2.296 5.068-5.067a.909.909 0 0 1 1.286 1.287l-5.716 5.716a.89.89 0 0 1-.04.033Z"/></svg>
+                                        Penjualan berakhir 3 Juli 2025
+                                    </p>
+
+                                    <hr class="my-4 border-gray-100">
+
+                                    <div class="flex justify-between items-center">
+                                        <p class="text-2xl font-bold <?= $isSoldOut ? 'text-gray-400' : $scheme['price_color'] ?>">
+                                            Rp <?= number_format($ticket['price'], 0, ',', '.') ?>
+                                        </p>
+                                        
+                                        <div class="w-32 text-right">
+                                            <?php if ($isSoldOut): ?>
+                                                <span class="inline-block w-full py-2 bg-gray-100 text-gray-400 font-bold text-sm rounded border border-gray-200 text-center cursor-not-allowed">HABIS</span>
+                                            <?php else: ?>
+                                                <label for="ticket_<?= $ticket['id'] ?>" class="block text-xs font-medium text-gray-500 mb-1 text-right">Jumlah</label>
+                                                <input type="number" 
+                                                       name="quantity[<?= $ticket['id'] ?>]" 
+                                                       id="ticket_<?= $ticket['id'] ?>"
+                                                       class="ticket-input w-full border-gray-300 rounded-md shadow-sm text-center focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                                       value="0" 
+                                                       min="0" 
+                                                       max="4"
+                                                       data-name="<?= esc($ticket['name']) ?>"
+                                                       data-price="<?= $ticket['price'] ?>"> 
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div> <?php endforeach; ?>
-                <?php endif; ?>
+                            </div> 
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    
+                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-6">
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Ketentuan Umum
+                        </h3>
+                        <ul class="list-disc list-inside text-xs text-gray-500 space-y-2 pl-1">
+                            <li>Tiket digital akan dikirim ke email setelah pembayaran.</li>
+                            <li>Pastikan data diri sesuai dengan kartu identitas.</li>
+                            <li>Tiket tidak dapat ditukar atau dikembalikan (non-refundable).</li>
+                        </ul>
+                    </div>
                 </div>
-            
-            <div class="mt-8 text-right">
-                <button type="submit" class="text-white bg-brand box-border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                    Lanjut ke Pembayaran
-                </button>
+
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 sticky top-24 z-20">
+                        <h3 class="font-bold text-gray-900 text-lg mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
+                            Ringkasan Pesanan
+                        </h3>
+                        
+                        <div id="cartItems" class="space-y-3 text-sm text-gray-600 mb-6 min-h-[60px]">
+                            <div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                                <p class="text-xs">Belum ada tiket dipilih</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-4 bg-gray-50 -mx-6 px-6 -mb-6 rounded-b-xl pb-6">
+                            <div class="flex justify-between items-end mb-4">
+                                <span class="text-gray-600 font-medium text-sm">Total Estimasi</span>
+                                <span class="text-2xl font-bold text-blue-600" id="totalPrice">Rp 0</span>
+                            </div>
+                            
+                            <button type="submit" id="btnCheckout" disabled class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed transition-all shadow-sm hover:shadow text-center flex justify-center items-center gap-2">
+                                Pesan Sekarang
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-        </div>
     </div>
 </main>

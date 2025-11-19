@@ -38,28 +38,27 @@
         
         <form action="/checkout/process_personal_info" method="POST">
             <?= csrf_field() ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div class="mb-4">
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Nama Depan *</label>
-                    <input type="text" id="first_name" name="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="text" id="first_name" name="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
-                <div>
+                <div class="mb-4">
                     <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">Nama Belakang</label>
-                    <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 </div>
-                <div>
+                <div class="mb-4">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email *</label>
-                    <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
-                <div>
+                <div class="mb-4">
                     <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Telepon *</label>
-                    <input type="tel" id="phone_number" name="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="tel" id="phone_number" name="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
-                <div>
+                <div class="mb-4">
                     <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Identitas (KTP/SIM/NIK/Paspor, dll) *</label>
-                    <input type="text" id="identity_number" name="identity_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="text" id="identity_number" name="identity_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
-                <div class="max-w-sm">
+                <div class="max-w-sm mb-4">
                     <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Lahir</label>
                     
                     <div class="relative">
@@ -69,12 +68,43 @@
                         <input id="birth_date" name="birth_date" 
                             datepicker datepicker-autohide datepicker-orientation="top" 
                             type="text" 
-                            class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body" 
+                            class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-sm focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body" 
                             placeholder="Pilih Tanggal">
                     </div>
                 </div>
-            </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-900 mb-2">
+                        Saya setuju untuk menerima notifikasi terkait pemesanan tiket berikut melalui nomor WhatsApp saya.
+                    </p>
+                    <div class="flex items-center gap-6 mb-6">
+                        <div class="flex items-center">
+                            <input id="wa_yes" type="radio" value="yes" name="whatsapp_notif" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+                            <label for="wa_yes" class="ms-2 text-sm font-medium text-gray-900">Iya</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="wa_no" type="radio" value="no" name="whatsapp_notif" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2" checked>
+                            <label for="wa_no" class="ms-2 text-sm font-medium text-gray-900">Tidak</label>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="flex items-start mb-6">
+                    <div class="flex items-center h-5">
+                        <input id="terms" name="terms" type="checkbox" value="1" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" required>
+                    </div>
+                    <label for="terms" class="ms-2 text-sm font-medium text-gray-900">
+                        Dengan mengklik “Lanjut”, kamu menyetujui <a href="#" class="text-blue-600 hover:underline font-bold">Syarat & Ketentuan</a> dan <a href="#" class="text-blue-600 hover:underline font-bold">Kebijakan Privasi</a> Ticketly.
+                    </label>
+                </div>
+
+                <div class="flex items-start mb-4">
+                    <div class="flex items-center h-5">
+                        <input id="privacy_data" name="privacy_data" type="checkbox" value="1" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" required>
+                    </div>
+                    <label for="privacy_data" class="ms-2 text-sm font-medium text-gray-900">
+                        Dengan mengklik “Lanjut”, kamu menyetujui <a href="#" class="text-blue-600 hover:underline font-bold">Kebijakan Pemrosesan Data Pribadi</a> Ticketly.
+                    </label>
+            </div>
             <!-- Tombol Lanjut ke Pembayaran -->
             <div class="mt-8 text-right">
                 <button type="button" onclick="window.location.href='<?=  base_url('/checkout/cancel') ?>'" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
@@ -85,6 +115,5 @@
                 </button>
             </div>
         </form>
-        </div>
     </div>
 </main>
