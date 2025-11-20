@@ -68,7 +68,7 @@
                                     </h3>
                                     
                                     <?php if(!empty($ticket['ticket_category'])): ?>
-                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold px-2 py-0.5 rounded border bg-white text-gray-900 border-gray-300 shadow-sm">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-2xs font-bold px-2 py-0.5 rounded border bg-white text-gray-900 border-gray-300 shadow-sm">
                                         <?= esc($ticket['ticket_category']) ?>
                                     </span>
                                     <?php endif; ?>

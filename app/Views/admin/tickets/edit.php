@@ -26,7 +26,7 @@
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Posisi</label>
                 <div class="grid grid-cols-2 gap-4">
-                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-checked:border-blue-500 has-checked:bg-blue-50">
                         <input type="radio" name="ticket_category" value="Standing" class="w-4 h-4 text-blue-600" 
                                <?= (old('ticket_category', $ticket['ticket_category']) == 'Standing') ? 'checked' : '' ?>>
                         <div class="ms-3">
@@ -34,7 +34,7 @@
                         </div>
                     </label>
 
-                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-checked:border-blue-500 has-checked:bg-blue-50">
                         <input type="radio" name="ticket_category" value="Seating" class="w-4 h-4 text-blue-600" 
                                <?= (old('ticket_category', $ticket['ticket_category']) == 'Seating') ? 'checked' : '' ?>>
                         <div class="ms-3">
