@@ -73,8 +73,7 @@ class EventController extends BaseController
             'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
-                'rules' => 'permit_empty|uploaded[seatmap_image]'
-                    . '|is_image[seatmap_image]'
+                'rules' => 'permit_empty|is_image[seatmap_image]' // <--- Boleh Kosong
                     . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[seatmap_image,2048]',
             ],
@@ -97,7 +96,7 @@ class EventController extends BaseController
             'event_date'  => $this->request->getPost('event_date'),
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
-            
+            'seatmap_image' => null,
             'category'    => $this->request->getPost('category'),
             'status'      => $this->request->getPost('status'),
             'is_featured' => $this->request->getPost('is_featured') ? 1 : 0, 
@@ -113,6 +112,7 @@ class EventController extends BaseController
 
         // Upload Seatmap
         $seatmapFile = $this->request->getFile('seatmap_image');
+        // Tambahkan cek $seatmapFile->isValid()
         if ($seatmapFile && $seatmapFile->isValid() && ! $seatmapFile->hasMoved()) {
             $newName = $seatmapFile->getRandomName();
             $seatmapFile->move(FCPATH . 'uploads/seatmaps', $newName);
@@ -181,8 +181,7 @@ class EventController extends BaseController
             'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
-                'rules' => 'permit_empty|uploaded[seatmap_image]' 
-                    . '|is_image[seatmap_image]'
+                'rules' => 'permit_empty|is_image[seatmap_image]' // <--- Boleh Kosong
                     . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[seatmap_image,2048]',
             ],

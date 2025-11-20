@@ -196,15 +196,14 @@ class CheckoutController extends BaseController
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $ticketTypeModel = new TicketTypeModel();
-        $eventModel = new EventModel(); // Kita butuh ini untuk info event
+        $eventModel = new EventModel(); 
 
-        // Validasi Data & Hitung Total
+        // 1. Validasi Data & Hitung Total
         $totalPrice = 0;
         $ticketDetails = [];
         $ticketTypes = $ticketTypeModel->whereIn('id', array_keys($checkoutData['selected_tickets']))
                                        ->findAll();
         
-        // Ambil info event
         $event = $eventModel->find($checkoutData['event_id']);
 
         foreach ($ticketTypes as $ticketType) {
@@ -215,7 +214,7 @@ class CheckoutController extends BaseController
             $subtotal = $ticketType['price'] * $quantity;
             $ticketDetails[] = [
                 'id'       => $ticketType['id'],
-                'name'     => $ticketType['name'], // Nama tiket untuk PDF
+                'name'     => $ticketType['name'], 
                 'quantity' => $quantity,
                 'price'    => $ticketType['price']
             ];
@@ -223,48 +222,50 @@ class CheckoutController extends BaseController
         }
 
         // ============================================================
-        // 1. GENERATE ORDER ID (LEBIH PANJANG & KEREN)
+        // 2. GENERATE TRX ID (INI YANG KAMU MAU)
         // ============================================================
-        // Format: TRX-TAHUN-STRINGACAK (Misal: TRX-20251120-1A2B3C4D)
-        $randomStr = strtoupper(bin2hex(random_bytes(4))); // 4 bytes = 8 karakter
+        // Format: TRX + Tanggal(Ymd) + 8 Karakter Hex Acak
+        // Contoh: TRX-20251120-A1B2C3D4
+        $randomStr = strtoupper(bin2hex(random_bytes(4))); 
         $trxId = 'TRX-' . date('Ymd') . '-' . $randomStr;
 
         // ============================================================
-
-        // Mulai Transaksi Database
+        // 3. MULAI TRANSAKSI & SIMPAN
+        // ============================================================
         $db = \Config\Database::connect();
         $db->transStart();
 
         $personalData = $checkoutData['personal_data'];
+        
         $orderData = [
             'user_id'         => auth()->loggedIn() ? auth()->id() : null,
-            'trx_id'          => $trxId, // Simpan ID Transaksi Unik
+            'trx_id'          => $trxId, // <--- KITA MASUKKAN KE SINI
             'first_name'      => $personalData['first_name'],
             'last_name'       => $personalData['last_name'],
             'email'           => $personalData['email'],
             'phone_number'    => $personalData['phone_number'],
             'identity_number' => $personalData['identity_number'],
             'birth_date'      => $personalData['birth_date'],
-            'payment_method'  => $checkoutData['payment_method'], // Simpan metode pembayaran
+            'payment_method'  => $checkoutData['payment_method'],
             'order_total'     => $totalPrice,
             'status'          => 'completed' 
         ];
+        
+        // Simpan Order
         $orderModel->insert($orderData);
-        $newOrderId = $orderModel->getInsertID(); // Ambil ID pesanan baru (untuk relasi)
+        $newOrderId = $orderModel->getInsertID(); 
 
+        // Variabel bantu untuk PDF
+        $finalTicketCodeForPdf = '';
+
+        // 4. Simpan Detail Item
         foreach ($ticketDetails as $ticket) {
             
-            // ============================================================
-            // 2. GENERATE KODE TIKET (LEBIH UNIK)
-            // ============================================================
-            // Format: TKT-E{EventID}-{OrderID}-{ACAK}
-            // Contoh: TKT-E01-99-X7Y8Z9
-            
-            $eventId = $checkoutData['event_id'];
-            $randTicket = strtoupper(bin2hex(random_bytes(3))); // 3 bytes = 6 karakter
+            // Generate Kode Tiket Unik (TKT)
+            $randTicket = strtoupper(bin2hex(random_bytes(3))); 
             $ticketUniqueCode = sprintf(
                 'TKT-E%02d-%d-%s', 
-                $eventId, 
+                $checkoutData['event_id'], 
                 $newOrderId, 
                 $randTicket
             );
@@ -274,35 +275,31 @@ class CheckoutController extends BaseController
                 'ticket_type_id' => $ticket['id'],
                 'quantity'       => $ticket['quantity'],
                 'price_per_ticket' => $ticket['price'],
-                'ticket_code'    => $ticketUniqueCode // Simpan Kode Tiket Unik
+                'ticket_code'    => $ticketUniqueCode 
             ];
             $orderItemsModel->insert($itemData);
 
+            // Update Stok
             $ticketTypeModel->where('id', $ticket['id'])
                             ->set('quantity_sold', 'quantity_sold + ' . $ticket['quantity'], false)
                             ->update();
-                            
-            // Simpan kode tiket pertama untuk ditampilkan di PDF (jika beli banyak tipe, ini sampel)
-            // Idealnya PDF meloop semua tiket, tapi untuk simplifikasi kita pakai satu kode unik per tipe/transaksi di PDF
+            
             $finalTicketCodeForPdf = $ticketUniqueCode; 
         }
         
         $db->transComplete();
 
-        // Cek Transaksi Gagal
         if ($db->transStatus() === false) {
-            return redirect()->to('/checkout/review_order')->with('error', 'Terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi.');
+            return redirect()->to('/checkout/review_order')->with('error', 'Terjadi kesalahan saat memproses pesanan.');
         }
 
         // ======================================================
-        // BUAT PDF & KIRIM EMAIL
+        // 5. BUAT PDF & KIRIM EMAIL (PAKE TRX ID)
         // ======================================================
         
-        // Generate QR Code dari Ticket Code yang baru
         $qrCode = new QrCodeGenerator();
         $qrCodeBase64 = base64_encode($qrCode->format('png')->size(150)->generate($finalTicketCodeForPdf));
 
-        // Format tanggal event
         $eventDate = new \DateTime($event['event_date']);
 
         $pdfData = [
@@ -310,42 +307,38 @@ class CheckoutController extends BaseController
             'buyerName'     => $personalData['first_name'] . ' ' . $personalData['last_name'],
             'eventDate'     => $eventDate->format('d F Y, H:i') . ' WIB',
             'venue'         => $event['venue'],
-            'ticketType'    => $ticketDetails[0]['name'], // Nama tiket pertama
-            'quantity'      => count($ticketDetails), // Jumlah tipe tiket (simplifikasi)
-            'orderId'       => $trxId, // Tampilkan TRX ID di PDF, bukan ID Database
+            'ticketType'    => $ticketDetails[0]['name'],
+            'quantity'      => count($ticketDetails),
+            'orderId'       => $trxId, // <--- TAMPILKAN TRX ID DI PDF
             'qrCodeBase64'  => $qrCodeBase64,
             'ticketCode'    => $finalTicketCodeForPdf
         ];
 
-        // Render HTML Tiket
         $html = view('ticket_template', $pdfData);
-
-        // Buat PDF menggunakan Dompdf
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         $pdfOutput = $dompdf->output();
         
-        // Konfigurasi & Kirim Email
+        // Kirim Email
         $email = \Config\Services::email();
-        
         $email->setTo($personalData['email']);
         $email->setSubject('E-Tiket Anda untuk ' . $event['name']);
-        $email->setMessage('Terima kasih telah memesan! Terlampir adalah e-tiket Anda. Kode Transaksi: ' . $trxId);
+        // Pesan pakai TRX ID
+        $email->setMessage('Terima kasih! Ini tiket Anda. Kode Transaksi: ' . $trxId); 
         
-        // Lampirkan PDF
+        // Nama file PDF pakai TRX ID
         $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $trxId . '.pdf', 'application/pdf');
 
         if (! $email->send()) {
-            log_message('error', 'Gagal mengirim email tiket untuk order: ' . $trxId . ' - ' . $email->printDebugger(['headers']));
+            log_message('error', 'Gagal kirim email order: ' . $trxId);
         }
         
-        // Hancurkan session checkout
+        // Bersihkan Session
         $session->remove('checkout_process');
         $session->remove('checkout_time_left');
 
-        // Simpan order_id ke flash session untuk halaman sukses
         $session->setFlashdata('success_order_id', $newOrderId);
         
         return redirect()->to('/order/success');

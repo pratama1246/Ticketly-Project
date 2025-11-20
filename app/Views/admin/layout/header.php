@@ -73,5 +73,5 @@
    </div>
 </aside>
 
-<div class="p-4 sm:ml-64">
+<div class="p-4 mt-6 sm:ml-64">
    <div class="mt-14">

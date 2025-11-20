@@ -4,7 +4,11 @@
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
         <!-- Gambar Poster Event -->
-        <img src="<?= base_url(esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
+        <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
+                <img src="<?= base_url(esc($event['poster_image'])) ?>" 
+                     alt="<?= esc($event['name']) ?>" 
+                     class="w-auto max-w-full h-auto max-h-[500px] md:max-h-[600px] object-contain shadow-sm rounded-lg">
+            </div>
 
         <!-- Nama Event -->
         <div class="mb-6">

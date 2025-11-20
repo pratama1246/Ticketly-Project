@@ -1,5 +1,5 @@
 <!-- Halaman Detail Event -->
-<main class="w-full pt-24 grow">
+<main class="w-full pt-24 mb-20 grow">
     <div class="max-w-7xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
@@ -40,15 +40,25 @@
             </span>
 
         <!-- Gambar Poster Event -->
-            <img src="<?= base_url(esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
+            <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
+                <img src="<?= base_url(esc($event['poster_image'])) ?>" 
+                     alt="<?= esc($event['name']) ?>" 
+                     class="w-auto max-w-full h-auto max-h-[500px] md:max-h-[600px] object-contain shadow-sm rounded-lg">
+            </div>
 
         <!-- Seat Map Event -->
-            <div class="bg-blue-900 p-6 rounded-lg">
-                <h2 class="text-2xl font-bold text-white mb-4 text-center">
-                    SEAT MAP <?= esc($event['name']) ?>
-                </h2>
-                <img src="<?= base_url(esc($event['seatmap_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
-            </div>
+            <?php if (!empty($event['seatmap_image'])): ?>
+                <div class="bg-gray-900 p-6 rounded-xl mt-10 shadow-lg border border-gray-800">
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">                        SEAT MAP <?= esc($event['name']) ?>
+                    </h2>
+                    
+                    <div class="flex justify-center">
+                        <img src="<?= base_url(esc($event['seatmap_image'])) ?>" 
+                             alt="Seat Map <?= esc($event['name']) ?>" 
+                             class="w-full md:w-3/4 h-auto object-contain rounded bg-transparent">
+                    </div>
+                </div>
+            <?php endif; ?>
 
         <!-- Deskripsi Event -->
             <div class="prose max-w-none mt-10">

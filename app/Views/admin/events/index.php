@@ -29,7 +29,7 @@
                 <th scope="col" class="px-6 py-3">
                     Tanggal
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-6 py-3 w-48">
                     Venue
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -69,7 +69,9 @@
                         <?= (new \DateTime(esc($event['event_date'])))->format('d F Y') ?>
                     </td>
                     <td class="px-6 py-4">
+                        <div class="line-clamp-2 text-sm" title="<?= esc($event['venue']) ?>">
                         <?= esc($event['venue']) ?>
+                        </div>
                     </td>
                     <td class="px-6 py-4">
                         <?php if ($event['status'] === 'published'): ?>

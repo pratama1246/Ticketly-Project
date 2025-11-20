@@ -1,6 +1,6 @@
 <main class="w-full pt-24 grow">
     <div class="max-w-4xl mx-auto p-4 border border-solid-black rounded-lg">
-        <div class="p-6 md:p-10">
+        <div class="p-6 md:p-10 mb-20">
 
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6 text-center" role="alert">
             <strong class="font-bold">Sisa waktu untuk memesan tiket: </strong>
