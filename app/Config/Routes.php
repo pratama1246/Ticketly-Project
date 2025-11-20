@@ -18,7 +18,7 @@ $routes->get('/event/(:segment)/select', 'EventController::select/$1');
 $routes->post('/checkout/start', 'CheckoutController::start');
 
 // Grup Checkout (Protected)
-$routes->group('checkout', ['filter' => 'checkout_timer'], static function ($routes) {
+$routes->group('checkout', static function ($routes) {
     $routes->get('personal_info', 'CheckoutController::personalInfo');
     $routes->post('process_personal_info', 'CheckoutController::processPersonalInfo');
     

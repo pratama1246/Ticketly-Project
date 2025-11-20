@@ -1,52 +1,66 @@
-initFlowbite();
 document.addEventListener('DOMContentLoaded', () => {
-    // ----------------------------------------------------
-    // LOGIKA 1: TIMER CHECKOUT
-    // (Menggunakan variabel global CI_TIME_LEFT yang disuntikkan dari PHP)
-    // ----------------------------------------------------
-// ----------------------------------------------------
-    if (typeof CI_TIME_LEFT !== 'undefined' && CI_TIME_LEFT > 0) {
-        const timerElement = document.getElementById('checkout-timer');
-        const popupTimerDisplay = document.getElementById('popup-timer');
-        let totalSeconds = CI_TIME_LEFT;
-
-        const timerInterval = setInterval(() => {
-            totalSeconds--;
-
-            if (totalSeconds <= 0) {
-                clearInterval(timerInterval);
-                window.location.reload(); // Filter akan menangani redirect ke timeout
-                return;
-            }
-
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            
-            // Update timer di view utama (hanya jika elemennya ada)
-            if (timerElement) {
-                timerElement.textContent = timeString;
-            }
-            // Update timer di pop-up modal
-            if (popupTimerDisplay) {
-                popupTimerDisplay.textContent = timeString;
-            }
-
-            // Opsional: Ganti warna timer jika waktu hampir habis (UX)
-            if (totalSeconds < 120 && timerElement) { // 2 menit terakhir
-                timerElement.classList.add('font-extrabold', 'text-red-900', 'animate-pulse');
-            }
-        }, 1000);
+    
+    // 1. Inisialisasi Flowbite (Wajib untuk dropdown/carousel)
+    if (typeof initFlowbite === 'function') {
+        initFlowbite();
     }
 
+    // 2. Inisialisasi TinyMCE (Editor Teks Admin)
+    if (document.getElementById('description')) {
+        if (typeof tinymce !== 'undefined') {
+            tinymce.init({
+                selector: 'textarea#description',
+                promotion: false,
+                branding: false,
+                plugins: 'lists link code table autoresize',
+                toolbar: 'undo redo | blocks | bold italic | bullist numlist | link | table | code',
+                menubar: false,
+                formats: {
+                    ul: { selector: 'ul', classes: 'list-disc ml-5' },
+                    ol: { selector: 'ol', classes: 'list-decimal ml-5' },
+                    p: { selector: 'p', classes: 'mb-4' },
+                    h3: { selector: 'h3', classes: 'text-xl font-bold mb-2' }
+                },
+                content_style: `
+                    body { font-family: 'Poppins', sans-serif; font-size: 14px; color: #000000; }
+                    ul { list-style-type: disc; margin-left: 1.25rem; }
+                    ol { list-style-type: decimal; margin-left: 1.25rem; }
+                    .list-disc { list-style-type: disc; }
+                    .list-decimal { list-style-type: decimal; }
+                    .ml-5 { margin-left: 1.25rem; }
+                    .mb-4 { margin-bottom: 1rem; }
+                    .text-xl { font-size: 1.25rem; }
+                    .font-bold { font-weight: 700; }
+                `
+            });
+        }
+    }
+
+    // 3. Inisialisasi Swiper (Carousel Homepage)
+    if (document.querySelector('.mySwiper')) {
+        new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: { delay: 3000, disableOnInteraction: false },
+            effect: 'slide',
+            speed: 800,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+        });
+    }
+
+    // 4. Logika Hitung Total di Halaman Pilih Tiket
     const ticketInputs = document.querySelectorAll('.ticket-input');
-    
     if (ticketInputs.length > 0) {
         const cartContainer = document.getElementById('cartItems');
         const totalLabel = document.getElementById('totalPrice');
         const btnCheckout = document.getElementById('btnCheckout');
 
-        // Fungsi Hitung Total
         function calculateTotal() {
             let grandTotal = 0;
             let totalQty = 0;
@@ -62,9 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     grandTotal += subtotal;
                     totalQty += qty;
 
-                    // Buat HTML ringkas untuk sidebar
                     cartHtml += `
-                        <div class="flex justify-between items-center animate-fade-in">
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-800 font-medium">${qty}x <span class="text-gray-600 font-normal">${name}</span></span>
                             <span class="font-bold text-gray-900">Rp ${subtotal.toLocaleString('id-ID')}</span>
                         </div>
@@ -72,86 +85,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Update Tampilan Sidebar
             if (totalQty === 0) {
-                cartContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                        <svg class="w-6 h-6 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
-                        <p class="text-xs">Belum ada tiket dipilih</p>
-                    </div>
-                `;
+                cartContainer.innerHTML = '<div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200"><p class="text-xs">Belum ada tiket dipilih</p></div>';
             } else {
                 cartContainer.innerHTML = cartHtml;
             }
 
-            // Update Label Total
-            if (totalLabel) {
-                totalLabel.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
-            }
+            if (totalLabel) totalLabel.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
 
-            // Update Tombol Checkout
             if (btnCheckout) {
                 if (totalQty > 0) {
                     btnCheckout.disabled = false;
-                    btnCheckout.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    btnCheckout.classList.remove('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
                     btnCheckout.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'shadow-lg');
                 } else {
                     btnCheckout.disabled = true;
-                    btnCheckout.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    btnCheckout.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
                     btnCheckout.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'shadow-lg');
                 }
             }
         }
 
-        // Pasang Event Listener ke semua input
         ticketInputs.forEach(input => {
-            // Saat angka diketik/diubah
             input.addEventListener('input', calculateTotal);
-            // Saat panah up/down diklik (browser support)
             input.addEventListener('change', calculateTotal);
         });
     }
 });
 
-
-// ----------------------------------------------------
-// FUNGSI GLOBAL (Bisa dipanggil dari onclick HTML)
-// ----------------------------------------------------
-
+// --- FUNGSI GLOBAL: Delete Event (Pakai Confirm Biasa) ---
 function deleteEvent(id) {
-    // Pastikan customModal sudah siap
-    if (!customModal) {
-        console.error("Modal belum siap!");
-        return;
+    if (confirm('Apakah Anda yakin ingin menghapus event ini? Data tidak bisa dikembalikan.')) {
+        fetch('/admin/events/' + id, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const row = document.getElementById(`row-event-${id}`);
+                if (row) row.remove();
+                alert('Event berhasil dihapus.');
+            } else {
+                alert('Gagal menghapus: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan server.');
+        });
     }
+}
 
-    customModal.show(
-        'Hapus Event Ini?',
-        'Data akan hilang selamanya dari database.',
-        'Ya, Hapus',
-        'bg-red-600 hover:bg-red-500',
-        () => {
-            fetch('/admin/events/' + id, {
-                method: 'DELETE',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const row = document.getElementById(`row-event-${id}`);
-                    if (row) row.remove();
-                    alert('Berhasil dihapus!'); 
-                } else {
-                    alert('Gagal menghapus: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan server.');
-            });
-        }
-    );
+// --- FUNGSI GLOBAL: Delete Tiket (Pakai Confirm Biasa) ---
+function deleteTicket(eventId, ticketId) {
+    if (confirm('Hapus tiket ini?')) {
+        fetch(`/admin/events/${eventId}/tickets/${ticketId}`, {
+            method: 'DELETE',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const row = document.getElementById(`row-ticket-${ticketId}`);
+                if (row) row.remove();
+                alert('Tiket dihapus!');
+            } else {
+                alert('Gagal menghapus.');
+            }
+        });
+    }
 }

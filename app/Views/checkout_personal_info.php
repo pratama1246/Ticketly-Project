@@ -2,18 +2,6 @@
     <div class="max-w-4xl mx-auto p-4">
         <div class="p-6 md:p-10 rounded-lg border border-solid-black">
 
-        <!-- Timer Sisa Waktu -->
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6 text-center" role="alert">
-            <strong class="font-bold">Sisa waktu untuk memesan tiket: </strong>
-            <span class="font-mono text-lg" id="checkout-timer">
-                <?php
-                    // Ambil sisa waktu dari session
-                    $timeLeft = session('checkout_time_left') ?? 300;
-                    echo floor($timeLeft / 60) . ':' . str_pad($timeLeft % 60, 2, '0', STR_PAD_LEFT);
-                ?>
-            </span>
-        </div>
-
         <!-- Progress Bar Checkout -->
         <ol class="flex items-center w-full text-sm font-medium text-center text-body sm:text-base mb-8">
             <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
