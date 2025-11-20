@@ -50,9 +50,7 @@
                             <?php
                                 $isSoldOut = ($ticket['quantity_total'] - $ticket['quantity_sold']) <= 0;
                                 
-                                // -----------------------------------------------------
                                 // LOGIKA WARNA CUSTOM (HEX)
-                                // -----------------------------------------------------
                                 $baseColor = !empty($ticket['ui_color']) ? $ticket['ui_color'] : '#3B82F6';
                                 
                                 // Warna Background Header (Pudar 20%)
@@ -77,11 +75,11 @@
                                 <div class="p-6">
                                     <div class="mb-4 text-sm text-gray-600">
                                         <?php if (!empty($ticket['description'])): ?>
-                                            <div class="prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:ml-5 [&_ol]:list-decimal [&_ol]:ml-5 text-gray-700">
+                                            <div class="prose prose-sm max-w-none">
                                                 <?= $ticket['description'] ?>
                                             </div>
                                         <?php else: ?>
-                                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                            <ul class="list-disc list-inside ml-2 space-y-2">
                                                 <li>Tempat duduk di area <b><?= strtolower(esc($ticket['name'])) ?></b></li>
                                                 <li>Harga sudah termasuk pajak</li>
                                             </ul>
