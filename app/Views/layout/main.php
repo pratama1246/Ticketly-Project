@@ -102,7 +102,7 @@
                     <?php foreach ($events as $event): ?>
                         <div class="snap-center shrink-0 w-80 md:w-104 bg-white flex flex-col rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group">
                             
-                            <a href="/event/<?= $event['id'] ?>" class="block relative aspect-video overflow-hidden">
+                            <a href="/event/<?= $event['slug'] ?>" class="block relative aspect-video overflow-hidden">
                                 <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                                      src="<?= base_url($event['poster_image']) ?>" 
                                      alt="<?= esc($event['name']) ?>" />
@@ -118,7 +118,7 @@
                             </a>
                             
                             <div class="p-5 flex flex-col grow">
-                                <a href="/event/<?= $event['id'] ?>">
+                                <a href="/event/<?= $event['slug'] ?>">
                                     <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 line-clamp-2 leading-snug group-hover:text-blue-700 transition-colors">
                                         <?= esc($event['name']) ?>
                                     </h5>
@@ -136,7 +136,7 @@
                                 </div>
                                 
                                 <div class="mt-auto"> 
-                                    <a href="/event/<?= $event['id'] ?>" class="block w-full text-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
+                                    <a href="/event/<?= $event['slug'] ?>" class="block w-full text-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
                                         Selengkapnya
                                     </a>
                                 </div>

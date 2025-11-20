@@ -13,6 +13,7 @@ class EventModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = ['name', 
+        'slug',    
         'description', 
         'venue', 
         'event_date', 

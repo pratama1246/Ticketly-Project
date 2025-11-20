@@ -10,9 +10,8 @@ use App\Models\EventModel;
  */
 class EventController extends BaseController
 {
-    /**
-     * 1. READ: Menampilkan daftar semua event
-     */
+    
+    // 1. READ: Menampilkan daftar semua event
     public function index()
     {
         $eventModel = new EventModel();
@@ -27,9 +26,21 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * 2. CREATE (Form): Menampilkan form tambah event
-     */
+    // Menerima $slug (string), bukan $id (int)
+    public function detail($slug = null)
+    {
+        $eventModel = new EventModel();
+        
+        // Cari berdasarkan kolom 'slug'
+        $event = $eventModel->where('slug', $slug)->first();
+
+        if (!$event) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+    }
+
+    // 2. CREATE (Form): Menampilkan form tambah event
     public function new()
     {
         $data = [
@@ -42,9 +53,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * 3. CREATE (Process): Menyimpan data event baru
-     */
+    // 3. CREATE (Process): Menyimpan data event baru
     public function create()
     {
         // Aturan Validasi
@@ -74,10 +83,17 @@ class EventController extends BaseController
         if (! $this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
+        $eventModel = new EventModel();
+        $slug = url_title($this->request->getPost('name'), '-', true);
+        
+        if ($eventModel->where('slug', $slug)->countAllResults() > 0) {
+            $slug .= '-' . rand(1000, 9999);
+        }
 
         // Siapkan Data Teks
         $data = [
             'name'        => $this->request->getPost('name'),
+            'slug'        => $slug,
             'event_date'  => $this->request->getPost('event_date'),
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
@@ -112,10 +128,7 @@ class EventController extends BaseController
         }
     }
 
-    /**
-     * 4. UPDATE (Form): Menampilkan form edit
-     * (Otomatis dipanggil oleh rute /admin/events/edit/[id])
-     */
+    // 4. UPDATE (Form): Menampilkan form edit
     public function edit($id = null)
     {
         $eventModel = new EventModel();
@@ -141,9 +154,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * 5. UPDATE (Process): Menyimpan perubahan
-     */
+    // 5. UPDATE (Process): Menyimpan perubahan
     public function update($id = null)
     {
         $eventModel = new EventModel();
@@ -155,7 +166,7 @@ class EventController extends BaseController
 
         // Validasi (Gambar jadi opsional / permit_empty)
         $rules = [
-            'name'        => 'required|string|max_length[255]',
+            'name'        => 'required|string|max_length[255]',           
             'event_date'  => 'required|valid_date',
             'venue'       => 'permit_empty|string|max_length[255]',
             'description' => 'permit_empty|string',
@@ -181,9 +192,16 @@ class EventController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $slug = url_title($this->request->getPost('name'), '-', true);
+
+        if ($eventModel->where('slug', $slug)->where('id !=', $id)->countAllResults() > 0) {
+            $slug .= '-' . rand(1000, 9999);
+        }
+
         // Data Teks
         $data = [
             'name'        => $this->request->getPost('name'),
+            'slug'        => $slug,
             'event_date'  => $this->request->getPost('event_date'),
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
@@ -227,9 +245,7 @@ class EventController extends BaseController
         }
     }
 
-    /**
-     * 6. DELETE: Menghapus event dan gambarnya
-     */
+    // 6. DELETE: Menghapus event dan gambarnya
     public function delete($id = null)
     {
         $eventModel = new EventModel();
@@ -261,9 +277,7 @@ class EventController extends BaseController
         ])->setStatusCode(404);
     }
     
-    /**
-     * Helper: Redirect /admin/events/1 ke edit
-     */
+    // Helper: Redirect /admin/events/1 ke edit
     public function show($id = null)
     {
         return redirect()->to('/admin/events/edit/' . $id);

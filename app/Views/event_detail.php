@@ -34,8 +34,9 @@
             </p>
 
         <!-- Status Event -->
-            <span class="bg-green-500 text-white text-xs font-medium px-2.5 py-1 rounded mt-4 inline-block">
-                Sedang Berlangsung
+            <span class="<?= $status['color'] ?> text-xs font-bold px-3 py-1.5 rounded-full mt-4 inline-flex items-center shadow-sm">
+                <?= $status['icon'] ?>
+                <?= $status['text'] ?>
             </span>
 
         <!-- Gambar Poster Event -->
@@ -56,9 +57,15 @@
         
         <!-- Tombol Beli Sekarang -->
             <div class="mt-8 text-center">
-                <a href="/event/<?= $event['id'] ?>/select" class="w-full md:w-auto inline-block bg-blue-600 text-white font-bold text-lg py-3 px-10 rounded-lg hover:bg-blue-700 transition duration-300">
-                    Beli Tiket Sekarang
-                </a>
+                <?php if ($status['purchasable']): ?>
+                    <a href="/event/<?= $event['slug'] ?>/select" class="w-full md:w-auto inline-block bg-blue-600 text-white font-bold text-lg py-3 px-10 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Beli Tiket Sekarang
+                    </a>
+                <?php else: ?>
+                    <button disabled class="w-full md:w-auto inline-block bg-gray-300 text-gray-500 font-bold text-lg py-3 px-10 rounded-lg cursor-not-allowed shadow-none">
+                        <?= $status['text'] === 'Telah Berakhir' ? 'Event Telah Berakhir' : 'Tiket Habis Terjual' ?>
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
