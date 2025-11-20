@@ -37,7 +37,7 @@
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-6 py-3 w-58">
                     Order ID
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -65,7 +65,7 @@
                 <?php foreach ($recentOrders as $order): ?>
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900">
-                        #<?= esc($order['id']) ?>
+                        #<?= esc($order['trx_id']) ?>
                     </th>
                     <td class="px-6 py-4">
                         <?= esc($order['first_name'] . ' ' . $order['last_name']) ?>

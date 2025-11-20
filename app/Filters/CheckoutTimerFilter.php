@@ -20,7 +20,7 @@ class CheckoutTimerFilter implements FilterInterface
         // Cek Waktu
         $checkoutData = $session->get('checkout_process');
         $startTime = $checkoutData['start_time'];
-        $maxTime = 86400;
+        $maxTime = 300;
 
         if ((time() - $startTime) > $maxTime) {
             // WAKTU HABIS!

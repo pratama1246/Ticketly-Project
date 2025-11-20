@@ -11,7 +11,7 @@
                 Terima kasih, <?= esc($order['first_name']) ?>. Pesanan Anda telah dikonfirmasi.
             </p>
             <p class="text-lg text-green-800 mb-6">
-                Nomor Pesanan Anda: <strong class="font-bold">#<?= esc($order['id']) ?></strong>
+                Nomor Pesanan Anda: <strong class="font-bold">#<?= esc($order['trx_id']) ?></strong>
             </p>
             
             <p class="text-md text-gray-700 mb-6">

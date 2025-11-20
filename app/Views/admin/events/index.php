@@ -91,6 +91,8 @@
                         <?php endif; ?>
                     </td>
                     <td class="px-6 py-4">
+                        
+                        <a href="/admin/events/<?= $event['id'] ?>/tickets" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Tiket</a>
                         <a href="/admin/events/edit/<?= $event['id'] ?>" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Edit</a>
                         <button type="button" 
                                 onclick="deleteEvent(<?= $event['id'] ?>)" 

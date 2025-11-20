@@ -47,6 +47,14 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
     $routes->put('events/([0-9]+)', 'Admin\EventController::update/$1');
     $routes->post('events/update/([0-9]+)', 'Admin\EventController::update/$1'); 
     $routes->delete('events/([0-9]+)', 'Admin\EventController::delete/$1');
+
+    //Manajemen Tiket
+    $routes->get('events/(:num)/tickets', 'Admin\TicketController::index/$1');
+    $routes->get('events/(:num)/tickets/new', 'Admin\TicketController::new/$1');
+    $routes->get('events/(:num)/tickets/(:num)/edit', 'Admin\TicketController::edit/$1/$2');
+    $routes->post('events/(:num)/tickets/(:num)/update', 'Admin\TicketController::update/$1/$2');
+    $routes->post('events/(:num)/tickets', 'Admin\TicketController::create/$1');
+    $routes->delete('events/(:num)/tickets/(:num)', 'Admin\TicketController::delete/$1/$2');
 });
 
 // 6. Auth Routes

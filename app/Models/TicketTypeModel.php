@@ -17,9 +17,13 @@ class TicketTypeModel extends Model
     protected $allowedFields    = [
         'event_id',
         'name',
+        'ticket_category',
         'price',
         'quantity_total',
-        'quantity_sold'
+        'quantity_sold',
+        'description',
+        'ui_color'
+
     ];
 
     // Kita tidak pakai 'created_at' & 'updated_at' di tabel ini
