@@ -6,28 +6,28 @@
     
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-sm font-medium text-gray-500 uppercase">Total Pendapatan</h3>
-        <p class="text-3xl font-bold text-black mt-2">
+        <p class="text-2xl font-bold text-black mt-2">
             Rp <?= number_format($totalRevenue, 0, ',', '.') ?>
         </p>
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-sm font-medium text-gray-500 uppercase">Tiket Terjual</h3>
-        <p class="text-3xl font-bold text-black mt-2">
+        <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalTickets) ?>
         </p>
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-sm font-medium text-gray-500 uppercase">Total Pesanan</h3>
-        <p class="text-3xl font-bold text-black mt-2">
+        <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalOrders) ?>
         </p>
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-sm font-medium text-gray-500 uppercase">Total Event</h3>
-        <p class="text-3xl font-bold text-black mt-2">
+        <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalEvents) ?>
         </p>
     </div>

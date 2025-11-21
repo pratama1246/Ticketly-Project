@@ -43,13 +43,13 @@
             <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
                 <img src="<?= base_url(esc($event['poster_image'])) ?>" 
                      alt="<?= esc($event['name']) ?>" 
-                     class="w-auto max-w-full h-auto max-h-[500px] md:max-h-[600px] object-contain shadow-sm rounded-lg">
+                     class="w-auto max-w-full h-auto max-h-[600px] md:max-h-[700px] object-contain shadow-sm rounded-lg">
             </div>
 
         <!-- Seat Map Event -->
             <?php if (!empty($event['seatmap_image'])): ?>
                 <div class="bg-gray-900 p-6 rounded-xl mt-10 shadow-lg border border-gray-800">
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">                        SEAT MAP <?= esc($event['name']) ?>
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">SEAT MAP <?= esc($event['name']) ?>
                     </h2>
                     
                     <div class="flex justify-center">

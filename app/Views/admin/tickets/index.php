@@ -1,6 +1,6 @@
 <div class="flex justify-between items-center mb-6">
     <div>
-        <h1 class="text-3xl font-bold text-black"><?= esc($title) ?></h1>
+        <h1 class="text-2xl font-bold text-black max-w-[600px] mb-4"><?= esc($title) ?></h1>
         <a href="/admin/events" class="text-sm text-blue-600 hover:underline">&larr; Kembali ke Daftar Event</a>
     </div>
     <a href="/admin/events/<?= $event['id'] ?>/tickets/new" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
@@ -15,7 +15,7 @@
 <?php endif; ?>
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500">
+    <table class="w-full text-sm text-left text-gray-500 min-w-[800px]">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th class="px-6 py-3">Nama Tiket</th>
