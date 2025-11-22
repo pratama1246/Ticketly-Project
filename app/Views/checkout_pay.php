@@ -1,4 +1,4 @@
-<main class="w-full pt-12 flex-grow mb-20">
+<main class="w-full pt-12 grow mb-20">
     <div class="max-w-5xl mx-auto p-4">
 
         <div class="mb-8 text-center">

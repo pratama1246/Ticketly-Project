@@ -11,7 +11,7 @@
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
-    <header class="bg-yellow-bright-light border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <header class="bg-yellow-bright-light border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col xl:flex-row justify-between items-center py-4 gap-6">
                 

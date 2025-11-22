@@ -190,28 +190,9 @@
     }
     
     // Panggil fungsi render
-    renderEventSection('Konser Terbaru', $concerts, '', '/events/concert');
-    renderEventSection('Festival Seru', $festivals, '', '/events/festival');
-    renderEventSection('Event Lainnya', $events, '', '/events/other');
+    renderEventSection('Konser Terbaru', $concerts, '', '/concerts');
+    renderEventSection('Festival Seru', $festivals, '', '/festivals');
+    renderEventSection('Event Lainnya', $events, '', '/events');
     ?>
 
-<!-- ABOUT US -->
-<div class="mx-auto p-4 mb-20 px-6 md:px-8">
-        <div class="p-8 md:p-12 rounded-2xl bg-white border border-gray-100 shadow-lg text-center md:text-left">
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <div class="shrink-0">
-                     <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                     </div>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-4">Tentang Ticketly</h1>
-                    <div class="prose text-gray-600 max-w-none space-y-4">
-                        <p>Ticketly adalah platform penjualan tiket daring terkemuka yang didedikasikan untuk memberikan pengalaman terbaik bagi para penggemar acara di seluruh dunia. Kami memahami betapa pentingnya momen spesial dalam hidup Anda.</p>
-                        <p>Dengan antarmuka yang ramah pengguna dan sistem pembayaran yang aman, Ticketly memudahkan Anda untuk menemukan, memilih, dan membeli tiket untuk acara favorit Anda dengan cepat dan nyaman.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
