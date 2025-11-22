@@ -1,4 +1,4 @@
-<main class="w-full pt-24 flex-grow bg-gray-50 min-h-screen">
+<main class="w-full pt-24 grow bg-gray-50 min-h-screen">
     
     <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
         <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4"><?= esc($title) ?></h1>
