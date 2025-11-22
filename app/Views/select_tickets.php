@@ -35,7 +35,7 @@
                     </svg>
                     <?= esc($event['venue']) ?>
                 </p>
-                <!-- <a href="/event/<?= esc($event['slug']) ?>" class="mt-4 inline-block text-blue-600 underline hover:text-blue-800 hover:underline">Kembali ke Detail Event</a> -->
+                
                 <?php
                 $category = strtolower($event['category']);
 
