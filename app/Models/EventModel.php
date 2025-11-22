@@ -21,6 +21,7 @@ class EventModel extends Model
         'seatmap_image',
         'category',
         'is_featured',
+        'sort_order',
         'status'
     ];
 

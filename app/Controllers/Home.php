@@ -14,6 +14,7 @@ class Home extends BaseController
         $featuredEvents = $eventModel
             ->where('is_featured', 1)
             ->where('status', 'published')
+            ->orderBy("CASE WHEN sort_order = 0 THEN 9999 ELSE sort_order END", "ASC", false)
             ->orderBy('created_at', 'DESC')
             ->findAll();
 

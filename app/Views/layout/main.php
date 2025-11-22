@@ -1,5 +1,91 @@
 <main class="w-full pt-24 grow">
 
+<!-- CAROUSEL -->     
+       <div id="default-carousel" class="relative w-full" data-carousel="slide">
+        <div class="relative overflow-hidden aspect-video shadow-2xl">
+            
+            <?php if (!empty($featured)): ?>
+                <?php foreach ($featured as $index => $item): ?>
+                    
+                    <div class="hidden duration-1000 ease-in-out" data-carousel-item>
+                        <a href="/event/<?= $item['slug'] ?>" class="group block w-full h-full relative">
+                            
+                            <img src="<?= base_url($item['poster_image']) ?>" 
+                                 class="absolute block w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                 alt="<?= esc($item['name']) ?>">
+                            
+                            <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent"></div>
+
+                            <div class="absolute bottom-0 left-0 w-full px-6 pb-14 pt-6 md:px-16 md:pb-24 md:pt-12 flex flex-col justify-end h-full pointer-events-none">
+                                <div class="max-w-4xl space-y-2 md:space-y-4">
+                                    
+                                    <span class="inline-block py-1 px-3 rounded-full bg-blue-600/90 text-white text-xs md:text-sm font-bold tracking-wider uppercase mb-2 backdrop-blur-sm">
+                                        <?= esc(ucfirst($item['category'] ?? 'Featured')) ?>
+                                    </span>
+
+                                    <h2 class="text-2xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
+                                        <?= esc($item['name']) ?>
+                                    </h2>
+
+                                    <div class="flex flex-col md:flex-row md:items-center gap-3 text-gray-200 text-sm md:text-lg font-medium">
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <?= \CodeIgniter\I18n\Time::parse($item['event_date'])->toLocalizedString('d MMMM yyyy') ?>
+                                        </div>
+                                        
+                                        <span class="hidden md:inline text-gray-500">•</span>
+                                        
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            <span class="truncate max-w-[200px] md:max-w-none"><?= esc($item['venue']) ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-4">
+                                        <span class="inline-flex items-center gap-2 text-white font-bold border-b-2 border-yellow-400 pb-1 hover:text-yellow-300 transition-colors">
+                                            Lihat Detail & Beli Tiket
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="<?= base_url('assets/banner-default.jpg') ?>" class="absolute block w-full h-full object-cover" alt="Default">
+                </div>
+            <?php endif; ?>
+
+        </div>
+
+        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+            <?php if (!empty($featured)): ?>
+                <?php foreach ($featured as $index => $item): ?>
+                    <button type="button" class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white/50 hover:bg-white" 
+                            aria-current="<?= $index === 0 ? 'true' : 'false' ?>" 
+                            aria-label="Slide <?= $index + 1 ?>" 
+                            data-carousel-slide-to="<?= $index ?>"></button>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/30 group-focus:ring-4 group-focus:ring-white/50 backdrop-blur-sm">
+                <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/></svg>
+                <span class="sr-only">Previous</span>
+            </span>
+        </button>
+        <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/30 group-focus:ring-4 group-focus:ring-white/50 backdrop-blur-sm">
+                <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/></svg>
+                <span class="sr-only">Next</span>
+            </span>
+        </button>
+    </div>
+
 <!-- JUDUL SECTION -->
 <div class="max-w-9xl my-10 p-2 text-center">
     <h1 class="text-4xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
@@ -27,54 +113,6 @@
            
         </div>
     </div>
-</div>
-
-<!-- CAROUSEL -->
-<div id="default-carousel" class="relative w-full" data-carousel="slide">
-    <div class="relative overflow-hidden aspect-video">
-        
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <a href="event/1">
-            <img src="<?= base_url('assets/banner/tds-4.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="..."></a>
-        </div>
-
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="<?= base_url('assets/banner/riizing-loud.png') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
-        </div>
-
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="<?= base_url('assets/banner/deadline-tour.webp') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
-        </div>
-        
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="<?= base_url('assets/banner/aesix-aespa.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
-        </div>
-        
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="<?= base_url('assets/banner/wish-login.jpg') ?>" class="absolute block w-full h-full object-cover top-0 left-0" alt="...">
-        </div>
-    </div>
-
-    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-        <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
-        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
-        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
-        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
-    </div>
-
-    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-        <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg class="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/></svg>
-            <span class="sr-only">Previous</span>
-        </span>
-    </button>
-    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-        <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg class="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
-            <span class="sr-only">Next</span>
-        </span>
-    </button>
 </div>
 
 <!-- EVENT SECTIONS -->

@@ -99,7 +99,8 @@ class EventController extends BaseController
             'seatmap_image' => null,
             'category'    => $this->request->getPost('category'),
             'status'      => $this->request->getPost('status'),
-            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0, 
+            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0,
+            'sort_order'  => $this->request->getPost('sort_order'),
         ];
 
         // Upload Poster (Ke folder 'banners' sesuai strukturmu)
@@ -207,7 +208,8 @@ class EventController extends BaseController
             
             'category'    => $this->request->getPost('category'),
             'status'      => $this->request->getPost('status'),
-            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0, 
+            'is_featured' => $this->request->getPost('is_featured') ? 1 : 0,
+            'sort_order'  => $this->request->getPost('sort_order'),
         ];
 
         // Cek Upload Poster Baru

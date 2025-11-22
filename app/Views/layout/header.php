@@ -62,16 +62,16 @@
                     <a href="/" class="block py-2 px-3 text-white bg-brand rounded-sm md:bg-transparent md:text-yellow-bright-dark-active md:p-0 " aria-current="page">Home</a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Tentang</a>
+                    <a href="/tentang" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Tentang</a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Konser</a>
+                    <a href="/concerts" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Konser</a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Event</a>
+                    <a href="/events" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Event</a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Festival</a>
+                    <a href="/festivals" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Festival</a>
                 </li>
             </ul>
         </div>

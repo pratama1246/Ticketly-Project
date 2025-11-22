@@ -1,5 +1,5 @@
 <!-- Footer Utama -->
-<footer class="bg-blue-secondary-normal text-white">
+<footer class="bg-blue-primary-normal text-white">
     <div class="mx-auto w-full max-w-7xl p-4 py-6 lg:py-8">
         <div class="md:flex md:justify-between">
           <div class="mb-6 md:mb-0">

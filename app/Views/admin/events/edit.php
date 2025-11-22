@@ -72,6 +72,15 @@
                 </label>
             </div>
 
+            <div class="mb-4">
+                <label for="sort_order" class="block mb-2 text-sm font-medium text-gray-900">Nomor Urut (Prioritas)</label>
+                <input type="number" id="sort_order" name="sort_order" 
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" 
+                       value="<?= old('sort_order', $event['sort_order']) ?>" 
+                       placeholder="0">
+                <p class="mt-1 text-xs text-gray-500">Semakin kecil angkanya (misal 1), semakin di depan posisinya. 0 = Default.</p>
+            </div>
+
             <!-- Upload Poster Image -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-medium text-gray-900" for="poster_image">Upload Poster Event</label>

@@ -9,8 +9,13 @@ use CodeIgniter\Router\RouteCollection;
 // 1. Rute Halaman Utama
 $routes->get('/', 'Home::index');
 
+// Halaman Statis & Listing
+$routes->get('/tentang', 'PageController::tentang');
+$routes->get('/concerts', 'PageController::concerts');
+$routes->get('/festivals', 'PageController::festivals');
+$routes->get('/events', 'PageController::events'); // Untuk kategori "Event Lainnya"
+
 // 2. Rute Event (Publik) - Menggunakan SLUG
-// (:segment) menangkap slug seperti 'nct-dream-jakarta'
 $routes->get('/event/(:segment)', 'EventController::detail/$1');
 $routes->get('/event/(:segment)/select', 'EventController::select/$1');
 
@@ -47,7 +52,6 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
     $routes->put('events/([0-9]+)', 'Admin\EventController::update/$1');
     $routes->post('events/update/([0-9]+)', 'Admin\EventController::update/$1'); 
     $routes->delete('events/([0-9]+)', 'Admin\EventController::delete/$1');
-
     //Manajemen Tiket
     $routes->get('events/(:num)/tickets', 'Admin\TicketController::index/$1');
     $routes->get('events/(:num)/tickets/new', 'Admin\TicketController::new/$1');
