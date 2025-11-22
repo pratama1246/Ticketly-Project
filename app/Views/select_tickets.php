@@ -29,7 +29,24 @@
                 <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
                 <?= esc($event['venue']) ?>
             </p>
-            <a href="/event/<?= esc($event['slug']) ?>" class="mt-4 inline-block text-blue-600 underline hover:text-blue-800 hover:underline">Kembali ke Detail Event</a>
+            <!-- <a href="/event/<?= esc($event['slug']) ?>" class="mt-4 inline-block text-blue-600 underline hover:text-blue-800 hover:underline">Kembali ke Detail Event</a> -->
+             <?php
+$category = strtolower($event['category']); 
+
+if ($category === 'concerts') {
+    $label = 'Kembali ke Detail Konser';
+} elseif ($category === 'festivals') {
+    $label = 'Kembali ke Detail Festival';
+} else {
+    $label = 'Kembali ke Detail Event';
+}
+?>
+
+<a href="/event/<?= esc($event['slug']) ?>" 
+   class="mt-4 inline-block text-blue-600 underline hover:text-blue-800">
+    <?= esc($label) ?>
+</a>
+
         </div>
         
         <form action="/checkout/start" method="post" id="ticketForm">

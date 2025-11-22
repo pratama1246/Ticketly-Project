@@ -21,11 +21,11 @@
                 <div>
                     <h2 class="mb-4 text-sm font-semibold text-white uppercase">Quick Links</h2>
                     <ul class="text-white font-medium space-y-2">
-                        <li><a href="#" class="hover:underline">Home</a></li>
-                        <li><a href="#" class="hover:underline">Tentang</a></li>
-                        <li><a href="#" class="hover:underline">Konser</a></li>
-                        <li><a href="#" class="hover:underline">Event</a></li>
-                        <li><a href="#" class="hover:underline">Festival</a></li>
+                        <li><a href="/" class="hover:underline">Home</a></li>
+                        <li><a href="/tentang" class="hover:underline">Tentang</a></li>
+                        <li><a href="/concerts" class="hover:underline">Konser</a></li>
+                        <li><a href="/events" class="hover:underline">Event</a></li>
+                        <li><a href="/festivals" class="hover:underline">Festival</a></li>
                     </ul>
                 </div>
 
