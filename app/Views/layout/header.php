@@ -11,7 +11,7 @@
     <title>Ticketly - Nikmati Konsermu</title>
 </head>
 
-<<body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
+<body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
 
 <!-- NAVBAR -->
 <nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-default">
@@ -57,7 +57,7 @@
         </button>
         </div>
         <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-default rounded-base bg-neutral-secondary-soft md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-yellow-bright-light">
+            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-default rounded-base md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
                 <li>
                     <a href="/" class="block py-2 px-3 text-white bg-brand rounded-sm md:bg-transparent md:text-yellow-bright-dark-active md:p-0 " aria-current="page">Home</a>
                 </li>

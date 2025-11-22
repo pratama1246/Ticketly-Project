@@ -29,7 +29,7 @@
                 <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
                 <?= esc($event['venue']) ?>
             </p>
-            <a href="/event/<?= esc($event['id']) ?>" class="mt-4 inline-block hover:underline">Kembali ke Detail Event</a>
+            <a href="/event/<?= esc($event['slug']) ?>" class="mt-4 inline-block hover:underline">Kembali ke Detail Event</a>
         </div>
         
         <form action="/checkout/start" method="post" id="ticketForm">
@@ -79,9 +79,8 @@
                                                 <?= $ticket['description'] ?>
                                             </div>
                                         <?php else: ?>
-                                            <ul class="list-disc list-inside ml-2 space-y-2">
-                                                <li>Tempat duduk di area <b><?= strtolower(esc($ticket['name'])) ?></b></li>
-                                                <li>Harga sudah termasuk pajak</li>
+                                            <ul class="list-disc list-inside ml-2 space-y-2 text-gray-500">
+                                                <li>Harga Belum termasuk pajak</li>
                                             </ul>
                                         <?php endif; ?>
                                     </div>
