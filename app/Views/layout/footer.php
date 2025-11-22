@@ -9,20 +9,19 @@
                 <a href="#" class="flex items-center">
                     <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-20 me-3" alt="Ticketly Logo" />
                 </a>
-                <p class="text-sm mt-3 font-poppin text-white max-w-sm">
+                <p class="text-sm mt-6 font-poppin text-white max-w-sm">
                     Ticketly adalah platform tiket online yang memudahkan Anda mencari dan membeli tiket konser, event, dan festival dengan cepat dan aman.
                 </p>
             </div>
 
             <!-- Grid Menu Footer -->
-            <div class="grid grid-cols-4 gap-8 sm:gap-6 sm:grid-cols-4">
+            <div class="grid grid-cols-2 gap-8 sm:gap-6 md:grid-cols-3">
 
                 <!-- Quick Links -->
                 <div>
                     <h2 class="mb-4 text-sm font-semibold text-white uppercase">Quick Links</h2>
                     <ul class="text-white font-medium space-y-2">
                         <li><a href="/" class="hover:underline">Home</a></li>
-                        <li><a href="/tentang" class="hover:underline">Tentang</a></li>
                         <li><a href="/concerts" class="hover:underline">Konser</a></li>
                         <li><a href="/events" class="hover:underline">Event</a></li>
                         <li><a href="/festivals" class="hover:underline">Festival</a></li>
@@ -38,19 +37,11 @@
                     </ul>
                 </div>
 
-                <!-- Follow Us -->
-                <div>
-                    <h2 class="mb-4 text-sm font-semibold text-white uppercase">Follow Us</h2>
-                    <ul class="text-white font-medium space-y-2">
-                        <li><a href="https://github.com/themesberg/flowbite" class="hover:underline">Github</a></li>
-                        <li><a href="https://discord.gg/4eeurUVvTy" class="hover:underline">Discord</a></li>
-                    </ul>
-                </div>
-
                 <!-- Legal -->
                 <div>
                     <h2 class="mb-4 text-sm font-semibold text-white uppercase">Legal</h2>
                     <ul class="text-white font-medium space-y-2">
+                        <li><a href="/tentang" class="hover:underline">Tentang</a></li>
                         <li><a href="#" class="hover:underline">Privacy Policy</a></li>
                         <li><a href="#" class="hover:underline">Terms & Conditions</a></li>
                     </ul>

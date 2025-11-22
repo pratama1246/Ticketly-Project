@@ -14,7 +14,7 @@ class OrderModel extends Model
   protected $protectFields    = true;
   protected $allowedFields    = [
     'user_id', 'trx_id', 'first_name', 'last_name', 'email', 'phone_number',
-    'identity_number', 'birth_date', 'order_total', 'status'
+    'identity_number', 'birth_date', 'payment_method', 'order_total', 'status'
   ];
 
   // Menggunakan created_at dan updated_at secara otomatis

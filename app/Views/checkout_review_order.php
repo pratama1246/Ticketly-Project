@@ -1,29 +1,8 @@
-<main class="w-full pt-24 grow">
-    <div class="max-w-4xl mx-auto p-4 border border-solid-black rounded-lg">
-        <div class="p-6 md:p-10 mb-20">
-
-        <ol class="flex items-center w-full text-sm font-medium text-center text-body sm:text-base mb-8">
-            <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
-                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
-                    <svg class="w-5 h-5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                    Data <span class="hidden sm:inline-flex sm:ms-2">Diri</span>
-                </span>
-            </li>
-            <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
-                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
-                    <svg class="w-5 h-5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                    Pembayaran <span class="hidden sm:inline-flex sm:ms-2"></span>
-                </span>
-            </li>
-            <li class="flex items-center text-fg-brand">
-                <span class="me-2">3</span>
-                Konfirmasi
-            </li>
-        </ol>
-
+<main class="w-full grow mb-20">
+    <div class="max-w-4xl mx-auto p-4">
         <h2 class="text-2xl font-bold text-black mb-4">Konfirmasi Pesanan</h2>
         
-        <form action="/checkout/submit_order" method="POST">
+        <form action="/checkout/create_order" method="POST">
             <?= csrf_field() ?>
             
             <div class="bg-white border border-gray-300 rounded-lg shadow-sm p-6">
@@ -78,7 +57,7 @@
                     Batal
                 </button>
                 <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                    Lanjut ke Pembayaran
+                    Bayar Sekarang
                 </button>
             </div>
         </form>

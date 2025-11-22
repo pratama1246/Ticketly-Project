@@ -1,25 +1,5 @@
-<main class="w-full pt-24 grow">
+<main class="w-full grow mb-20">
     <div class="max-w-4xl mx-auto p-4">
-        <div class="p-6 md:p-10 rounded-lg border border-solid-black">
-
-        <!-- Progress Bar Checkout -->
-        <ol class="flex items-center w-full text-sm font-medium text-center text-body sm:text-base mb-8">
-            <li class="flex md:w-full items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
-                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
-                    <span class="me-2">1</span> Data <span class="hidden sm:inline-flex sm:ms-2">Diri</span>
-                </span>
-            </li>
-            <li class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
-                <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
-                    <span class="me-2">2</span>
-                    Pembayaran <span class="hidden sm:inline-flex sm:ms-2"></span>
-                </span>
-            </li>
-            <li class="flex items-center">
-                <span class="me-2">3</span>
-                Konfirmasi
-            </li>
-        </ol>
 
         <!-- Form Data Diri -->
         <h2 class="text-2xl font-bold text-black mb-4">Informasi Personal</h2>

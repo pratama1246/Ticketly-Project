@@ -31,13 +31,15 @@ $routes->group('checkout', static function ($routes) {
     $routes->post('process_payment', 'CheckoutController::processPayment');
     
     $routes->get('review_order', 'CheckoutController::reviewOrder');
-    $routes->post('submit_order', 'CheckoutController::submitOrder');
+    $routes->post('create_order', 'CheckoutController::createOrder');
 });
 
 // 4. Rute Status Pesanan
 $routes->get('/checkout/timeout', 'CheckoutController::timeout');
 $routes->get('/order/success', 'CheckoutController::orderSuccess');
 $routes->get('/checkout/cancel', 'CheckoutController::cancel');
+$routes->get('/checkout/pay/(:num)', 'CheckoutController::pay/$1');
+$routes->post('/checkout/confirm/(:num)', 'CheckoutController::confirmPayment/$1');
 
 // 5. Rute Admin
 $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
