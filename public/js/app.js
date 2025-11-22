@@ -1,17 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof initFlowbite === 'function') initFlowbite();
-
-    if (document.querySelector('.mySwiper')) {
-        new Swiper(".mySwiper", {
-            loop: true,
-            autoplay: { delay: 3000, disableOnInteraction: false },
-            effect: 'slide',
-            speed: 800,
-            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-            pagination: { el: ".swiper-pagination", clickable: true },
-        });
+    
+    // 1. Inisialisasi Flowbite (Dropdown, Carousel bawaan, dll)
+    if (typeof initFlowbite === 'function') {
+        initFlowbite();
     }
 
+    // 2. Inisialisasi TinyMCE (Editor Deskripsi di Admin)
+    // Hanya jalan kalau ada elemen textarea dengan id="description"
     if (document.getElementById('description') && typeof tinymce !== 'undefined') {
         tinymce.init({
             selector: 'textarea#description',
@@ -24,9 +19,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 3. Logika Hitung Total Harga (Halaman Pilih Tiket)
+    const ticketInputs = document.querySelectorAll('.ticket-input');
+    if (ticketInputs.length > 0) {
+        // Pasang "kuping" (event listener) ke setiap input jumlah
+        ticketInputs.forEach(input => {
+            input.addEventListener('input', calculateTotal);
+            input.addEventListener('change', calculateTotal);
+        });
+    }
+
 });
+
+
+// ============================================================
+// ZONA FUNGSI (DEFINISI LOGIKA)
+// ============================================================
+
 /**
- * Fungsi: Hitung Total Harga & Update Sidebar
+ * Fungsi: Menghitung Total Belanja & Update Sidebar Kanan
+ * Digunakan di halaman select_tickets.php
  */
 function calculateTotal() {
     const inputs = document.querySelectorAll('.ticket-input');
@@ -39,6 +51,7 @@ function calculateTotal() {
     let cartHtml = '';
 
     inputs.forEach(input => {
+        // Ambil nilai dari input dan data-attribute HTML
         const qty = parseInt(input.value) || 0;
         const price = parseInt(input.dataset.price);
         const name = input.dataset.name;
@@ -48,8 +61,9 @@ function calculateTotal() {
             grandTotal += subtotal;
             totalQty += qty;
 
+            // Buat HTML list item untuk sidebar
             cartHtml += `
-                <div class="flex justify-between items-center text-sm mb-2">
+                <div class="flex justify-between items-center text-sm mb-2 animate-fade-in">
                     <span class="text-gray-700">${qty}x ${name}</span>
                     <span class="font-bold text-gray-900">Rp ${subtotal.toLocaleString('id-ID')}</span>
                 </div>
@@ -57,14 +71,19 @@ function calculateTotal() {
         }
     });
 
+    // Update Tampilan Sidebar
     if (totalQty === 0) {
         cartContainer.innerHTML = '<div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200"><p class="text-xs">Belum ada tiket dipilih</p></div>';
     } else {
         cartContainer.innerHTML = cartHtml;
     }
 
-    if (totalLabel) totalLabel.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+    // Update Label Total Harga
+    if (totalLabel) {
+        totalLabel.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+    }
 
+    // Update Status Tombol Checkout (Disable jika 0)
     if (btnCheckout) {
         if (totalQty > 0) {
             btnCheckout.disabled = false;
@@ -79,27 +98,57 @@ function calculateTotal() {
 }
 
 /**
- * Fungsi: Hapus Event (Admin)
+ * Fungsi Global: Hapus Event (Admin)
+ * Menggunakan Confirm bawaan browser yang simpel
  */
 function deleteEvent(id) {
-    if (confirm('Hapus event ini?')) {
-        fetch('/admin/events/' + id, { method: 'DELETE', headers: {'X-Requested-With': 'XMLHttpRequest'} })
-        .then(res => res.json())
+    if (confirm('Apakah Anda yakin ingin menghapus event ini? Data tidak bisa dikembalikan.')) {
+        fetch('/admin/events/' + id, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
         .then(data => {
-            if(data.status === 'success') { document.getElementById(`row-event-${id}`).remove(); alert('Terhapus!'); }
+            if (data.status === 'success') {
+                const row = document.getElementById(`row-event-${id}`);
+                if (row) row.remove();
+                alert('Event berhasil dihapus.');
+            } else {
+                alert('Gagal menghapus: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan server.');
         });
     }
 }
 
 /**
- * Fungsi: Hapus Tiket (Admin)
+ * Fungsi Global: Hapus Tiket (Admin)
  */
 function deleteTicket(eventId, ticketId) {
     if (confirm('Hapus tiket ini?')) {
-        fetch(`/admin/events/${eventId}/tickets/${ticketId}`, { method: 'DELETE', headers: {'X-Requested-With': 'XMLHttpRequest'} })
+        fetch(`/admin/events/${eventId}/tickets/${ticketId}`, {
+            method: 'DELETE',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
         .then(res => res.json())
         .then(data => {
-            if(data.status === 'success') { document.getElementById(`row-ticket-${ticketId}`).remove(); alert('Terhapus!'); }
+            if(data.status === 'success') {
+                const row = document.getElementById(`row-ticket-${ticketId}`);
+                if (row) row.remove();
+                alert('Tiket berhasil dihapus!');
+            } else {
+                alert('Gagal menghapus tiket.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal menghapus tiket.');
         });
     }
 }
