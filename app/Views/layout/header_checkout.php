@@ -8,6 +8,7 @@
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
+    <script src="<?= base_url('js/app.js') ?>"></script>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 

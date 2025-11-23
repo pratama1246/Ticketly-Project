@@ -18,7 +18,7 @@
                             <?php foreach ($ewallets as $wallet): ?>
                                 <label for="pay_<?= $wallet['code'] ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer transition-all hover:shadow-sm group">
                                     <input type="radio" id="pay_<?= $wallet['code'] ?>" name="payment_method" value="<?= $wallet['code'] ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
-                                    <img src="<?= base_url($wallet['logo_image']) ?>" alt="<?= $wallet['name'] ?>" class="ml-4 h-8 w-auto object-contain grayscale group-hover:grayscale-0 group-has-checked:grayscale-0 transition-all">
+                                    <img src="<?= base_url($wallet['logo_image']) ?>" alt="<?= $wallet['name'] ?>" class="ml-4 h-8 w-auto object-contain group-hover group-has-checked: transition-all">
                                     <span class="ml-3 text-md font-medium text-gray-900"><?= esc($wallet['name']) ?></span>
                                 </label>
                             <?php endforeach; ?>
@@ -33,7 +33,7 @@
                             <?php foreach ($vas as $va): ?>
                                 <label for="pay_<?= $va['code'] ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer transition-all hover:shadow-sm group">
                                     <input type="radio" id="pay_<?= $va['code'] ?>" name="payment_method" value="<?= $va['code'] ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
-                                    <img src="<?= base_url($va['logo_image']) ?>" alt="<?= $va['name'] ?>" class="ml-4 h-8 w-auto object-contain grayscale group-hover:grayscale-0 group-has-checked:grayscale-0 transition-all">
+                                    <img src="<?= base_url($va['logo_image']) ?>" alt="<?= $va['name'] ?>" class="ml-4 h-8 w-auto object-contain group-hover-0 group-has-checked-0 transition-all">
                                     <span class="ml-3 text-md font-medium text-gray-900"><?= esc($va['name']) ?></span>
                                 </label>
                             <?php endforeach; ?>
@@ -48,7 +48,7 @@
                             <?php foreach ($others as $other): ?>
                                 <label for="pay_<?= $other['code'] ?>" class="flex items-center p-4 border border-gray-300 rounded-lg has-checked:bg-blue-50 has-checked:border-blue-500 cursor-pointer transition-all hover:shadow-sm group">
                                     <input type="radio" id="pay_<?= $other['code'] ?>" name="payment_method" value="<?= $other['code'] ?>" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
-                                    <img src="<?= base_url($other['logo_image']) ?>" alt="<?= $other['name'] ?>" class="ml-4 h-8 w-auto object-contain grayscale group-hover:grayscale-0 group-has-checked:grayscale-0 transition-all">
+                                    <img src="<?= base_url($other['logo_image']) ?>" alt="<?= $other['name'] ?>" class="ml-4 h-8 w-auto object-contain group-hover-0 group-has-checked-0 transition-all">
                                     <span class="ml-3 text-md font-medium text-gray-900"><?= esc($other['name']) ?></span>
                                 </label>
                             <?php endforeach; ?>

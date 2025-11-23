@@ -93,5 +93,18 @@
   --color-palette-purple-dark-hover: #312697;
   --color-palette-purple-dark-active: #251c71;
   --color-palette-purple-darker: #1d1658;
+
 }
 
+@layer utilities {
+    /* 1. Definisi Keyframes */
+    @keyframes infinite-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+
+    /* 2. Utility Class untuk Animasi */
+    .animate-infinite-scroll {
+        animation: infinite-scroll 50s linear infinite;
+    }
+  }

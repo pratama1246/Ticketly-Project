@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const birthDateInput = document.getElementById('birth_date');
+    if (birthDateInput && typeof Datepicker !== 'undefined') {
+        new Datepicker(birthDateInput, {
+            autohide: true,
+            format: 'dd/mm/yyyy',
+            orientation: 'top',
+            todayBtn: true,
+            clearBtn: true,
+            maxDate: new Date(), // <--- INI LOGIKANYA (Maksimal Hari Ini)
+        });
+    }
+
 });
 
 
