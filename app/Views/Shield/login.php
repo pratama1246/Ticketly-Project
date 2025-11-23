@@ -62,7 +62,7 @@
                 <div class="flex items-center justify-between text-sm mt-2">
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="remember" class="w-4 h-4">
-                        <span>Remember me</span>
+                        <span>Ingat saya</span>
                     </label>
 
                     <a href="<?= url_to('magic-link') ?>" class="text-blue-600 hover:underline font-medium">
@@ -73,11 +73,11 @@
                 <!-- BUTTONS -->
                 <div class="flex items-center justify-end gap-4 pt-4">
                     <a href="<?= url_to('register') ?>" class="text-blue-600 font-semibold hover:underline">
-                        Sign Up
+                        Daftar
                     </a>
 
                     <button type="submit" class="bg-blue-500 text-white px-8 py-2 rounded-md font-semibold shadow-md hover:bg-blue-600 transition">
-                        Log In
+                        Masuk
                     </button>
                 </div>
             </form>
