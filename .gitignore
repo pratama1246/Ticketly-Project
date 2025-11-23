@@ -29,6 +29,7 @@ $RECYCLE.BIN/
 
 # Linux
 *~
+.env
 
 # KDE directory preferences
 .directory
@@ -84,7 +85,7 @@ phpunit
 #-------------------------
 # Composer
 #-------------------------
-
+node_modules/
 
 #-------------------------
 # IDE / Development Files
