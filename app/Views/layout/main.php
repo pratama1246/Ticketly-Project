@@ -216,8 +216,7 @@
     <!-- Promo Section -->
     <section class="max-w-7xl mx-auto px-4 mb-20">
         <div class="relative rounded-2xl overflow-hidden bg-linear-to-r from-purple-900 to-blue-900 shadow-2xl">
-            <img src="https://images.unsplash.com/photo-1459749411177-7129615a6f5c?auto=format&fit=crop&q=80&w=1600" 
-                 class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Concert">
+            <img src="<?= base_url('assets/konser2.jpg') ?>" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Concert">
             
             <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="text-white">
