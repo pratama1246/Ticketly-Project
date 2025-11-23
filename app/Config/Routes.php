@@ -9,8 +9,6 @@ use CodeIgniter\Router\RouteCollection;
 // 1. Rute Halaman Utama
 $routes->get('/', 'Home::index');
 
-service('auth')->routes($routes);
-
 // Halaman Statis & Listing
 $routes->get('/tentang', 'PageController::tentang');
 $routes->get('/concerts', 'PageController::concerts');

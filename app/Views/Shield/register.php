@@ -1,4 +1,4 @@
-<?= $this->extend('\App\Views\shield\layout') ?>
+<?= $this->extend('\App\Views\Shield\layout') ?>
 <?= $this->section('content') ?>
 
 <div class="flex items-center justify-center py-10">
