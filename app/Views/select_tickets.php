@@ -107,6 +107,21 @@
                                         <?php endif; ?>
                                     </div>
 
+                                    <?php
+                                        // 1. Ambil Waktu Event
+                                        $eventTime = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                    ?>
+
+                                    <div class="p-2 flex items-start gap-1">
+                                        <svg class="w-4 h-4 text-gray-500 shrink-0 " fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        
+                                        <div class="text-xs text-gray-500">
+                                            <span class="block font-medium">Batas Waktu Pemesanan:
+                                                <?= $eventTime->toLocalizedString('d MMMM yyyy, HH:mm') ?> WIB
+                                            </span>
+                                        </div>
+                                    </div>
+
                                     <hr class="my-4 border-gray-100">
 
                                     <div class="flex justify-between items-center">
