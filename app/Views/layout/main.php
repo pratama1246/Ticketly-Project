@@ -213,64 +213,250 @@
     renderEventSection('Event Lainnya', $events, '', '/events');
     ?>
 
-    <!-- PARTNER LOGO SCROLLER -->
-    <section class="py-16 bg-white border-t border-gray-100 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
-            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">Mitra Resmi & Sponsor</h3>
+    <!-- Promo Section -->
+    <section class="max-w-7xl mx-auto px-4 mb-20">
+        <div class="relative rounded-2xl overflow-hidden bg-linear-to-r from-purple-900 to-blue-900 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1459749411177-7129615a6f5c?auto=format&fit=crop&q=80&w=1600" 
+                 class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Concert">
+            
+            <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-white">
+                    <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3 inline-block">Promo Terbatas</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-2">Payday Sale! Diskon 20%</h2>
+                    <p class="text-blue-100 max-w-lg">Gunakan kode <span class="font-mono font-bold text-white bg-white/20 px-2 rounded">PAYDAY25</span> untuk semua tiket konser internasional. Berlaku sampai akhir bulan.</p>
+                </div>
+                <a href="/events" class="bg-white text-blue-900 hover:bg-blue-50 font-bold py-3.5 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 whitespace-nowrap">
+                    Cek Promo Sekarang
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Buy Section -->
+    <section class="max-w-7xl mx-auto px-4 mb-24 text-center">
+        <div class="mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Cara Beli Tiket</h2>
+            <p class="text-gray-500 mt-2">Dapatkan tiketmu hanya dalam hitungan menit.</p>
         </div>
 
-        <div class="relative w-full max-w-[100vw] overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+            <div class="hidden md:block absolute top-8 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
 
-            <div class="absolute top-0 left-0 z-10 h-full w-24 bg-linear-to-r from-white to-transparent"></div>
-            <div class="absolute top-0 right-0 z-10 h-full w-24 bg-linear-to-l from-white to-transparent"></div>
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">1</div>
+                <h3 class="font-bold text-lg mb-2">Pilih Event</h3>
+                <p class="text-sm text-gray-500">Cari konser atau festival favoritmu di halaman utama.</p>
+            </div>
 
-            <div class="flex w-max items-center animate-infinite-scroll">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">2</div>
+                <h3 class="font-bold text-lg mb-2">Pilih Tiket</h3>
+                <p class="text-sm text-gray-500">Tentukan kategori tiket dan jumlah yang diinginkan.</p>
+            </div>
 
-                <?php
-                // Daftar logo kita simpan di array biar gampang di-loop
-                $logos = [
-                    ['src' => '/assets/partner/logo-pnc.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-jkb.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-cilacapmart.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-klinikmawon.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-lovewedding.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logodelizia.png', 'h' => 'h-10'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/2560px-Logo_ovo_purple.svg.png', 'h' => 'h-8'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png', 'h' => 'h-10'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/2048px-Tailwind_CSS_Logo.svg.png', 'h' => 'h-7'],
-                    // Ulangi lagi logo biar Set 1 jadi PANJANG BANGET (Wajib > Lebar Layar)
-                    ['src' => '/assets/partner/logo-pnc.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-jkb.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-cilacapmart.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-klinikmawon.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logo-lovewedding.png', 'h' => 'h-10'],
-                    ['src' => '/assets/partner/logodelizia.png', 'h' => 'h-10'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/2560px-Logo_ovo_purple.svg.png', 'h' => 'h-8'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png', 'h' => 'h-10'],
-                    ['src' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/2048px-Tailwind_CSS_Logo.svg.png', 'h' => 'h-7'],
-                ];
-                ?>
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">3</div>
+                <h3 class="font-bold text-lg mb-2">Bayar</h3>
+                <p class="text-sm text-gray-500">Selesaikan pembayaran via Transfer Bank atau E-Wallet.</p>
+            </div>
 
-                <?php foreach ($logos as $logo): ?>
-                    <div class="mx-12 shrink-0 flex items-center justify-center transition-all duration-300 cursor-pointer">
-                        <img src="<?= $logo['src'] ?>" class="<?= $logo['h'] ?> w-auto object-contain" alt="Partner">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-green-600 group-hover:text-white transition-colors">4</div>
+                <h3 class="font-bold text-lg mb-2">Selesai!</h3>
+                <p class="text-sm text-gray-500">E-Tiket otomatis dikirim ke email dan WhatsApp kamu.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="bg-gray-50 py-16 mb-20 border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kata Mereka</h2>
+                <p class="text-gray-500 mt-2">Pengalaman seru dari pengguna Ticketly.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                     </div>
-                <?php endforeach; ?>
-
-
-                <?php foreach ($logos as $logo): ?>
-                    <div class="mx-12 shrink-0 flex items-center justify-center transition-all duration-300 cursor-pointer">
-                        <img src="<?= $logo['src'] ?>" class="<?= $logo['h'] ?> w-auto object-contain" alt="Partner">
+                    <p class="text-gray-600 italic mb-4">"Gak nyangka beli tiket konser internasional semudah ini. Bayar pake QRIS langsung beres!"</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">AS</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Andi Saputra</h4>
+                            <p class="text-xs text-gray-500">Fans NCT Dream</p>
+                        </div>
                     </div>
-                <?php endforeach; ?>
+                </div>
 
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Website ticket paling sat-set yang pernah gue coba. Gak pake loading lama pas war tiket!"</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">SP</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Siti Putri</h4>
+                            <p class="text-xs text-gray-500">Event Enthusiast</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Udah dua kali beli tiket di sini. Customer service-nya ramah banget pas nanya soal penukaran tiket."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">BD</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Budi Darmawan</h4>
+                            <p class="text-xs text-gray-500">Mahasiswa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="max-w-4xl mx-auto px-4 mb-24">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Pertanyaan Populer</h2>
+            <p class="text-gray-500 mt-2">Hal yang sering ditanyakan oleh pengguna Ticketly.</p>
+        </div>
+
+        <div class="space-y-4">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
+                    <span>Bagaimana cara menerima tiket setelah bayar?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-600 p-5 pt-0 text-sm leading-relaxed">
+                    Setelah pembayaran berhasil diverifikasi otomatis, E-Tiket akan langsung dikirim ke <strong>Email</strong> dan nomor <strong>WhatsApp</strong> yang Anda daftarkan. Pastikan nomor HP aktif dan email tidak penuh.
+                </div>
+            </details>
+            
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
+                    <span>Apakah tiket bisa di-refund (dibatalkan)?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-600 p-5 pt-0 text-sm leading-relaxed">
+                    Secara umum, tiket yang sudah dibeli <strong>tidak dapat dikembalikan</strong> (non-refundable), kecuali jika acara dibatalkan sepihak oleh penyelenggara. Harap baca syarat & ketentuan di halaman detail event sebelum membeli.
+                </div>
+            </details>
+
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
+                    <span>Apakah tiket bisa dipindahtangankan ke orang lain?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-600 p-5 pt-0 text-sm leading-relaxed">
+                    Ya, tiket umumnya bisa dipindahtangankan (misal diberikan ke teman) asalkan QR Code belum pernah di-scan (check-in) sebelumnya. Namun, untuk event tertentu yang mewajibkan verifikasi KTP (Wajib ID), data pemegang tiket harus sesuai.
+                </div>
+            </details>
+
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
+                    <span>Saya sudah bayar tapi belum terima email tiket?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-600 p-5 pt-0 text-sm leading-relaxed">
+                    Mohon tunggu 5-10 menit setelah pembayaran. Cek folder <strong>Spam / Junk / Promotions</strong> di email Anda. Jika masih belum ada, silakan hubungi CS kami melalui WhatsApp dengan menyertakan bukti transfer.
+                </div>
+            </details>
+
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
+                    <span>Apakah E-Tiket perlu dicetak (print)?</span>
+                    <span class="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                </summary>
+                <div class="text-gray-600 p-5 pt-0 text-sm leading-relaxed">
+                    <strong>Tidak perlu.</strong> Anda cukup menunjukkan E-Tiket (QR Code) melalui layar HP Anda kepada petugas di lokasi acara untuk dipindai (scan). Hemat kertas, selamatkan bumi! 🌿
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="max-w-7xl mx-auto px-4 mb-20">
+        <div class="bg-gray-900 rounded-2xl p-8 md:p-16 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+            
+            <div class="relative z-10 max-w-2xl mx-auto">
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Jangan Ketinggalan Info Konser!</h2>
+                <p class="text-gray-400 mb-8">Dapatkan update event terbaru, promo tiket early-bird, dan penawaran eksklusif langsung di inbox emailmu.</p>
+                
+                <form class="flex flex-col sm:flex-row gap-3">
+                    <input type="email" placeholder="Masukkan alamat emailmu..." 
+                           class="w-full px-5 py-3.5 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none border-none" required>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-lg transition-all whitespace-nowrap">
+                        Berlangganan
+                    </button>
+                </form>
+                <p class="text-xs text-gray-500 mt-4">Kami tidak akan mengirimkan spam. Unsubscribe kapan saja.</p>
             </div>
         </div>
     </section>
 
 
+    <section class="py-16 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">Official Partners & Sponsors</h3>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-70 hover:opacity-100 transition-opacity duration-300">
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png" class="h-8 object-contain" alt="BCA">
+                </div>
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png" class="h-8 object-contain" alt="GoPay">
+                </div>
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/2560px-Logo_ovo_purple.svg.png" class="h-8 object-contain" alt="OVO">
+                </div>
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="<?= base_url('/assets/partner/logo-pnc.png') ?>" class="h-10 object-contain" alt="BNI">
+                </div>
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="<?= base_url('/assets/partner/logo-jkb.png') ?>" class="h-9 object-contain" alt="Laravel">
+                </div>
+                <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png" class="h-10 object-contain" alt="PHP">
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- WHY BUY FROM US SECTION -->
-    <section class="bg-blue-secondary-dark py-16 text-white rounded-t-[3rem] relative overflow-hidden mt-10">
+    <section class="bg-blue-secondary-dark py-16 text-white rounded-t-[1rem] md:rounded-t-[3rem] relative overflow-hidden mt-10">
 
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-12">
