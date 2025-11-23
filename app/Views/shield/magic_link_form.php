@@ -2,12 +2,26 @@
 
 <?= $this->section('title') ?><?= lang('Auth.useMagicLink') ?> <?= $this->endSection() ?>
 
-<?= $this->section('main') ?>
+<?= $this->section('content') ?>
 
-<div class="container d-flex justify-content-center p-5">
-    <div class="card col-12 col-md-5 shadow-sm">
-        <div class="card-body">
-            <h5 class="card-title mb-5"><?= lang('Auth.useMagicLink') ?></h5>
+<div class="flex items-center justify-center py-10">
+    <div class="w-full max-w-[1200px] bg-[#ffe398] rounded-[25px] border border-black p-8 md:p-18 flex flex-col md:flex-row gap-4">
+
+        <!-- LEFT PANEL -->
+        <div class="w-full md:w-1/2">
+            <img src="/assets/ticketly-logo.png" class="w-40 mb-6">
+
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Gunakan Tautan Masuk</h2>
+            <p class="text-gray-700 w-72 mb-8">
+                Masuk menggunakan tautan email anda
+            </p>
+
+            <!-- extra spacing -->
+            <div class="mt-10"></div>
+        </div>
+
+          <!-- RIGHT PANEL (THE FORM) -->
+        <div class="w-full md:w-1/2">
 
                 <?php if (session('error') !== null) : ?>
                     <div class="alert alert-danger" role="alert"><?= esc(session('error')) ?></div>
@@ -28,19 +42,26 @@
                 <?= csrf_field() ?>
 
                 <!-- Email -->
-                <div class="form-floating mb-2">
-                    <input type="email" class="form-control" id="floatingEmailInput" name="email" autocomplete="email" placeholder="<?= lang('Auth.email') ?>"
-                           value="<?= old('email', auth()->user()->email ?? null) ?>" required>
-                    <label for="floatingEmailInput"><?= lang('Auth.email') ?></label>
-                </div>
 
-                <div class="d-grid col-12 col-md-8 mx-auto m-3">
-                    <button type="submit" class="btn btn-primary btn-block"><?= lang('Auth.send') ?></button>
+                <div>
+                    <label class="block font-medium mb-1">Email</label>
+                    <input 
+                        type="email" 
+                        name="email"
+                        placeholder="<?= lang('Auth.email') ?>"
+                        value="<?= old('email', auth()->user()->email ?? null) ?>" required
+                        class="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                    >
                 </div>
-
+                <div class="flex items-center justify-end gap-4 pt-4"> 
+                <a href="<?= url_to('login') ?>" class="text-blue-600 font-semibold hover:underline">
+                        <?= lang('Auth.backToLogin') ?>
+                    </a>
+                <button type="submit" class="bg-blue-500 text-white px-8 py-2 rounded-md font-semibold shadow-md hover:bg-blue-600 transition">
+                        <?= lang('Auth.send') ?>
+                    </button>
+                </div>
             </form>
-
-            <p class="text-center"><a href="<?= url_to('login') ?>"><?= lang('Auth.backToLogin') ?></a></p>
         </div>
     </div>
 </div>

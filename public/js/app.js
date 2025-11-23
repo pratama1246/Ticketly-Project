@@ -41,6 +41,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const togglePasswordBtn = document.getElementById('toggle-password-btn');
+    const passwordInput = document.getElementById('password');
+    const eyeOpen = document.getElementById('eye-open');
+    const eyeClosed = document.getElementById('eye-closed');
+
+    // Cek apakah elemen-elemen ini ada di halaman (biar gak error di halaman lain)
+    if (togglePasswordBtn && passwordInput && eyeOpen && eyeClosed) {
+        
+        togglePasswordBtn.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                // Ubah jadi Teks (Show)
+                passwordInput.type = 'text';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            } else {
+                // Ubah jadi Password (Hide)
+                passwordInput.type = 'password';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            }
+        });
+    }
+
 });
 
 

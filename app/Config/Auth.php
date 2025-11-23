@@ -46,17 +46,17 @@ class Auth extends ShieldAuth
      * --------------------------------------------------------------------
      */
     public array $views = [
-        'login'                       => '\App\Views\shield\login',
-        'register'                    => '\App\Views\shield\register',
-        'layout'                      => '\App\Views\shield\layout',
-        'action_email_2fa'            => '\App\Views\shield\email_2fa_show',
-        'action_email_2fa_verify'     => '\App\Views\shield\email_2fa_verify',
-        'action_email_2fa_email'      => '\App\Views\shield\Email\email_2fa_email',
-        'action_email_activate_show'  => '\App\Views\shield\email_activate_show',
-        'action_email_activate_email' => '\App\Views\shield\Email\email_activate_email',
-        'magic-link-login'            => '\App\Views\shield\magic_link_form',
-        'magic-link-message'          => '\App\Views\shield\magic_link_message',
-        'magic-link-email'            => '\App\Views\shield\Email\magic_link_email',
+        'login'                       => '\App\Views\Shield\login',
+        'register'                    => '\App\Views\Shield\register',
+        'layout'                      => '\App\Views\Shield\layout',
+        'action_email_2fa'            => '\App\Views\Shield\email_2fa_show',
+        'action_email_2fa_verify'     => '\App\Views\Shield\email_2fa_verify',
+        'action_email_2fa_email'      => '\App\Views\Shield\Email\email_2fa_email',
+        'action_email_activate_show'  => '\App\Views\Shield\email_activate_show',
+        'action_email_activate_email' => '\App\Views\Shield\Email\email_activate_email',
+        'magic-link-login'            => '\App\Views\Shield\magic_link_form',
+        'magic-link-message'          => '\App\Views\Shield\magic_link_message',
+        'magic-link-email'            => '\App\Views\Shield\Email\magic_link_email',
     ];
 
     /**
