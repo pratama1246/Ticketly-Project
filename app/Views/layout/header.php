@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="<?= base_url('assets/favicon.png') ?>" type="image/png">
         <link href="<?= base_url('output.css') ?>" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script src="<?= base_url('flowbite.min.js') ?>"></script>
         <script src="<?= base_url('js/app.js') ?>"></script>
     <title>Ticketly - Nikmati Konsermu</title>

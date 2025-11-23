@@ -9,12 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // 1. Rute Halaman Utama
 $routes->get('/', 'Home::index');
 
-$routes->get('forgot-password', '\CodeIgniter\Shield\Controllers\ForgotPasswordController::forgotPassword', ['as' => 'forgot-password']);
-$routes->post('forgot-password', '\CodeIgniter\Shield\Controllers\ForgotPasswordController::handleForgotPassword');
-
-$routes->get('reset-password', '\CodeIgniter\Shield\Controllers\ResetPasswordController::resetPassword', ['as' => 'reset-password']);
-$routes->post('reset-password', '\CodeIgniter\Shield\Controllers\ResetPasswordController::handleResetPassword');
-
+service('auth')->routes($routes);
 
 // Halaman Statis & Listing
 $routes->get('/tentang', 'PageController::tentang');

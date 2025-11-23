@@ -2,7 +2,9 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.17",
     "@tailwindcss/typography": "^0.5.19",
-    "flowbite": "^4.0.0",
+    "flowbite": "^4.0.0"
+  },
+  "devDependencies": {
     "tailwindcss": "^4.1.17"
   }
 }
