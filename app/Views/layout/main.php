@@ -1,4 +1,4 @@
-<main class="w-full pt-24 grow">
+<main class="w-full pt-20 grow">
 
     <!-- CAROUSEL -->
     <div id="default-carousel" class="relative w-full" data-carousel="slide">

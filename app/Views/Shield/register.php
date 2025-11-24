@@ -4,9 +4,7 @@
 <div class="flex items-center justify-center py-10">
 
     <!-- CARD (SAMA PERSIS STRUKTURNYA DENGAN LOGIN) -->
-    <div class="w-full max-w-[1150px] min-h-[520px]
-                bg-[#ffe398] rounded-[25px] border border-black
-                p-10 md:p-18 flex flex-col md:flex-row gap-4">
+    <div class="w-full max-w-[1150px] min-h-[520px] bg-[#ffe398] rounded-[25px] border border-black p-10 md:p-18 flex flex-col md:flex-row gap-4">
 
         <!-- LEFT SIDE (SAMA PERSIS FORMATNYA) -->
         <div class="w-full md:w-1/2 flex flex-col justify-between">
