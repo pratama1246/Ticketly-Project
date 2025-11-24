@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
     <script src="<?= base_url('js/app.js') ?>"></script>
+    <script>var CI_TIME_LEFT = <?= isset($time_left) ? $time_left : 0 ?>;</script>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
@@ -19,6 +20,14 @@
                 <a href="<?= base_url('/') ?>" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
                 </a>
+
+                <div id="header-timer-container" class="hidden md:flex items-center gap-2 bg-red-50 border border-red-100 px-4 py-2 rounded-lg">
+                    <svg class="w-5 h-5 text-red-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-[10px] text-red-600 font-bold uppercase tracking-wider">Sisa Waktu</span>
+                        <span id="header-timer" class="font-mono text-lg font-bold text-red-700">00:00</span>
+                    </div>
+                </div>
                 
                 <div class="w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 scrollbar-hide">
                     <ol class="flex items-center w-full min-w-[800px] xl:min-w-0 gap-4">
@@ -103,3 +112,25 @@
             </div>
         </div>
     </header>
+
+  <div id="timeout-modal" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
+        <div class="relative w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-2xl border-t-4 border-red-600 animate-bounce-in">
+                <div class="p-6 text-center">
+                    <div class="mx-auto mb-4 text-red-600 bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold text-gray-900">Segera Selesaikan Pesanan!</h3>
+                    <p class="text-gray-500 mb-6">Waktu pemesanan Anda tinggal sedikit lagi. Tiket akan dilepas ke pembeli lain jika waktu habis.</p>
+                    
+                    <div class="text-3xl font-mono font-bold text-red-600 mb-6" id="modal-timer">
+                        00:00
+                    </div>
+
+                    <button onclick="closeTimeoutModal()" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                        Saya Mengerti, Lanjut Bayar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>  

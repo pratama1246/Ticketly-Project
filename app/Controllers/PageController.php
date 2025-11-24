@@ -50,14 +50,33 @@ class PageController extends BaseController
 
     public function events()
     {
+        $keyword = $this->request->getGet('q'); // Tangkap kata kunci dari URL
+        
+        $query = $this->eventModel->where('status', 'published');
+
+        if (!empty($keyword)) {
+            // --- MODE PENCARIAN ---
+            $query->groupStart()
+                  ->like('name', $keyword)       // Cari di Nama
+                  ->orLike('venue', $keyword)    // Atau di Lokasi
+                  ->orLike('category', $keyword) // Atau di Kategori
+                  ->groupEnd();
+            
+            $title = 'Hasil Pencarian: "' . esc($keyword) . '"';
+            $desc  = 'Menampilkan event yang cocok dengan kata kunci tersebut.';
+        } else {
+            // --- MODE LIHAT SEMUA ---
+            // Menampilkan semua event (bukan cuma kategori 'Event')
+            $title = 'Jelajahi Semua Event';
+            $desc  = 'Temukan berbagai pengalaman seru mulai dari konser hingga pameran.';
+        }
+
         $data = [
-            'title' => 'Event Seru Lainnya',
-            'desc'  => 'Workshop, Pameran, Theater dan acara menarik lainnya.',
-            'events' => $this->eventModel->where('category', 'Event') // Atau 'Other' sesuaikan DB
-                                         ->where('status', 'published')
-                                         ->orderBy('event_date', 'ASC')
-                                         ->findAll()
+            'title'  => $title,
+            'desc'   => $desc,
+            'events' => $query->orderBy('event_date', 'ASC')->findAll()
         ];
+
         return $this->renderListing($data);
     }
 
