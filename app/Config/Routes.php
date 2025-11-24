@@ -65,3 +65,4 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
 
 // 6. Auth Routes
 service('auth')->routes($routes);
+
