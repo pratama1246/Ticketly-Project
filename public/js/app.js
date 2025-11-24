@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (typeof CI_TIME_LEFT !== 'undefined' && CI_TIME_LEFT > 0) {
+        startCheckoutTimer(CI_TIME_LEFT);
+    }
+
 });
 
 
@@ -192,3 +196,52 @@ function setupPasswordToggle(buttonId, inputId) {
     // Panggil fungsi untuk masing-masing input
     setupPasswordToggle('toggle-password-btn', 'password');             // Login & Register (Utama)
     setupPasswordToggle('toggle-password-confirm-btn', 'password_confirm'); // Register (Konfirmasi)
+
+    function startCheckoutTimer(duration) {
+    let timer = duration;
+    const headerTimerDisplay = document.getElementById('header-timer');
+    const modalTimerDisplay = document.getElementById('modal-timer');
+    const modal = document.getElementById('timeout-modal');
+    let hasWarned = false;
+
+    const interval = setInterval(function () {
+        const minutes = parseInt(timer / 60, 10);
+        const seconds = parseInt(timer % 60, 10);
+
+        // Format 00:00
+        const displayMin = minutes < 10 ? "0" + minutes : minutes;
+        const displaySec = seconds < 10 ? "0" + seconds : seconds;
+        const textTime = displayMin + ":" + displaySec;
+
+        // Update Tampilan Header
+        if (headerTimerDisplay) headerTimerDisplay.textContent = textTime;
+        
+        // Update Tampilan Modal
+        if (modalTimerDisplay) modalTimerDisplay.textContent = textTime;
+
+        // LOGIKA PERINGATAN (Muncul di 2 Menit Terakhir)
+        if (timer <= 120 && !hasWarned) { 
+            if(modal) {
+                modal.classList.remove('hidden'); // Munculkan Modal
+                modal.classList.add('flex');
+            }
+            hasWarned = true; // Biar gak muncul terus-terusan
+        }
+
+        // LOGIKA WAKTU HABIS
+        if (--timer < 0) {
+            clearInterval(interval);
+            alert("Waktu pemesanan habis! Anda akan diarahkan ke halaman utama.");
+            window.location.href = "/"; // Redirect ke Home
+        }
+    }, 1000);
+}
+
+// Fungsi Tutup Modal
+function closeTimeoutModal() {
+    const modal = document.getElementById('timeout-modal');
+    if(modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}

@@ -66,6 +66,24 @@ class CheckoutController extends BaseController
         $data['event'] = $eventModel->find($checkoutData['event_id']);
         $data['step'] = 1;
 
+        if (!session()->has('checkout_expire')) {
+            // Fallback kalau session hilang
+            return redirect()->to('/'); 
+        }
+
+        $expireTime = session()->get('checkout_expire');
+        $now = time();
+        $timeLeft = $expireTime - $now;
+
+        if ($timeLeft <= 0) {
+            // Waktu habis
+            session()->remove('checkout_process');
+            session()->remove('checkout_expire');
+            return redirect()->to('/')->with('error', 'Waktu pemesanan habis.');
+        }
+
+        $data = ['time_left' => $timeLeft];
+
         echo view('layout/header_checkout', $data);
         echo view('checkout_personal_info', $data); 
         echo view('layout/footer');
@@ -119,6 +137,24 @@ class CheckoutController extends BaseController
             // Filter Lainnya (Allo & Akulaku masuk sini)
             'others'   => array_filter($methods, fn($m) => $m['type'] == 'other')
         ];
+
+         if (!session()->has('checkout_expire')) {
+            // Fallback kalau session hilang
+            return redirect()->to('/'); 
+        }
+
+        $expireTime = session()->get('checkout_expire');
+        $now = time();
+        $timeLeft = $expireTime - $now;
+
+        if ($timeLeft <= 0) {
+            // Waktu habis
+            session()->remove('checkout_process');
+            session()->remove('checkout_expire');
+            return redirect()->to('/')->with('error', 'Waktu pemesanan habis.');
+        }
+
+        $data = ['time_left' => $timeLeft];
 
         echo view('layout/header_checkout', $data);
         echo view('checkout_payment_method', $data);
@@ -192,6 +228,24 @@ class CheckoutController extends BaseController
         $data['total_price'] = $totalPrice;
         $data['step'] = 3;
 
+         if (!session()->has('checkout_expire')) {
+            // Fallback kalau session hilang
+            return redirect()->to('/'); 
+        }
+
+        $expireTime = session()->get('checkout_expire');
+        $now = time();
+        $timeLeft = $expireTime - $now;
+
+        if ($timeLeft <= 0) {
+            // Waktu habis
+            session()->remove('checkout_process');
+            session()->remove('checkout_expire');
+            return redirect()->to('/')->with('error', 'Waktu pemesanan habis.');
+        }
+
+        $data = ['time_left' => $timeLeft];
+
         echo view('layout/header_checkout', $data);
         echo view('checkout_review_order', $data);
         echo view('layout/footer');
@@ -204,12 +258,18 @@ class CheckoutController extends BaseController
 
     // TAHAP 1: Simpan Order (Status Pending) -> Arahkan ke Halaman Bayar
    // TAHAP 1: Simpan Order (Status Pending) -> Arahkan ke Halaman Bayar
-    public function createOrder()
+   public function createOrder()
     {
         $session = session();
         $checkoutData = $session->get('checkout_process');
 
-        if (empty($checkoutData)) { return redirect()->to('/'); }
+        // --- DEBUGGING SEMENTARA (Hapus nanti) ---
+        if (empty($checkoutData)) {
+            die('Data checkout_process KOSONG / Hilang. Cek Session!');
+        }
+        // -----------------------------------------
+
+        // if (empty($checkoutData)) { return redirect()->to('/'); } // 
 
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
