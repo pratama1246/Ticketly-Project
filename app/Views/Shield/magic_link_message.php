@@ -2,7 +2,7 @@
 
 <?= $this->section('title') ?><?= lang('Auth.useMagicLink') ?> <?= $this->endSection() ?>
 
-<?= $this->section('main') ?>
+<?= $this->section('content') ?>
 
 <div class="container d-flex justify-content-center p-5">
     <div class="card col-12 col-md-5 shadow-sm">

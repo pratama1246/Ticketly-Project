@@ -1,4 +1,4 @@
-<main class="w-full pt-24 grow bg-white">
+<main class="w-full pt-20 grow bg-white">
     <div class="relative py-20 bg-blue-900 overflow-hidden">
         <div class="absolute inset-0 opacity-20">
             <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
