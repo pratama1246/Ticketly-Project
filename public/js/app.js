@@ -41,29 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const togglePasswordBtn = document.getElementById('toggle-password-btn');
-    const passwordInput = document.getElementById('password');
-    const eyeOpen = document.getElementById('eye-open');
-    const eyeClosed = document.getElementById('eye-closed');
-
-    // Cek apakah elemen-elemen ini ada di halaman (biar gak error di halaman lain)
-    if (togglePasswordBtn && passwordInput && eyeOpen && eyeClosed) {
-        
-        togglePasswordBtn.addEventListener('click', () => {
-            if (passwordInput.type === 'password') {
-                // Ubah jadi Teks (Show)
-                passwordInput.type = 'text';
-                eyeOpen.classList.remove('hidden');
-                eyeClosed.classList.add('hidden');
-            } else {
-                // Ubah jadi Password (Hide)
-                passwordInput.type = 'password';
-                eyeOpen.classList.add('hidden');
-                eyeClosed.classList.remove('hidden');
-            }
-        });
-    }
-
 });
 
 
@@ -187,3 +164,31 @@ function deleteTicket(eventId, ticketId) {
         });
     }
 }
+
+function setupPasswordToggle(buttonId, inputId) {
+        const btn = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+
+        if (btn && input) {
+            btn.addEventListener('click', () => {
+                const eyeOpen = btn.querySelector('.eye-open');
+                const eyeClosed = btn.querySelector('.eye-closed');
+
+                if (input.type === 'password') {
+                    // Show
+                    input.type = 'text';
+                    eyeOpen.classList.remove('hidden');
+                    eyeClosed.classList.add('hidden');
+                } else {
+                    // Hide
+                    input.type = 'password';
+                    eyeOpen.classList.add('hidden');
+                    eyeClosed.classList.remove('hidden');
+                }
+            });
+        }
+    }
+
+    // Panggil fungsi untuk masing-masing input
+    setupPasswordToggle('toggle-password-btn', 'password');             // Login & Register (Utama)
+    setupPasswordToggle('toggle-password-confirm-btn', 'password_confirm'); // Register (Konfirmasi)
