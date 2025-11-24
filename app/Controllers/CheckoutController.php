@@ -165,8 +165,8 @@ class CheckoutController extends BaseController
         // Mapping nama metode pembayaran untuk ditampilkan
         $paymentMethods = [
             'ovo' => 'OVO', 'dana' => 'DANA', 'gopay' => 'GoPay', 'shopeepay' => 'ShopeePay',
-            'bca_va' => 'BCA Virtual Account', 'bri_va' => 'BRI Virtual Account', 'bni_va' => 'BNI Virtual Account',
-            'qris' => 'QRIS'
+            'bca' => 'BCA Virtual Account', 'bri' => 'BRI Virtual Account', 'bni' => 'BNI Virtual Account',
+            ''
         ];
         $data['payment_method_name'] = $paymentMethods[$checkoutData['payment_method']] ?? 'Tidak Dikenal';
         
