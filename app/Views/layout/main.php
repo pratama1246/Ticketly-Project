@@ -483,8 +483,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Transaksi 100% Aman</h3>
-                    <p class=" text-sm leading-relaxed">Pembayaran terjamin aman dengan enkripsi standar bank.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Transaksi 100% Aman</h3>
+                    <p class=" text-sm leading-relaxed text-gray-500">Pembayaran terjamin aman dengan enkripsi standar bank.</p>
                 </div>
 
                 <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
@@ -493,8 +493,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">E-Tiket Instan</h3>
-                    <p class="text-sm leading-relaxed">Tiket langsung dikirim ke email & WhatsApp tanpa menunggu lama.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">E-Tiket Instan</h3>
+                    <p class="text-sm leading-relaxed text-gray-500">Tiket langsung dikirim ke email & WhatsApp tanpa menunggu lama.</p>
                 </div>
 
                 <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
@@ -503,8 +503,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Bantuan 24/7</h3>
-                    <p class="text-sm leading-relaxed">Tim support kami siap membantumu kapan saja jika ada kendala.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Bantuan 24/7</h3>
+                    <p class="text-sm leading-relaxed text-gray-500">Tim support kami siap membantumu kapan saja jika ada kendala.</p>
                 </div>
 
             </div>

@@ -187,7 +187,7 @@ function startFloatingTimer(duration) {
                 timeoutModal.classList.add('flex');
             }
 
-            setTimeout(() => { window.location.href = "/"; }, 3000);
+            setTimeout(() => { window.location.href = "/checkout/cancel"; }, 3000);
         }
     }, 1000);
 }

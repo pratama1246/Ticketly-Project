@@ -1,4 +1,4 @@
-<main class="w-full pt-24 mb-20 grow transition-all duration-300">
+<main class="w-full pt-40 mb-20 grow transition-all duration-300">
     <div class="max-w-5xl mx-auto p-4">
 
         <div class="mb-8 text-center">

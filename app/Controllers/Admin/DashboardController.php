@@ -16,6 +16,8 @@ class DashboardController extends BaseController
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();
         
+        $orderModel->autoExpireOrders();
+
         // Ambil Total Pendapatan (hanya dari pesanan yang 'completed')
         $totalRevenue = $orderModel
             ->where('status', 'completed')

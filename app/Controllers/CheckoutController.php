@@ -304,6 +304,8 @@ class CheckoutController extends BaseController
         $session->remove('checkout_process');
         $session->remove('checkout_expire');
 
+        $session->set('pending_order_id', $newOrderId);
+
         return redirect()->to('/checkout/pay/' . $newOrderId);
     }
 
@@ -359,6 +361,8 @@ class CheckoutController extends BaseController
         $email->setMessage('Pembayaran berhasil! Berikut adalah tiket Anda.');
         $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $orderId . '.pdf', 'application/pdf');
         $email->send();
+
+        session()->remove('pending_order_id');
 
         session()->setFlashdata('success_order_id', $orderId);
         return redirect()->to('/order/success');
@@ -438,7 +442,8 @@ class CheckoutController extends BaseController
     public function cancel()
     {
         session()->remove('checkout_process');
-        session()->remove('checkout_expire'); 
+        session()->remove('checkout_expire');
+        session()->remove('pending_order_id');
 
         return redirect()->to('/');
     }
