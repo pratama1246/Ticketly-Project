@@ -11,7 +11,7 @@ use App\Models\EventModel;
 class EventController extends BaseController
 {
     
-    // 1. READ: Menampilkan daftar semua event
+    // Menampilkan daftar semua event
     public function index()
     {
         $eventModel = new EventModel();
@@ -26,7 +26,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // Menerima $slug (string), bukan $id (int)
+    // Menerima $slug (string) event
     public function detail($slug = null)
     {
         $eventModel = new EventModel();
@@ -40,7 +40,7 @@ class EventController extends BaseController
 
     }
 
-    // 2. CREATE (Form): Menampilkan form tambah event
+    // 2. Menampilkan form tambah event
     public function new()
     {
         $data = [
@@ -53,7 +53,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 3. CREATE (Process): Menyimpan data event baru
+    // 3. Memproses penyimpanan event baru
     public function create()
     {
         // Aturan Validasi
@@ -64,7 +64,7 @@ class EventController extends BaseController
             'description' => 'permit_empty|string',
             'poster_image' => [
                 'label' => 'Poster Image',
-                'rules' => 'uploaded[poster_image]' // Wajib upload di awal
+                'rules' => 'uploaded[poster_image]'
                     . '|is_image[poster_image]'
                     . '|mime_in[poster_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[poster_image,2048]',
@@ -73,7 +73,7 @@ class EventController extends BaseController
             'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
-                'rules' => 'permit_empty|is_image[seatmap_image]' // <--- Boleh Kosong
+                'rules' => 'permit_empty|is_image[seatmap_image]'
                     . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[seatmap_image,2048]',
             ],
@@ -89,7 +89,6 @@ class EventController extends BaseController
             $slug .= '-' . rand(1000, 9999);
         }
 
-        // Siapkan Data Teks
         $data = [
             'name'        => $this->request->getPost('name'),
             'slug'        => $slug,
@@ -102,8 +101,8 @@ class EventController extends BaseController
             'is_featured' => $this->request->getPost('is_featured') ? 1 : 0,
             'sort_order'  => $this->request->getPost('sort_order'),
         ];
-
-        // Upload Poster (Ke folder 'banners' sesuai strukturmu)
+        
+        // Upload Poster
         $posterFile = $this->request->getFile('poster_image');
         if ($posterFile->isValid() && ! $posterFile->hasMoved()) {
             $newName = $posterFile->getRandomName();
@@ -113,7 +112,6 @@ class EventController extends BaseController
 
         // Upload Seatmap
         $seatmapFile = $this->request->getFile('seatmap_image');
-        // Tambahkan cek $seatmapFile->isValid()
         if ($seatmapFile && $seatmapFile->isValid() && ! $seatmapFile->hasMoved()) {
             $newName = $seatmapFile->getRandomName();
             $seatmapFile->move(FCPATH . 'uploads/seatmaps', $newName);
@@ -129,7 +127,7 @@ class EventController extends BaseController
         }
     }
 
-    // 4. UPDATE (Form): Menampilkan form edit
+    // 4. Menampilkan form edit
     public function edit($id = null)
     {
         $eventModel = new EventModel();
@@ -155,7 +153,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 5. UPDATE (Process): Menyimpan perubahan
+    // 5. Menyimpan perubahan
     public function update($id = null)
     {
         $eventModel = new EventModel();
@@ -165,7 +163,6 @@ class EventController extends BaseController
             return redirect()->to('/admin/events')->with('error', 'Event tidak ditemukan.');
         }
 
-        // Validasi (Gambar jadi opsional / permit_empty)
         $rules = [
             'name'        => 'required|string|max_length[255]',           
             'event_date'  => 'required|valid_date',
@@ -182,7 +179,7 @@ class EventController extends BaseController
             'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
-                'rules' => 'permit_empty|is_image[seatmap_image]' // <--- Boleh Kosong
+                'rules' => 'permit_empty|is_image[seatmap_image]'
                     . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]'
                     . '|max_size[seatmap_image,2048]',
             ],
@@ -198,7 +195,6 @@ class EventController extends BaseController
             $slug .= '-' . rand(1000, 9999);
         }
 
-        // Data Teks
         $data = [
             'name'        => $this->request->getPost('name'),
             'slug'        => $slug,
@@ -215,11 +211,9 @@ class EventController extends BaseController
         // Cek Upload Poster Baru
         $posterFile = $this->request->getFile('poster_image');
         if ($posterFile && $posterFile->isValid() && ! $posterFile->hasMoved()) {
-            // Hapus file lama
             if (!empty($existingEvent['poster_image']) && file_exists(FCPATH . $existingEvent['poster_image'])) {
                 unlink(FCPATH . $existingEvent['poster_image']);
             }
-            // Upload baru
             $newName = $posterFile->getRandomName();
             $posterFile->move(FCPATH . 'uploads/banners', $newName);
             $data['poster_image'] = 'uploads/banners/' . $newName;
@@ -228,17 +222,15 @@ class EventController extends BaseController
         // Cek Upload Seatmap Baru
         $seatmapFile = $this->request->getFile('seatmap_image');
         if ($seatmapFile && $seatmapFile->isValid() && ! $seatmapFile->hasMoved()) {
-            // Hapus file lama
             if (!empty($existingEvent['seatmap_image']) && file_exists(FCPATH . $existingEvent['seatmap_image'])) {
                 unlink(FCPATH . $existingEvent['seatmap_image']);
             }
-            // Upload baru
             $newName = $seatmapFile->getRandomName();
             $seatmapFile->move(FCPATH . 'uploads/seatmaps', $newName);
             $data['seatmap_image'] = 'uploads/seatmaps/' . $newName;
         }
 
-        // Update DB
+        // Update Database
         if ($eventModel->update($id, $data)) {
             return redirect()->to('/admin/events')->with('message', 'Event berhasil diperbarui.');
         } else {
@@ -246,14 +238,13 @@ class EventController extends BaseController
         }
     }
 
-    // 6. DELETE: Menghapus event dan gambarnya
+    // 6. Menghapus event dan gambarnya
     public function delete($id = null)
     {
         $eventModel = new EventModel();
         $event = $eventModel->find($id);
 
         if ($event) {
-            // Hapus File Fisik (Poster & Seatmap) - Kode lama tetap dipakai
             if (!empty($event['poster_image']) && file_exists(FCPATH . $event['poster_image'])) {
                 unlink(FCPATH . $event['poster_image']);
             }
@@ -261,11 +252,8 @@ class EventController extends BaseController
                 unlink(FCPATH . $event['seatmap_image']);
             }
 
-            // Hapus Data DB
             $eventModel->delete($id);
 
-            // --- PERUBAHAN DI SINI ---
-            // Jangan redirect! Kembalikan JSON.
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'Event berhasil dihapus.'
@@ -278,7 +266,6 @@ class EventController extends BaseController
         ])->setStatusCode(404);
     }
     
-    // Helper: Redirect /admin/events/1 ke edit
     public function show($id = null)
     {
         return redirect()->to('/admin/events/edit/' . $id);

@@ -1,20 +1,29 @@
-<main class="w-full pt-12 grow mb-20">
+<main class="w-full pt-24 mb-20 grow transition-all duration-300">
     <div class="max-w-5xl mx-auto p-4">
 
         <div class="mb-8 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4 animate-pulse">
                 <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900">Menunggu Pembayaran</h2>
-            <p class="text-gray-500">Selesaikan pembayaran Anda dalam waktu <span class="font-mono font-bold text-red-600">15:00</span> menit.</p>
-        </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Menunggu Pembayaran</h2>
+            
+            <div class="flex flex-col items-center justify-center gap-2 text-gray-500">
+                <span>Selesaikan pembayaran Anda dalam waktu:</span>
+                
+                <div class="bg-red-50 text-red-600 px-6 py-2 rounded-full border border-red-100 flex items-center gap-2 shadow-sm">
+                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="body-timer-text" class="font-mono font-bold text-2xl tabular-nums pt-0.5">15:00</span>
+                    <span class="text-sm font-medium uppercase tracking-wide opacity-70">Menit</span>
+                </div>
+            </div>    
+            </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
             <div class="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                     <span class="font-bold text-gray-700">Metode Pembayaran</span>
-                    <img src="<?= base_url('assets/payment/' . $order['payment_method'] . '.svg') ?>" class="h-8 w-auto object-contain">
+                    <img src="<?= base_url('assets/payment/' . ($order['payment_method'] ?? 'bca') . '.svg') ?>" class="h-8 w-auto object-contain">
                 </div>
                 
                 <div class="p-8 text-center">
@@ -24,7 +33,7 @@
                         <span id="va-number" class="text-3xl md:text-4xl font-mono font-bold text-blue-600 tracking-wider">
                             <?= '8800' . rand(1000000000, 9999999999) ?>
                         </span>
-                        <button onclick="copyVA()" class="text-gray-400 hover:text-blue-600 transition-colors" title="Salin">
+                        <button type="button" id="btn-copy-va" class="text-gray-400 hover:text-blue-600 transition-colors" title="Salin">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         </button>
                     </div>
@@ -36,7 +45,7 @@
 
                     <form action="/checkout/confirm/<?= $order['id'] ?>" method="POST" class="mt-6">
                         <?= csrf_field() ?>
-                        <button type="submit" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3 text-base font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl animate-bounce">
+                        <button type="submit" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3 text-base font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
                             Saya Sudah Bayar
                         </button>
                     </form>
@@ -64,7 +73,7 @@
 
                 <div class="border-t pt-4">
                     <span class="text-xs font-bold text-gray-400 uppercase">Order ID</span>
-                    <p class="font-mono font-bold text-gray-900">#<?= $order['trx_id'] ?></p>
+                    <p class="font-mono font-bold text-gray-900 text-sm"><?= esc($order['trx_id'] ?? '#'.$order['id']) ?></p>
                 </div>
             </div>
 

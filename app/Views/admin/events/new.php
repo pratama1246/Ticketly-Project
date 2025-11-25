@@ -1,11 +1,10 @@
 <!-- HALAMAN TAMBAH EVENT -->
 
-<!-- Judul Halaman -->
 <h1 class="text-3xl font-bold text-black mb-6">
     <?= esc($title) ?>
 </h1>
 
-<?= $validation->listErrors('list') // Ini akan menampilkan daftar error jika validasi gagal ?>
+<?= $validation->listErrors('list') ?>
 
 <!-- FORM TAMBAH EVENT -->
 <form action="/admin/events" method="post" enctype="multipart/form-data">
@@ -72,7 +71,7 @@
                 <label for="sort_order" class="block mb-2 text-sm font-medium text-gray-900">Nomor Urut (Prioritas)</label>
                 <input type="number" id="sort_order" name="sort_order" 
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" 
-                       value="<?= old('sort_order', $event['sort_order']) ?>" 
+                       value="<?= old('sort_order', 0) ?>"
                        placeholder="0">
                 <p class="mt-1 text-xs text-gray-500">Semakin kecil angkanya (misal 1), semakin di depan posisinya. 0 = Default.</p>
             </div>

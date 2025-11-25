@@ -50,6 +50,7 @@
             </div>
         </div>
 
+        <!-- Social Media Section -->
         <hr class="my-6 border-default sm:mx-auto lg:my-8" />
         <div class="sm:flex sm:items-center sm:justify-between">
             <span class="text-sm text-white sm:text-center">© <?= date('Y') ?> Ticketly™</a>. All Rights Reserved.
@@ -89,7 +90,5 @@
         </div>
     </div>
 </footer>
-
 </body>
-
 </html>

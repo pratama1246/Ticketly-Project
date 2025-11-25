@@ -12,10 +12,20 @@ use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
 
 class CheckoutController extends BaseController
 {
-    // Memulai Proses Checkout
+    // Langkah 1: Memulai Proses Checkout
     public function start()
     {
-        // Ambil data tiket yang dipilih dari form POST
+        if (session()->has('checkout_process')) {
+            if (session()->has('checkout_expire') && session()->get('checkout_expire') > time()) {
+                
+                return redirect()->to('/checkout/review_order')
+                    ->with('warning', 'Harap selesaikan atau batalkan pesanan Anda sebelumnya.');
+            } else {
+                session()->remove('checkout_process');
+                session()->remove('checkout_expire');
+            }
+        }
+
         $quantities = $this->request->getPost('quantity');
         $eventId = $this->request->getPost('eventId');
 
@@ -23,7 +33,6 @@ class CheckoutController extends BaseController
             return redirect()->back()->with('error', 'Silakan pilih tiket terlebih dahulu.');
         }
 
-        // Bersihkan data sampah (yang jumlahnya 0)
         $selectedTickets = array_filter($quantities, function ($qty) {
             return $qty > 0;
         });
@@ -32,7 +41,6 @@ class CheckoutController extends BaseController
             return redirect()->back()->with('error', 'Silakan pilih minimal 1 tiket.');
         }
 
-        // Cek apakah user mencoba checkout event lain saat sesi masih aktif (Opsional)
         if (session()->has('checkout_process')) {
             $currentData = session('checkout_process');
             if ($currentData['event_id'] != $eventId) {
@@ -50,12 +58,19 @@ class CheckoutController extends BaseController
         
         session()->set('checkout_process', $checkoutData);
 
+        session()->set('checkout_expire', time() + 300);
+
         return redirect()->to('/checkout/personal_info');
     }
 
     // Langkah 2 (GET): Menampilkan Form Data Diri
     public function personalInfo()
-    {
+    {   
+        $timeLeft = $this->checkSessionTime();
+        if ($timeLeft === false) {
+            return redirect()->to('/')->with('error', 'Waktu pemesanan habis.');
+        }
+
         $eventModel = new EventModel();
         $checkoutData = session('checkout_process');
         
@@ -65,6 +80,7 @@ class CheckoutController extends BaseController
         
         $data['event'] = $eventModel->find($checkoutData['event_id']);
         $data['step'] = 1;
+        $data['time_left'] = $timeLeft;
 
         echo view('layout/header_checkout', $data);
         echo view('checkout_personal_info', $data); 
@@ -80,9 +96,21 @@ class CheckoutController extends BaseController
             'phone_number'    => 'required|string|max_length[50]',
             'identity_number' => 'required|string|max_length[100]',
             'last_name'       => 'permit_empty|string|max_length[100]',
-            'birth_date'      => 'permit_empty|valid_date',
+            'birth_date'      => 'required|string',
         ];
 
+        $rawDate = $this->request->getPost('birth_date');
+        $fixedDate = null;
+
+        if (!empty($rawDate)) {
+            $dateObject = \DateTime::createFromFormat('d/m/Y', $rawDate);
+            
+            if ($dateObject) {
+                $fixedDate = $dateObject->format('Y-m-d');
+            } else {
+                $fixedDate = $rawDate; 
+            }
+        }
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -105,18 +133,18 @@ class CheckoutController extends BaseController
     // Langkah 4 (GET): Menampilkan Halaman Metode Bayar
     public function paymentMethod()
     {
+        $timeLeft = $this->checkSessionTime();
+        if ($timeLeft === false) { return redirect()->to('/'); }
+
         $paymentModel = new \App\Models\PaymentMethodModel();
         
-        // Ambil semua metode aktif
         $methods = $paymentModel->getActiveMethods();
 
         $data = [
             'step' => 2,
-            // Filter E-Wallet
+            'time_left' => $timeLeft,
             'ewallets' => array_filter($methods, fn($m) => $m['type'] == 'ewallet'),
-            // Filter Virtual Account
             'vas'      => array_filter($methods, fn($m) => $m['type'] == 'virtual_account'),
-            // Filter Lainnya (Allo & Akulaku masuk sini)
             'others'   => array_filter($methods, fn($m) => $m['type'] == 'other')
         ];
 
@@ -130,7 +158,7 @@ class CheckoutController extends BaseController
     public function processPayment()
     {
         $rules = [
-            'payment_method' => 'required|string|in_list[ovo,dana,gopay,shopeepay,bca_va,bri_va,bni_va,qris]'
+            'payment_method' => 'required|string'
         ];
 
         if (!$this->validate($rules)) {
@@ -144,9 +172,13 @@ class CheckoutController extends BaseController
         return redirect()->to('/checkout/review_order');
     }
 
+
     // Langkah 6 (GET): Menampilkan Halaman Review
     public function reviewOrder()
     {
+        $timeLeft = $this->checkSessionTime();
+        if ($timeLeft === false) { return redirect()->to('/'); }
+
         $session = session();
         $checkoutData = $session->get('checkout_process');
 
@@ -160,15 +192,10 @@ class CheckoutController extends BaseController
         $data['event'] = $eventModel->find($checkoutData['event_id']);
         $data['personal'] = $checkoutData['personal_data'];
         $data['payment_method'] = $checkoutData['payment_method'];
-        $data['step'] = 3;
-
-        // Mapping nama metode pembayaran untuk ditampilkan
-        $paymentMethods = [
-            'ovo' => 'OVO', 'dana' => 'DANA', 'gopay' => 'GoPay', 'shopeepay' => 'ShopeePay',
-            'bca' => 'BCA Virtual Account', 'bri' => 'BRI Virtual Account', 'bni' => 'BNI Virtual Account',
-            ''
-        ];
-        $data['payment_method_name'] = $paymentMethods[$checkoutData['payment_method']] ?? 'Tidak Dikenal';
+        
+        $paymentModel = new \App\Models\PaymentMethodModel();
+        $method = $paymentModel->where('code', $checkoutData['payment_method'])->first();
+        $data['payment_method_name'] = $method ? $method['name'] : $checkoutData['payment_method'];
         
         $tickets = [];
         $totalPrice = 0;
@@ -191,19 +218,14 @@ class CheckoutController extends BaseController
         $data['selected_tickets_details'] = $tickets;
         $data['total_price'] = $totalPrice;
         $data['step'] = 3;
+        $data['time_left'] = $timeLeft;
 
         echo view('layout/header_checkout', $data);
         echo view('checkout_review_order', $data);
         echo view('layout/footer');
     }
 
-    // Langkah 7 (POST): Submit Order, BUAT PDF, dan KIRIM EMAIL
-   // ------------------------------------------------------------------
-    // GANTI FUNGSI submitOrder() DENGAN 2 FUNGSI DI BAWAH INI
-    // ------------------------------------------------------------------
-
-    // TAHAP 1: Simpan Order (Status Pending) -> Arahkan ke Halaman Bayar
-   // TAHAP 1: Simpan Order (Status Pending) -> Arahkan ke Halaman Bayar
+    // Langkah 7: Simpan dan Buat Order
     public function createOrder()
     {
         $session = session();
@@ -215,7 +237,6 @@ class CheckoutController extends BaseController
         $orderItemsModel = new OrderItemsModel();
         $ticketTypeModel = new TicketTypeModel();
         
-        // Hitung Total & Validasi Stok
         $totalPrice = 0;
         $ticketDetails = [];
         $ticketTypes = $ticketTypeModel->whereIn('id', array_keys($checkoutData['selected_tickets']))->findAll();
@@ -232,26 +253,18 @@ class CheckoutController extends BaseController
             $totalPrice += $subtotal;
         }
 
-        // ============================================================
-        // 2. GENERATE TRX ID (SESUAI REQUEST)
-        // ============================================================
-        // Format: TRX + Tanggal(Ymd) + 8 Karakter Hex Acak
-        // Contoh: TRX-20251122-A1B2C3D4
+        // 2. GENERATE TRX ID
         $randomStr = strtoupper(bin2hex(random_bytes(4))); 
         $trxId = 'TRX-' . date('Ymd') . '-' . $randomStr;
 
-        // Mulai Database Transaction
         $db = \Config\Database::connect();
         $db->transStart();
 
         $personalData = $checkoutData['personal_data'];
         
-        // Simpan Order (STATUS: PENDING)
         $orderData = [
             'user_id'         => auth()->loggedIn() ? auth()->id() : null,
-            
-            'trx_id'          => $trxId, // <--- MASUKKAN ID KEREN DI SINI
-            
+            'trx_id'          => $trxId,
             'first_name'      => $personalData['first_name'],
             'last_name'       => $personalData['last_name'],
             'email'           => $personalData['email'],
@@ -260,14 +273,12 @@ class CheckoutController extends BaseController
             'birth_date'      => $personalData['birth_date'],
             'payment_method'  => $checkoutData['payment_method'],
             'order_total'     => $totalPrice,
-            'status'          => 'pending' 
+            'status'          => 'Pending' 
         ];
         $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();
 
-        // Simpan Item Tiket
         foreach ($ticketDetails as $ticket) {
-            // Generate Kode Tiket Unik
             $randTicket = strtoupper(bin2hex(random_bytes(3))); 
             $ticketUniqueCode = sprintf('TKT-E%02d-%d-%s', $checkoutData['event_id'], $newOrderId, $randTicket);
 
@@ -279,7 +290,6 @@ class CheckoutController extends BaseController
                 'ticket_code'    => $ticketUniqueCode
             ]);
 
-            // Kurangi Stok
             $ticketTypeModel->where('id', $ticket['id'])
                             ->set('quantity_sold', 'quantity_sold + ' . $ticket['quantity'], false)
                             ->update();
@@ -292,13 +302,12 @@ class CheckoutController extends BaseController
         }
 
         $session->remove('checkout_process');
-        $session->remove('checkout_time_left');
+        $session->remove('checkout_expire');
 
-        // Redirect ke Halaman Bayar
         return redirect()->to('/checkout/pay/' . $newOrderId);
     }
 
-    // TAHAP 2: Konfirmasi Bayar -> Update Status -> Kirim Email
+    // Langkah 8: Konfirmasi Pembayaran dan Kirim E-Ticket
     public function confirmPayment($orderId)
     {
         $orderModel = new OrderModel();
@@ -311,16 +320,13 @@ class CheckoutController extends BaseController
             return redirect()->to('/');
         }
 
-        // 1. Update Status Jadi Completed
         $orderModel->update($orderId, ['status' => 'completed']);
 
-        // 2. Siapkan Data untuk PDF & Email (Ambil ulang dari DB)
         $items = $orderItemsModel->where('order_id', $orderId)->findAll();
         $firstItem = $items[0];
         $ticketType = $ticketTypeModel->find($firstItem['ticket_type_id']);
         $event = $eventModel->find($ticketType['event_id']);
-        
-        // Generate QR Code
+
         $qrContent = !empty($firstItem['ticket_code']) ? $firstItem['ticket_code'] : 'INVALID-CODE-' . $orderId;
 
         $qrCode = new QrCodeGenerator();
@@ -332,7 +338,7 @@ class CheckoutController extends BaseController
             'eventDate'     => (new \DateTime($event['event_date']))->format('d F Y, H:i') . ' WIB',
             'venue'         => $event['venue'],
             'ticketType'    => $ticketType['name'],
-            'quantity'      => count($items), // Simplifikasi
+            'quantity'      => count($items), 
             'orderId'       => '#' . $orderId,
             'qrCodeBase64'  => $qrCodeBase64,
             'ticketCode'    => $firstItem['ticket_code']
@@ -354,43 +360,50 @@ class CheckoutController extends BaseController
         $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $orderId . '.pdf', 'application/pdf');
         $email->send();
 
-        // 5. Redirect ke Sukses
         session()->setFlashdata('success_order_id', $orderId);
         return redirect()->to('/order/success');
     }
-    
+
+    // Langkah 9: Halaman Pembayaran
     public function pay($orderId)
     {
         $orderModel = new OrderModel();
         $eventModel = new EventModel();
         $orderItemsModel = new OrderItemsModel();
 
-        // Ambil data order
         $order = $orderModel->find($orderId);
 
         if (!$order) {
             return redirect()->to('/');
         }
 
-        // Ambil Event ID dari salah satu item tiket
+        $createdAt = strtotime($order['created_at']);
+        $deadline  = $createdAt + (15 * 60);
+        $now       = time();
+        $timeLeft  = $deadline - $now;
+
+        if ($timeLeft < 0) { $timeLeft = 0; }
+
         $item = $orderItemsModel->where('order_id', $orderId)->first();
         $ticketTypeModel = new TicketTypeModel();
         $ticket = $ticketTypeModel->find($item['ticket_type_id']);
         $event = $eventModel->find($ticket['event_id']);
 
         $data = [
-            'title' => 'Menunggu Pembayaran',
-            'order' => $order,
-            'event' => $event,
-            'step'  => 4
+            'title'     => 'Menunggu Pembayaran',
+            'order'     => $order,
+            'event'     => $event,
+            'step'      => 4,
+            'time_left' => $timeLeft,
+            'enable_floating_timer' => false
         ];
 
-        echo view('layout/header_checkout', $data); // Pakai header checkout
+        echo view('layout/header_checkout', $data);
         echo view('checkout_pay', $data);
         echo view('layout/footer');
     }
 
-    // langkah 8 Halaman Sukses Pesanan
+    // Langkah 10 Halaman Sukses Order
     public function orderSuccess()
     {
         $orderId = session()->getFlashdata('success_order_id');
@@ -402,12 +415,10 @@ class CheckoutController extends BaseController
         $orderModel = new OrderModel();
         $data['order'] = $orderModel->find($orderId);
 
-        // Jika order tidak ditemukan
         if (empty($data['order'])) {
             return redirect()->to('/');
         }
         
-        // Kirim data tambahan ke view
         $data['email'] = $data['order']['email'];
 
         echo view('layout/header');
@@ -415,7 +426,7 @@ class CheckoutController extends BaseController
         echo view('layout/footer');
     }
 
-    // Langkah 9 Halaman Timeout Checkout
+    // Langkah 11 Halaman Timeout Checkout
     public function timeout()
     {
         echo view('layout/header');
@@ -423,11 +434,38 @@ class CheckoutController extends BaseController
         echo view('layout/footer');
     }
 
-    // Langkah 10 Batalkan Checkout
+    // Langkah 12 Batalkan Checkout
     public function cancel()
     {
         session()->remove('checkout_process');
-        session()->remove('checkout_time_left');
+        session()->remove('checkout_expire'); 
+
         return redirect()->to('/');
+    }
+
+    // Fungsi Cek Waktu Sesi Checkout
+    private function checkSessionTime()
+    {
+        $session = session();
+
+        if (!$session->has('checkout_process')) {
+            return false;
+        }
+
+        if (!$session->has('checkout_expire')) {
+            return false;
+        }
+
+        $expireTime = $session->get('checkout_expire');
+        $now = time();
+        $timeLeft = $expireTime - $now;
+
+        if ($timeLeft <= 0) {
+            $session->remove('checkout_process');
+            $session->remove('checkout_expire');
+            return false;
+        }
+
+        return $timeLeft;
     }
 }

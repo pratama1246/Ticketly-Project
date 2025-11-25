@@ -1,6 +1,5 @@
 <!-- HALAMAN EDIT EVENT -->
 
-<!-- Judul Halaman -->
 <h1 class="text-3xl font-bold text-black mb-6">
     <?= esc($title) ?>
 </h1>

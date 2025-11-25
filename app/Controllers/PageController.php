@@ -13,6 +13,7 @@ class PageController extends BaseController
         $this->eventModel = new EventModel();
     }
 
+    // Fungsi Statis Halaman Tentang Kami
     public function tentang()
     {
         echo view('layout/header', ['title' => 'Tentang Kami']);
@@ -20,8 +21,7 @@ class PageController extends BaseController
         echo view('layout/footer');
     }
 
-    // --- FUNGSI GENERIK UNTUK HALAMAN LISTING ---
-
+    // Fungsi Statis Halaman Konser
     public function concerts()
     {
         $data = [
@@ -35,6 +35,7 @@ class PageController extends BaseController
         return $this->renderListing($data);
     }
 
+    // Fungsi Statis Halaman Festival
     public function festivals()
     {
         $data = [
@@ -48,25 +49,23 @@ class PageController extends BaseController
         return $this->renderListing($data);
     }
 
+    // Fungsi Statis Halaman Event Lainnya dan Pencarian
     public function events()
     {
-        $keyword = $this->request->getGet('q'); // Tangkap kata kunci dari URL
+        $keyword = $this->request->getGet('q');
         
         $query = $this->eventModel->where('status', 'published');
 
         if (!empty($keyword)) {
-            // --- MODE PENCARIAN ---
             $query->groupStart()
-                  ->like('name', $keyword)       // Cari di Nama
-                  ->orLike('venue', $keyword)    // Atau di Lokasi
-                  ->orLike('category', $keyword) // Atau di Kategori
+                  ->like('name', $keyword)       
+                  ->orLike('venue', $keyword)
+                  ->orLike('category', $keyword) 
                   ->groupEnd();
             
             $title = 'Hasil Pencarian: "' . esc($keyword) . '"';
             $desc  = 'Menampilkan event yang cocok dengan kata kunci tersebut.';
         } else {
-            // --- MODE LIHAT SEMUA ---
-            // Menampilkan semua event (bukan cuma kategori 'Event')
             $title = 'Jelajahi Semua Event';
             $desc  = 'Temukan berbagai pengalaman seru mulai dari konser hingga pameran.';
         }
@@ -80,11 +79,10 @@ class PageController extends BaseController
         return $this->renderListing($data);
     }
 
-    // Helper private biar gak nulis view berulang-ulang
     private function renderListing($data)
     {
         echo view('layout/header', ['title' => $data['title']]);
-        echo view('page/listing', $data); // Kita pakai 1 file view untuk ramai-ramai
+        echo view('page/listing', $data);
         echo view('layout/footer');
     }
 }

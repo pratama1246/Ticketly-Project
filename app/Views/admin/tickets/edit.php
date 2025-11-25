@@ -10,12 +10,14 @@
     </div>
 <?php endif; ?>
 
+<!-- Form Edit Tiket -->
 <form action="/admin/events/<?= $event['id'] ?>/tickets/<?= $ticket['id'] ?>/update" method="post">
     <?= csrf_field() ?>
     
     <div class="bg-white p-6 rounded-lg shadow-md max-w-3xl border border-gray-100">
         <div class="grid grid-cols-1 gap-6">
             
+            <!-- Nama Tiket -->
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Nama Tiket</label>
                 <input type="text" name="name" 
@@ -23,6 +25,7 @@
                        value="<?= old('name', $ticket['name']) ?>" required>
             </div>
 
+            <!-- Jenis Posisi Tiket -->
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Posisi</label>
                 <div class="grid grid-cols-2 gap-4">
@@ -44,6 +47,7 @@
                 </div>
             </div>
 
+            <!-- Harga dan Kuota Tiket -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-900">Harga Tiket (Rp)</label>
@@ -59,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- Warna Tiket -->
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Warna Tampilan</label>
                 <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -69,6 +74,7 @@
                 </div>
             </div>
 
+            <!-- Keterangan Tiket -->
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Keterangan</label>
                 <textarea name="description" id="description" rows="3" 
@@ -76,7 +82,8 @@
             </div>
 
         </div>
-
+            
+        <!-- Tombol Update dan Batal -->
         <div class="mt-8 flex items-center gap-3 pt-6 border-t border-gray-100">
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Update Tiket

@@ -3,24 +3,22 @@
 namespace App\Controllers;
 
 use App\Models\EventModel;
-use App\Models\TicketTypeModel; // Pastikan ini ada
+use App\Models\TicketTypeModel;
 
 class EventController extends BaseController
 {
-    // Menampilkan halaman detail event berdasarkan SLUG
+    // Fungsi detail event berdasarkan SLUG
     public function detail($slug = null)
     {
         $eventModel = new EventModel();
-        $ticketModel = new \App\Models\TicketTypeModel(); // Panggil model tiket
+        $ticketModel = new TicketTypeModel();
         
-        // 1. Cari Event
         $event = $eventModel->where('slug', $slug)->first();
 
         if (!$event) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        // 2. Ambil Data Tiket untuk hitung stok
         $tickets = $ticketModel->where('event_id', $event['id'])->findAll();
         
         $totalStock = 0;
@@ -31,7 +29,6 @@ class EventController extends BaseController
             $totalSold += $t['quantity_sold'];
         }
 
-        // 3. LOGIKA STATUS OTOMATIS
         $now = new \DateTime();
         $eventDate = new \DateTime($event['event_date']);
         
@@ -43,7 +40,7 @@ class EventController extends BaseController
             'text'        => 'Sedang Berlangsung',
             'color'       => 'bg-green-500 text-white',
             'icon'        => '<svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>',
-            'purchasable' => true // <--- KUNCI: Bisa dibeli
+            'purchasable' => true
         ];
 
         // Cek 1: Telah Berakhir (Merah Abu/Gelap) -> TIDAK BISA DIBELI
@@ -52,7 +49,7 @@ class EventController extends BaseController
                 'text'        => 'Telah Berakhir',
                 'color'       => 'bg-gray-500 text-white', 
                 'icon'        => '<svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-                'purchasable' => false // <--- Gak bisa beli
+                'purchasable' => false
             ];
         }
         // Cek 2: Terjual Habis (Merah) -> TIDAK BISA DIBELI
@@ -61,7 +58,7 @@ class EventController extends BaseController
                 'text'        => 'Terjual Habis',
                 'color'       => 'bg-red-600 text-white',
                 'icon'        => '<svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>',
-                'purchasable' => false // <--- Gak bisa beli
+                'purchasable' => false
             ];
         }
         // Cek 3: Segera Habis (Kuning) -> MASIH BISA DIBELI
@@ -70,13 +67,13 @@ class EventController extends BaseController
                 'text'        => 'Segera Habis',
                 'color'       => 'bg-yellow-400 text-yellow-900',
                 'icon'        => '<svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/></svg>',
-                'purchasable' => true // <--- Masih bisa beli
+                'purchasable' => true
             ];
         }
 
         $data = [
             'event'  => $event,
-            'status' => $status, // Kirim data status ke view
+            'status' => $status,
             'title'  => $event['name']
         ];
 
@@ -85,20 +82,18 @@ class EventController extends BaseController
              . view('layout/footer');
     }
 
-    // Halaman pemilihan tiket berdasarkan SLUG
+    // Fungsi pemilihan tiket berdasarkan SLUG
     public function select($slug = null)
     {
         $eventModel = new EventModel();
         $ticketModel = new TicketTypeModel();
 
-        // 1. Cari Event berdasarkan SLUG
         $event = $eventModel->where('slug', $slug)->first();
 
         if (!$event) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Event tidak ditemukan untuk: $slug");
         }
 
-        // 2. Ambil Tiket berdasarkan ID event yang ditemukan
         $ticketTypes = $ticketModel->where('event_id', $event['id'])->findAll();
 
         $data = [

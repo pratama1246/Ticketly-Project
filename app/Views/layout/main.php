@@ -16,7 +16,7 @@
 
                             <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent"></div>
 
-                            <div class="absolute bottom-0 left-0 w-full px-6 pb-14 pt-6 md:px-16 md:pb-24 md:pt-12 flex flex-col justify-end h-full pointer-events-none">
+                            <div class="absolute bottom-0 left-0 w-full px-6 pb-14 pt-6 md:px-8 md:pb-16 md:pt-12 lg:pb-64 lg:px-20 flex flex-col justify-end h-full pointer-events-none">
                                 <div class="max-w-4xl space-y-2 md:space-y-4">
 
                                     <span class="inline-block py-1 px-3 rounded-full bg-blue-600/90 text-white text-xs md:text-sm font-bold tracking-wider uppercase mb-2 backdrop-blur-sm">
@@ -466,7 +466,52 @@
         </div>
     </section>
 
+    <!-- WHY BUY FROM US SECTION -->
+    <section class= "py-16 text-black relative overflow-hidden mt-10">
 
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Kenapa Beli di Ticketly?</h2>
+                <p class="max-w-2xl mx-auto text-lg">Platform tiket event terpercaya dengan jutaan pengguna di seluruh Indonesia.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Transaksi 100% Aman</h3>
+                    <p class=" text-sm leading-relaxed">Pembayaran terjamin aman dengan enkripsi standar bank.</p>
+                </div>
+
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">E-Tiket Instan</h3>
+                    <p class="text-sm leading-relaxed">Tiket langsung dikirim ke email & WhatsApp tanpa menunggu lama.</p>
+                </div>
+
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                    <div class="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Bantuan 24/7</h3>
+                    <p class="text-sm leading-relaxed">Tim support kami siap membantumu kapan saja jika ada kendala.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+     <!-- PARTNER & SPONSOR SECTION -->
     <section class="py-16 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-10">
@@ -492,51 +537,6 @@
                 <div class="w-full flex justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-pointer p-4">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png" class="h-10 object-contain" alt="PHP">
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- WHY BUY FROM US SECTION -->
-    <section class="bg-blue-secondary-dark py-16 text-white rounded-t-[1rem] md:rounded-t-[3rem] relative overflow-hidden mt-10">
-
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Kenapa Beli di Ticketly?</h2>
-                <p class="text-blue-200 max-w-2xl mx-auto text-lg">Platform tiket event terpercaya dengan jutaan pengguna di seluruh Indonesia.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-
-                <div class="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 transition-all group hover:-translate-y-2 duration-300">
-                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Transaksi 100% Aman</h3>
-                    <p class="text-blue-100 text-sm leading-relaxed">Pembayaran terjamin aman dengan enkripsi standar bank.</p>
-                </div>
-
-                <div class="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 transition-all group hover:-translate-y-2 duration-300">
-                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">E-Tiket Instan</h3>
-                    <p class="text-blue-100 text-sm leading-relaxed">Tiket langsung dikirim ke email & WhatsApp tanpa menunggu lama.</p>
-                </div>
-
-                <div class="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 transition-all group hover:-translate-y-2 duration-300">
-                    <div class="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-pink-500/30 group-hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Bantuan 24/7</h3>
-                    <p class="text-blue-100 text-sm leading-relaxed">Tim support kami siap membantumu kapan saja jika ada kendala.</p>
-                </div>
-
             </div>
         </div>
     </section>

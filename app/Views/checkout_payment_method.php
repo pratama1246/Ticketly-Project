@@ -1,7 +1,7 @@
     <script type="text/javascript"
         src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="Mid-client-luIJNWBXVVrc0zac"></script>
-    <main class="w-full grow mb-20">
+<main class="w-full pt-60 md:pt-42 mb-20 grow transition-all duration-300">
         <div class="max-w-4xl mx-auto p-4">
 
                 <h2 class="text-2xl font-bold text-black mb-4">Metode Pembayaran</h2>

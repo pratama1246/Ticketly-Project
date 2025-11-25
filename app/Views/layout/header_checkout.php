@@ -6,28 +6,22 @@
     <title><?= esc($title ?? 'Ticketly Checkout') ?></title>
     <link rel="icon" href="<?= base_url('assets/favicon.png') ?>" type="image/png">
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
     <script src="<?= base_url('js/app.js') ?>"></script>
     <script>var CI_TIME_LEFT = <?= isset($time_left) ? $time_left : 0 ?>;</script>
 </head>
+
+
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
-    <header class="bg-yellow-bright-light border-b border-gray-200 sticky top-0 z-50">
+<!-- Navbar dan Stepper Checkout-->
+<header class="bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-50 shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col xl:flex-row justify-between items-center py-4 gap-6">
                 
                 <a href="<?= base_url('/') ?>" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
                 </a>
-
-                <div id="header-timer-container" class="hidden md:flex items-center gap-2 bg-red-50 border border-red-100 px-4 py-2 rounded-lg">
-                    <svg class="w-5 h-5 text-red-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div class="flex flex-col leading-none">
-                        <span class="text-[10px] text-red-600 font-bold uppercase tracking-wider">Sisa Waktu</span>
-                        <span id="header-timer" class="font-mono text-lg font-bold text-red-700">00:00</span>
-                    </div>
-                </div>
                 
                 <div class="w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 scrollbar-hide">
                     <ol class="flex items-center w-full min-w-[800px] xl:min-w-0 gap-4">
@@ -113,24 +107,59 @@
         </div>
     </header>
 
-  <div id="timeout-modal" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
-        <div class="relative w-full max-w-md max-h-full">
-            <div class="relative bg-white rounded-lg shadow-2xl border-t-4 border-red-600 animate-bounce-in">
-                <div class="p-6 text-center">
-                    <div class="mx-auto mb-4 text-red-600 bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h3 class="mb-2 text-xl font-bold text-gray-900">Segera Selesaikan Pesanan!</h3>
-                    <p class="text-gray-500 mb-6">Waktu pemesanan Anda tinggal sedikit lagi. Tiket akan dilepas ke pembeli lain jika waktu habis.</p>
-                    
-                    <div class="text-3xl font-mono font-bold text-red-600 mb-6" id="modal-timer">
-                        00:00
-                    </div>
+    <!-- Popup Salin -->
+    <div id="custom-copy-popup" class="fixed inset-0 z-100 hidden items-center justify-center pointer-events-none">
+        <div class="bg-gray-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-fade-in-up transform transition-all scale-100">
+            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <span class="font-medium text-sm tracking-wide">Nomor VA Berhasil Disalin</span>
+        </div>
+    </div>
 
-                    <button onclick="closeTimeoutModal()" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                        Saya Mengerti, Lanjut Bayar
-                    </button>
+
+    <!-- Pop Up Timer Checkout -->
+    <?php if (!isset($enable_floating_timer) || $enable_floating_timer === true): ?>
+    <div id="checkout-timer-alert" class="fixed top-44 ta:top-24 left-0 w-full z-9999 hidden justify-center pointer-events-none transition-all duration-300 animate-fade-in-down">    
+            <div class="pointer-events-auto flex items-center gap-3.5 px-6 py-3 bg-blue-50 text-blue-800 border border-blue-200 rounded-full shadow-2xl shadow-blue-900/20 transition-colors duration-300">  
+                <div class="flex items-center justify-center w-8 h-8 bg-white text-blue-600 rounded-full shadow-sm shrink-0">
+                    <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-extrabold uppercase tracking-widest opacity-60 pt-px">Sisa Waktu</span>
+                    <span id="timer-countdown" class="font-sans font-black text-xl tabular-nums leading-none pb-0.5">00:00</span>
                 </div>
             </div>
         </div>
-    </div>  
+    <?php endif; ?>
+
+
+    <!-- Modal Timeout Checkout -->
+    <div id="timeout-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-900/60 backdrop-blur-sm">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-xl border border-gray-200">
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-red-600 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    <h3 class="mb-2 text-lg font-bold text-gray-900">Waktu Pemesanan Habis!</h3>
+                    <p class="mb-6 text-gray-500">Maaf, sesi Anda telah berakhir. Tiket telah dikembalikan ke stok.</p>
+                    <a href="/" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Kembali ke Beranda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-24 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        var CI_TIME_LEFT = <?= isset($time_left) ? $time_left : 0 ?>;
+    
+        var CI_FLASH_MESSAGES = {
+            success: <?= json_encode(session()->getFlashdata('success')) ?>,
+            error:   <?= json_encode(session()->getFlashdata('error')) ?>,
+            warning: <?= json_encode(session()->getFlashdata('warning')) ?>,
+            errors:  <?= json_encode(session()->getFlashdata('errors')) ?>
+        };
+    </script>

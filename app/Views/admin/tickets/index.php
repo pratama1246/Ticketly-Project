@@ -14,6 +14,7 @@
     </div>
 <?php endif; ?>
 
+<!-- TABEL TIKET -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 min-w-[800px]">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -74,6 +75,7 @@
     </table>
 </div>
 
+<!-- Skrip Hapus Tiket (Bakal di ganti) -->
 <script>
 function deleteTicket(eventId, ticketId) {
     if(typeof customModal !== 'undefined') {

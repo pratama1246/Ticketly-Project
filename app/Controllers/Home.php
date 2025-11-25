@@ -18,7 +18,7 @@ class Home extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // 2. Ambil Event per Kategori (Limit 4 agar tidak kepanjangan)
+        // 2. Ambil Event per Kategori
         $concerts = $eventModel
             ->where('category', 'concert')
             ->where('status', 'published')

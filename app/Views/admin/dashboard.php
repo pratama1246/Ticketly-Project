@@ -2,6 +2,7 @@
     <?= esc($title) ?>
 </h1>
 
+<!-- Rangkuman Statistik Admin -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
     
     <div class="bg-white p-6 rounded-lg shadow-md">
@@ -34,6 +35,8 @@
 </div>
 <h2 class="text-2xl font-bold text-black mb-4">Pesanan Terbaru</h2>
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+
+    <!-- Tabel Pesanan Terbaru -->
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>

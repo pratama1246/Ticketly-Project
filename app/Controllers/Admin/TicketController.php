@@ -17,9 +17,7 @@ class TicketController extends BaseController
         $this->eventModel = new EventModel();
     }
 
-    /**
-     * READ: Tampilkan semua tiket milik Event tertentu
-     */
+    // Menampilkan daftar tiket
     public function index($eventId)
     {
         $event = $this->eventModel->find($eventId);
@@ -39,9 +37,7 @@ class TicketController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * FORM CREATE: Tampilkan form tambah tiket
-     */
+    // Form tambah tiket baru
     public function new($eventId)
     {
         $event = $this->eventModel->find($eventId);
@@ -61,9 +57,7 @@ class TicketController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * PROCESS CREATE: Simpan tiket ke database
-     */
+    // Proses simpan tiket baru
    public function create($eventId)
     {
         // Validasi
@@ -79,7 +73,6 @@ class TicketController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Simpan
         $this->ticketModel->save([
             'event_id'        => $eventId,
             'name'            => $this->request->getPost('name'),
@@ -94,9 +87,7 @@ class TicketController extends BaseController
         return redirect()->to("/admin/events/$eventId/tickets")->with('message', 'Tiket berhasil ditambahkan.');
     }
 
-    /**
-     * DELETE: Hapus tiket
-     */
+    // Proses hapus tiket
     public function delete($eventId, $ticketId)
     {
         $this->ticketModel->delete($ticketId);
@@ -128,12 +119,9 @@ class TicketController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    /**
-     * 5. PROCESS UPDATE: Simpan perubahan ke database
-     */
+    // Proses update tiket
     public function update($eventId, $ticketId)
     {
-        // Validasi (Sama seperti create)
         $rules = [
             'name'            => 'required|string|max_length[255]',
             'ticket_category' => 'required|in_list[Seating,Standing]',
@@ -146,7 +134,6 @@ class TicketController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Proses Update
         $this->ticketModel->update($ticketId, [
             'name'            => $this->request->getPost('name'),
             'ticket_category' => $this->request->getPost('ticket_category'),

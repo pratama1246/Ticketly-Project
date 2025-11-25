@@ -10,12 +10,14 @@
     </div>
 <?php endif; ?>
 
+<!-- Form Tambah Tiket Baru -->
 <form action="/admin/events/<?= $event['id'] ?>/tickets" method="post">
     <?= csrf_field() ?>
     
     <div class="bg-white p-6 rounded-lg shadow-md max-w-3xl border border-gray-100">
         <div class="grid grid-cols-1 gap-6">
             
+            <!-- Nama Tiket -->
             <div>
                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nama Tiket / Kategori</label>
                 <input type="text" id="name" name="name" 
@@ -24,6 +26,7 @@
                        value="<?= old('name') ?>" required>
             </div>
 
+            <!-- Jenis Posisi Tiket -->
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Posisi</label>
                 <div class="grid grid-cols-2 gap-4">
@@ -45,6 +48,7 @@
                 </div>
             </div>
 
+            <!-- Harga dan Kuota Tiket -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Harga Tiket (Rp)</label>
@@ -65,6 +69,7 @@
                 </div>
             </div>
 
+            <!-- Warna Tiket -->
             <div>
                 <label for="ui_color" class="block mb-2 text-sm font-medium text-gray-900">Warna Tampilan Kartu</label>
                 <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -80,15 +85,16 @@
                 </div>
             </div>
 
+            <!-- Keterangan Tiket -->
             <div>
                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Keterangan / Benefit (Opsional)</label>
                 <textarea id="description" name="description" rows="3" 
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
                           placeholder="Contoh: Termasuk Soundcheck, Antrian Prioritas, Free Merchandise..."><?= old('description') ?></textarea>
             </div>
-
         </div>
 
+        <!-- Tombol Simpan dan Batal -->
         <div class="mt-8 flex items-center gap-3 pt-6 border-t border-gray-100">
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 shadow-md transition-all hover:shadow-lg">
                 Simpan Tiket
