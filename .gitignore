@@ -126,3 +126,4 @@ _modules/*
 /results/
 /phpunit*.xml
 /vendor
+public/output.css
