@@ -30,7 +30,7 @@
                     <p class="text-sm text-gray-500 mb-2">Nomor Virtual Account</p>
                     
                     <div class="flex justify-center items-center gap-3 mb-6">
-                        <span id="va-number" class="text-3xl md:text-4xl font-mono font-bold text-blue-600 tracking-wider">
+                        <span id="va-number" class="text-3xl md:text-4xl font-sans font-bold text-blue-600 tracking-wider">
                             <?= '8800' . rand(1000000000, 9999999999) ?>
                         </span>
                         <button type="button" id="btn-copy-va" class="text-gray-400 hover:text-blue-600 transition-colors" title="Salin">
@@ -49,6 +49,9 @@
                             Saya Sudah Bayar
                         </button>
                     </form>
+                    <button type="button" onclick="window.location.href='<?=  base_url('/checkout/cancel') ?>'" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3 mt-2 text-base font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl">
+                            Batalkan Pesanan
+                        </button>
                     <p class="mt-4 text-xs text-gray-400">Sistem akan memverifikasi pembayaran secara otomatis.</p>
                 </div>
             </div>
@@ -80,19 +83,3 @@
         </div>
     </div>
 </main>
-
-<script>
-function copyVA() {
-    const vaText = document.getElementById('va-number').innerText.replace(/\s/g, '');
-    navigator.clipboard.writeText(vaText);
-    
-    // Pake SweetAlert yang udah ada di header
-    Swal.fire({
-        icon: 'success',
-        title: 'Disalin!',
-        text: 'Nomor VA berhasil disalin.',
-        timer: 1500,
-        showConfirmButton: false
-    });
-}
-</script>

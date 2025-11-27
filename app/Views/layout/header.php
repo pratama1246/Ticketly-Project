@@ -64,22 +64,30 @@
 </nav>
 
 <?php 
-        // KONDISI 1: Masih proses checkout (Timer jalan)
-        $hasCheckoutSession = session()->has('checkout_process') && 
+        // Ambil data session belanja
+        $checkoutSession = session()->get('checkout_process');
+        $hasCheckoutSession = !empty($checkoutSession) && 
                               session()->has('checkout_expire') && 
                               (session()->get('checkout_expire') > time());
 
-        // KONDISI 2: Sudah create order tapi belum bayar (Menunggu Pembayaran)
         $hasPendingOrder = session()->has('pending_order_id');
 
-        // Tentukan Link Tujuan (Beda kondisi, beda tujuan)
-        $resumeLink = '/checkout/review_order'; // Default
+        $resumeLink = '/checkout/personal_info';
         
         if ($hasPendingOrder) {
             $resumeLink = '/checkout/pay/' . session()->get('pending_order_id');
+            
+        } elseif ($hasCheckoutSession) {
+            if (!empty($checkoutSession['payment_method'])) {
+                $resumeLink = '/checkout/review_order';
+            } elseif (!empty($checkoutSession['personal_data'])) {
+                $resumeLink = '/checkout/payment_method';
+            } else {
+                $resumeLink = '/checkout/personal_info';
+            }
         }
     ?>
-    
+
 <?php if ($hasCheckoutSession || $hasPendingOrder): ?>
         <script>
             var HAS_ACTIVE_SESSION = true;
@@ -102,7 +110,7 @@
                         <!-- Tombol Lanjutkan dan Batalkan -->
                         <div class="flex flex-col gap-3">
                             <a href="<?= $resumeLink ?>" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-3 text-center shadow-lg transition-all">
-                                Lanjutkan Pembayaran
+                                <?= $hasPendingOrder ? 'Bayar Sekarang' : 'Lanjutkan Pesanan' ?>
                             </a>
                             <a href="/checkout/cancel" class="w-full text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all">
                                 Batalkan Pesanan Ini
