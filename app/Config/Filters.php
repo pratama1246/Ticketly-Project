@@ -35,6 +35,14 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'checkout_timer' => \App\Filters\CheckoutTimerFilter::class,
+
+         'session'       => \CodeIgniter\Shield\Filters\SessionAuth::class,
+        'token'         => \CodeIgniter\Shield\Filters\TokenAuth::class,
+        'chain'         => \CodeIgniter\Shield\Filters\ChainAuth::class,
+        'auth-rates'    => \CodeIgniter\Shield\Filters\AuthRates::class,
+
+        'auth'          => \CodeIgniter\Shield\Filters\ChainAuth::class,
+
     ];
 
     /**

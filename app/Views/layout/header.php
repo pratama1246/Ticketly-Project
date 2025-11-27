@@ -8,6 +8,7 @@
         <script src="<?= base_url('flowbite.min.js') ?>"></script>
         <script src="<?= base_url('js/app.js') ?>"></script>
     <title>Ticketly - Nikmati Konsermu</title>
+    <?= csrf_meta() ?>
 </head>
 
 <body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
@@ -24,7 +25,8 @@
         <?php if (auth()->loggedIn()): ?>
             <button type="button" class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Buka menu pengguna</span>
-                <img class="w-10 h-10 rounded-full" src="<?= base_url('assets/profile_default.png') ?>" alt="user photo">
+                <?php $foto = auth()->user()->foto ? 'uploads/profile/' . auth()->user()->foto : 'assets/profile_default.png'; ?>
+                        <img class="w-10 h-10 rounded-full" src="<?= base_url($foto) ?>" alt="user photo">
             </button>
 
             <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
@@ -33,8 +35,8 @@
                     <span class="block text-body truncate"><?= auth()->user()->email ?></span>
                 </div>
                 <ul class="p-2 text-sm text-body font-medium" aria-labelledby="user-menu-button">
-                    <li><a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Dashboard</a></li>
-                    <li><a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Settings</a></li>
+                    <li><a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Profile Saya</a></li>
+                    <li><a href="/profile/edit" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit Profile</a></li>
                     <li><a href="<?= base_url('logout') ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a></li>
                 </ul>
             </div>

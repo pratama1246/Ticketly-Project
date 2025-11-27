@@ -26,10 +26,10 @@ $routes->post('/checkout/start', 'CheckoutController::start');
 $routes->group('checkout', static function ($routes) {
     $routes->get('personal_info', 'CheckoutController::personalInfo');
     $routes->post('process_personal_info', 'CheckoutController::processPersonalInfo');
-    
+
     $routes->get('payment_method', 'CheckoutController::paymentMethod');
     $routes->post('process_payment', 'CheckoutController::processPayment');
-    
+
     $routes->get('review_order', 'CheckoutController::reviewOrder');
     $routes->post('create_order', 'CheckoutController::createOrder');
 });
@@ -52,7 +52,7 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
     $routes->get('events/([0-9]+)', 'Admin\EventController::show/$1');
     $routes->get('events/edit/([0-9]+)', 'Admin\EventController::edit/$1');
     $routes->put('events/([0-9]+)', 'Admin\EventController::update/$1');
-    $routes->post('events/update/([0-9]+)', 'Admin\EventController::update/$1'); 
+    $routes->post('events/update/([0-9]+)', 'Admin\EventController::update/$1');
     $routes->delete('events/([0-9]+)', 'Admin\EventController::delete/$1');
     //Manajemen Tiket
     $routes->get('events/(:num)/tickets', 'Admin\TicketController::index/$1');
@@ -66,3 +66,9 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
 // 6. Auth Routes
 service('auth')->routes($routes);
 
+// 7. Rute Profil Pengguna
+$routes->group('profile', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Profile::index');
+    $routes->get('edit', 'Profile::edit');
+    $routes->post('update', 'Profile::update');
+});
