@@ -23,7 +23,7 @@
                     <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
                 </a>
                 
-                <div class="w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 scrollbar-hide">
+                <div class="w-full xl:w-auto overflow-x-auto [&::-webkit-scrollbar]:hidden pb-2 xl:pb-0">
                     <ol class="flex items-center w-full min-w-[800px] xl:min-w-0 gap-4">
                         
                         <?php 

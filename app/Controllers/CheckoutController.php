@@ -123,7 +123,7 @@ class CheckoutController extends BaseController
             'email'           => $this->request->getPost('email'),
             'phone_number'    => $this->request->getPost('phone_number'),
             'identity_number' => $this->request->getPost('identity_number'),
-            'birth_date'      => $this->request->getPost('birth_date'),
+            'birth_date'      => $fixedDate
         ];
         
         session()->set('checkout_process', $sessionData);
