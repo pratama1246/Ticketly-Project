@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 
-class Profile extends BaseController
+class ProfileController extends BaseController
 {
     protected $userModel;
 
@@ -15,24 +15,39 @@ class Profile extends BaseController
 
     public function index()
     {
-        $user = auth()->user(); 
-        return view('profile/index', [
-            'user' => $user
-        ]);
+        $data = [
+            'Title' => 'Profil Saya',
+            'user' => auth()->user()
+        ];
+
+        echo view('layout/header', $data);
+        echo view('profile/index', $data);
+        echo view('layout/footer');
     }
 
     public function edit()
     {
-        $user = auth()->user();
-        return view('profile/edit', [
-            'user' => $user
-        ]);
+        $data = [
+            'Title' => 'Edit Profil',
+            'user' => auth()->user(),
+            'validation' => \Config\Services::validation()
+        ];
+
+        echo view('layout/header', $data);
+        echo view('profile/edit', $data);
+        echo view('layout/footer');
     }
 
     public function update()
     {
         $user = auth()->user();
         $id   = $user->id;
+
+        $rules = [
+            'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$id]",
+            'email'    => "required|valid_email|is_unique[users.email,id,$id]",
+            'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]'
+        ];
 
         $fotoBaru = $user->foto;
         $fileFoto = $this->request->getFile('foto');

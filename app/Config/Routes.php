@@ -68,7 +68,7 @@ service('auth')->routes($routes);
 
 // 7. Rute Profil Pengguna
 $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
-    $routes->get('/', 'Profile::index');
-    $routes->get('edit', 'Profile::edit');
-    $routes->post('update', 'Profile::update');
+    $routes->get('/', 'ProfileController::index');
+    $routes->get('edit', 'ProfileController::edit');
+    $routes->post('update', 'ProfileController::update');
 });
