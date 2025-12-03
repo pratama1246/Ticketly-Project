@@ -11,7 +11,6 @@
     <script>var CI_TIME_LEFT = <?= isset($time_left) ? $time_left : 0 ?>;</script>
 </head>
 
-
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
 <!-- Navbar dan Stepper Checkout-->

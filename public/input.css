@@ -12,6 +12,9 @@
   --breakpoint-ta: 1280px;
   --font-default: 'Poppins', sans-serif;
 
+  --color-newsletter-bg-gradient-from: #98bcff;
+  --color-newsletter-bg-gradient-to: #dae4f7;
+
   /* --- Halaman 1: Biru Abu-abu (Soft Blue) --- */
   --color-blue-soft-light: #f6fbfe;
   --color-blue-soft-light-hover: #f1f9fe;

@@ -66,6 +66,8 @@ class PageController extends BaseController
             $title = 'Hasil Pencarian: "' . esc($keyword) . '"';
             $desc  = 'Menampilkan event yang cocok dengan kata kunci tersebut.';
         } else {
+            $query->where('category', 'event');
+            
             $title = 'Jelajahi Semua Event';
             $desc  = 'Temukan berbagai pengalaman seru mulai dari konser hingga pameran.';
         }

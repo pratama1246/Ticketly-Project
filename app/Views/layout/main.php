@@ -17,17 +17,17 @@
                             <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent"></div>
 
                             <div class="absolute bottom-0 left-0 w-full px-6 pb-14 pt-6 md:px-8 md:pb-16 md:pt-12 lg:pb-64 lg:px-20 flex flex-col justify-end h-full pointer-events-none">
-                                <div class="max-w-4xl space-y-2 md:space-y-4">
+                                <div class="max-w-4xl space-y-1 md:space-y-4">
 
                                     <span class="inline-block py-1 px-3 rounded-full bg-blue-600/90 text-white text-xs md:text-sm font-bold tracking-wider uppercase mb-2 backdrop-blur-sm">
                                         <?= esc(ucfirst($item['category'] ?? 'Featured')) ?>
                                     </span>
 
-                                    <h2 class="text-2xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
+                                    <h2 class="text-xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
                                         <?= esc($item['name']) ?>
                                     </h2>
 
-                                    <div class="flex flex-col md:flex-row md:items-center gap-3 text-gray-200 text-sm md:text-lg font-medium">
+                                    <div class="hidden md:flex flex-col md:flex-row md:items-center gap-3 text-gray-200 text-sm md:text-lg font-medium">
                                         <div class="flex items-center gap-2">
                                             <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -47,9 +47,9 @@
                                     </div>
 
                                     <div class="pt-4">
-                                        <span class="inline-flex items-center gap-2 text-white font-bold border-b-2 border-yellow-400 pb-1 hover:text-yellow-300 transition-colors">
+                                        <span class="inline-flex items-center gap-1 md:gap-2 text-white text-sm md:text-base font-bold border-b-2 border-yellow-400 pb-0.5 hover:text-yellow-300 transition-colors pointer-events-auto">
                                             Lihat Detail & Beli Tiket
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                             </svg>
                                         </span>
@@ -447,12 +447,12 @@
 
     <!-- Newsletter Section -->
     <section class="max-w-7xl mx-auto px-4 mb-20">
-        <div class="bg-gray-900 rounded-2xl p-8 md:p-16 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+        <div class="bg-white rounded-2xl p-8 md:p-16 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-linear-to-t from-newsletter-bg-gradient-from to-newsletter-bg-gradient-to"></div>
 
             <div class="relative z-10 max-w-2xl mx-auto">
-                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Jangan Ketinggalan Info Konser!</h2>
-                <p class="text-gray-400 mb-8">Dapatkan update event terbaru, promo tiket early-bird, dan penawaran eksklusif langsung di inbox emailmu.</p>
+                <h2 class="text-2xl md:text-4xl font-bold text-gray-800 mb-4">Jangan Ketinggalan Info Konser!</h2>
+                <p class="text-gray-600 mb-8">Dapatkan update event terbaru, promo tiket early-bird, dan penawaran eksklusif langsung di inbox emailmu.</p>
 
                 <form class="flex flex-col sm:flex-row gap-3">
                     <input type="email" placeholder="Masukkan alamat emailmu..."
@@ -461,7 +461,7 @@
                         Berlangganan
                     </button>
                 </form>
-                <p class="text-xs text-gray-500 mt-4">Kami tidak akan mengirimkan spam. Unsubscribe kapan saja.</p>
+                <p class="text-xs text-gray-600 mt-4">Kami tidak akan mengirimkan spam. Unsubscribe kapan saja.</p>
             </div>
         </div>
     </section>

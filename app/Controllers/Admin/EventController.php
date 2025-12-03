@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\EventModel;
+use App\Models\TicketTypeModel;
 
 /**
  * @property \CodeIgniter\HTTP\IncomingRequest $request
@@ -23,6 +24,29 @@ class EventController extends BaseController
 
         echo view('admin/layout/header', $data);
         echo view('admin/events/index', $data);
+        echo view('admin/layout/footer');
+    }
+
+    // Menampilkan detail event berdasarkan ID
+    public function show($id = null)
+    {
+        $eventModel = new EventModel();
+        $ticketModel = new TicketTypeModel();
+        
+        $event = $eventModel->find($id);
+
+        if (!$event) {
+            return redirect()->to('/admin/events')->with('error', 'Event tidak ditemukan.');
+        }
+
+        $data = [
+            'title'   => 'Detail Event',
+            'event'   => $event,
+            'tickets' => $ticketModel->where('event_id', $id)->findAll() 
+        ];
+
+        echo view('admin/layout/header', $data);
+        echo view('admin/events/detail', $data);
         echo view('admin/layout/footer');
     }
 
@@ -264,10 +288,5 @@ class EventController extends BaseController
             'status' => 'error',
             'message' => 'Event tidak ditemukan.'
         ])->setStatusCode(404);
-    }
-    
-    public function show($id = null)
-    {
-        return redirect()->to('/admin/events/edit/' . $id);
     }
 }

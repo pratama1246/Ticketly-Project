@@ -108,6 +108,77 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPasswordToggle('toggle-password-btn', 'password');             
     setupPasswordToggle('toggle-password-confirm-btn', 'password_confirm');
 
+    // 9. LOGIKA OTP 6 DIGIT
+    const otpContainer = document.getElementById('otp-container');
+    
+    // Jalankan hanya jika elemen otp-container ada di halaman ini
+    if (otpContainer) {
+        const inputs = otpContainer.querySelectorAll('.otp-box');
+        const hiddenToken = document.getElementById('real-token');
+
+        const updateHiddenToken = () => {
+            let tokenValue = '';
+            inputs.forEach(input => {
+                tokenValue += input.value;
+            });
+            if (hiddenToken) hiddenToken.value = tokenValue;
+        };
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+
+                if (isNaN(val)) {
+                    e.target.value = "";
+                    return;
+                }
+
+                if (val !== "") {
+                    updateHiddenToken();
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace') {
+                    if (input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    } 
+                    setTimeout(updateHiddenToken, 10);
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').slice(0, 6);
+                
+                if (!/^\d+$/.test(pasteData)) return;
+
+                pasteData.split('').forEach((char, i) => {
+                    if (inputs[i]) {
+                        inputs[i].value = char;
+                    }
+                });
+                updateHiddenToken();
+                
+                // Fokus ke input terakhir yang terisi
+                const lastIndex = Math.min(pasteData.length, inputs.length) - 1;
+                if (inputs[lastIndex]) {
+                    inputs[lastIndex].focus();
+                }
+            });
+
+            input.addEventListener('focus', () => {
+                input.select();
+            });
+        });
+
+        // Fokus otomatis ke kotak pertama saat halaman dimuat
+        if (inputs[0]) inputs[0].focus();
+    }
+
 });
 
 

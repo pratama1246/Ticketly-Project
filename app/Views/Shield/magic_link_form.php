@@ -5,7 +5,7 @@
 <?= $this->section('content') ?>
 
 <div class="flex items-center justify-center py-10">
-    <div class="w-full max-w-[1200px] bg-[#ffe398] rounded-[25px] border border-black p-8 md:p-18 flex flex-col md:flex-row gap-4">
+    <div class="w-full max-w-[1200px] bg-[#ffe398] rounded-[25px] border border-black p-8 md:p-14 flex flex-col md:flex-row gap-4">
 
         <!-- LEFT PANEL -->
         <div class="w-full md:w-1/2">
@@ -16,6 +16,8 @@
                 Masuk menggunakan tautan email anda
             </p>
 
+            <img src="/assets/icon/password-shield.svg" class="w-64 mb-6">
+
             <!-- extra spacing -->
             <div class="mt-10"></div>
         </div>
@@ -24,9 +26,9 @@
         <div class="w-full md:w-1/2">
 
                 <?php if (session('error') !== null) : ?>
-                    <div class="alert alert-danger" role="alert"><?= esc(session('error')) ?></div>
+                    <div class="flex items-start sm:items-center p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert"><?= esc(session('error')) ?></div>
                 <?php elseif (session('errors') !== null) : ?>
-                    <div class="alert alert-danger" role="alert">
+                    <div class="flex items-start sm:items-center p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
                         <?php if (is_array(session('errors'))) : ?>
                             <?php foreach (session('errors') as $error) : ?>
                                 <?= esc($error) ?>
@@ -38,7 +40,7 @@
                     </div>
                 <?php endif ?>
 
-            <form action="<?= url_to('magic-link') ?>" method="post">
+            <form action="<?= url_to('magic-link') ?>" method="post" class="md:mt-14 space-y-5">
                 <?= csrf_field() ?>
 
                 <!-- Email -->

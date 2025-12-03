@@ -1,4 +1,4 @@
-<main class="w-full pt-20 grow bg-white">
+<main class="w-full pt-20 grow bg-yellow-bright-light">
     <div class="relative py-20 bg-blue-900 overflow-hidden">
         <div class="absolute inset-0 opacity-20">
             <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -16,25 +16,28 @@
     <div class="max-w-7xl mx-auto px-6 py-16">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-                <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&q=80&w=1000" 
-                     alt="Concert Crowd" 
-                     class="rounded-2xl shadow-2xl transform -rotate-2 hover:rotate-0 transition duration-500">
+                <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&q=80&w=1000"
+                    alt="Concert Crowd"
+                    class="rounded-2xl shadow-2xl transform -rotate-2 hover:rotate-0 transition duration-500">
             </div>
             <div class="space-y-6 text-gray-600 text-lg">
                 <h2 class="text-3xl font-bold text-gray-900">Misi Kami</h2>
                 <p>
-                    Ticketly didirikan dengan satu tujuan sederhana: <strong>Menghapus keribetan dalam membeli tiket.</strong> Kami percaya bahwa proses mendapatkan akses ke hiburan harus semudah menikmati hiburan itu sendiri.
+                    Ticketly menghadirkan pengalaman pembelian tiket yang mudah, cepat, dan aman untuk semua orang. Kami ingin menjadi tempat terbaik bagi Anda yang ingin menikmati konser, event, dan festival tanpa ribet.
                 </p>
                 <p>
-                    Kami menyediakan sistem yang aman, cepat, dan transparan. Tidak ada biaya tersembunyi, tidak ada antrian server yang *down*, dan dukungan pelanggan yang selalu siap membantu.
+                    Dengan pelayanan yang ramah dan teknologi yang kami kembangkan, kami ingin memastikan bahwa setiap pengguna merasa nyaman, aman, dan terbantu.
                 </p>
-                
+                <p>
+                    Karena bagi kami, setiap tiket bukan hanya sebuah akses, tapi juga awal dari cerita yang ingin Anda ciptakan
+                </p>
+
                 <div class="grid grid-cols-2 gap-6 mt-8">
-                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                    <div class="p-4 bg-blue-primary-light rounded-xl border border-blue-100">
                         <h3 class="text-2xl font-bold text-blue-600">100k+</h3>
                         <p class="text-sm text-gray-500">Tiket Terjual</p>
                     </div>
-                    <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                    <div class="p-4 bg-palette-purple-light rounded-xl border border-purple-100">
                         <h3 class="text-2xl font-bold text-purple-600">500+</h3>
                         <p class="text-sm text-gray-500">Event Partner</p>
                     </div>

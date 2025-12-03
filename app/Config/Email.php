@@ -28,22 +28,22 @@ class Email extends BaseConfig
     /**
      * SMTP Server Hostname
      */
-    public string $SMTPHost = 'smtp.gmail.com';
+    public string $SMTPHost = 'sandbox.smtp.mailtrap.io';
 
     /**
      * SMTP Username
      */
-    public string $SMTPUser = 'anothersideoftama@gmail.com';
+    public string $SMTPUser = 'cc02e35e0fb778';
 
     /**
      * SMTP Password
      */
-    public string $SMTPPass = 'qmmd hvnj ihwa uhlx';
+    public string $SMTPPass = 'f6fe3e52ec0d8d';
 
     /**
      * SMTP Port
      */
-    public int $SMTPPort = 465;
+    public int $SMTPPort = 2525;
 
     /**
      * SMTP Timeout (in seconds)
@@ -62,7 +62,7 @@ class Email extends BaseConfig
      *             to the server. 'ssl' means implicit SSL. Connection on port
      *             465 should set this to ''.
      */
-    public string $SMTPCrypto = 'ssl';
+    public string $SMTPCrypto = 'tls';
 
     /**
      * Enable word-wrap

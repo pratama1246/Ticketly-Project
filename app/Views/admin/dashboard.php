@@ -1,33 +1,33 @@
-<h1 class="text-3xl font-bold text-black mb-6">
-    <?= esc($title) ?>
+<h1 class="text-2xl font-bold text-black mb-6">
+    Statistik Penjualan
 </h1>
 
 <!-- Rangkuman Statistik Admin -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
     
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Pendapatan</h3>
+    <div class="bg-yellow-bright-normal p-6 rounded-lg shadow-md">
+        <h3 class="text-sm font-medium text-gray-800 uppercase">Total Pendapatan</h3>
         <p class="text-2xl font-bold text-black mt-2">
             Rp <?= number_format($totalRevenue, 0, ',', '.') ?>
         </p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="text-sm font-medium text-gray-500 uppercase">Tiket Terjual</h3>
+    <div class="bg-blue-soft-normal p-6 rounded-lg shadow-md">
+        <h3 class="text-sm font-medium text-gray-800 uppercase">Tiket Terjual</h3>
         <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalTickets) ?>
         </p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Pesanan</h3>
+    <div class="bg-palette-purple-light-hover p-6 rounded-lg shadow-md">
+        <h3 class="text-sm font-medium text-gray-800 uppercase">Total Pesanan</h3>
         <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalOrders) ?>
         </p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Event</h3>
+    <div class="bg-palette-orange-light p-6 rounded-lg shadow-md">
+        <h3 class="text-sm font-medium text-gray-800 uppercase">Total Event</h3>
         <p class="text-2xl font-bold text-black mt-2">
             <?= number_format($totalEvents) ?>
         </p>
@@ -38,7 +38,7 @@
 
     <!-- Tabel Pesanan Terbaru -->
     <table class="w-full text-sm text-left text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <thead class="text-xs text-gray-700 uppercase bg-yellow-accent-light">
             <tr>
                 <th scope="col" class="px-6 py-3 w-58">
                     Order ID
@@ -57,7 +57,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-200">
             <?php if (empty($recentOrders)): ?>
                 <tr class="bg-white border-b">
                     <td colspan="5" class="px-6 py-4 text-center">

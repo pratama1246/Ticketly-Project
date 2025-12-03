@@ -48,7 +48,7 @@
         <!-- Seat Map Event -->
             <?php if (!empty($event['seatmap_image'])): ?>
                 <div class="bg-gray-900 p-6 rounded-xl mt-10 shadow-lg border border-gray-800">
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">SEAT MAP <?= esc($event['name']) ?>
+                    <h2 class="text-xl md:text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">SEAT MAP <?= esc($event['name']) ?>
                     </h2>
                     
                     <div class="flex justify-center">
@@ -60,7 +60,7 @@
             <?php endif; ?>
 
         <!-- Deskripsi Event -->
-            <div class="prose max-w-none mt-10">
+            <div class="prose max-w-none mt-10 text-2sm">
                     <?= $event['description'] ?>
                 </div>
         

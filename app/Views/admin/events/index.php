@@ -2,7 +2,7 @@
     <h1 class="text-3xl font-bold text-black">
         <?= esc($title) ?>
     </h1>
-    <a href="/admin/events/new" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+    <a href="/admin/events/new" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-base text-sm px-5 py-2.5">
         + Tambah Event Baru
     </a>
 </div>
@@ -20,16 +20,13 @@
 
 <!-- TABEL EVENT -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 min-w-[1400px]">
+    <table class="w-full text-sm text-left text-gray-500 min-w-[1200px]">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-6 py-3 w-50">
                     Nama Event
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Tanggal
-                </th>
-                <th scope="col" class="px-6 py-3 w-48">
+                <th scope="col" class="px-6 py-3 w-64">
                     Venue
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -66,9 +63,6 @@
                         <?= esc($event['name']) ?>
                     </th>
                     <td class="px-6 py-4">
-                        <?= (new \DateTime(esc($event['event_date'])))->format('d F Y') ?>
-                    </td>
-                    <td class="px-6 py-4">
                         <div class="line-clamp-2 text-sm" title="<?= esc($event['venue']) ?>">
                         <?= esc($event['venue']) ?>
                         </div>
@@ -92,13 +86,12 @@
                     </td>
                     <td class="px-6 py-4 gap-2.5 flex">
                         
-                        <a href="/admin/events/<?= $event['id'] ?>/tickets" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Tiket</a>
-                        <a href="/admin/events/edit/<?= $event['id'] ?>" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Edit</a>
+                        <a href="/admin/events/<?= $event['id'] ?>" class="text-black bg-yellow-accent-normal box-border border border-transparent hover:bg-yellow-accent-normal-hover focus:ring-4 focus:ring-yellow-accent-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Detail</a>
                         <button type="button" 
                                 onclick="deleteEvent(<?= $event['id'] ?>)" 
                                 class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
                             Hapus
-                        </button>   
+                        </button>    
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -106,4 +99,3 @@
         </tbody>
     </table>
 </div>
-

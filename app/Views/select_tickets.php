@@ -1,7 +1,11 @@
 <main class="w-full pt-24 grow">
     <div class="max-w-7xl mx-auto p-4 mb-20">
 
-        <img src="<?= base_url(esc($event['poster_image'])) ?>" alt="<?= esc($event['name']) ?>" class="w-full rounded-lg my-6">
+        <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
+                <img src="<?= base_url(esc($event['poster_image'])) ?>" 
+                     alt="<?= esc($event['name']) ?>" 
+                     class="w-auto max-w-full h-auto max-h-[600px] md:max-h-[700px] object-contain shadow-sm rounded-lg">
+            </div>
 
         <div class="mb-6">
             <h1 class="text-3xl lg:text-5xl font-bold text-black">
