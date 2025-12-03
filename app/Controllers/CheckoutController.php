@@ -311,15 +311,23 @@ class CheckoutController extends BaseController
 
     // Langkah 8: Konfirmasi Pembayaran dan Kirim E-Ticket
     public function confirmPayment($orderId)
-    {
+    {   
+        if (!$this->request->isAJAX()) {
+            return redirect()->to('/');
+        }
+
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();
         $ticketTypeModel = new TicketTypeModel();
 
         $order = $orderModel->find($orderId);
-        if (!$order || $order['status'] == 'completed') {
-            return redirect()->to('/');
+        if (!$order) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Pesanan tidak ditemukan.']);
+        }
+
+        if ($order['status'] == 'completed') {
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Pesanan sudah dikonfirmasi sebelumnya.']);
         }
 
         $orderModel->update($orderId, ['status' => 'completed']);
@@ -362,10 +370,11 @@ class CheckoutController extends BaseController
         $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $orderId . '.pdf', 'application/pdf');
         $email->send();
 
+        session()->remove('checkout_process');
+        session()->remove('checkout_expire');
         session()->remove('pending_order_id');
 
-        session()->setFlashdata('success_order_id', $orderId);
-        return redirect()->to('/order/success');
+        return $this->response->setJSON(['status' => 'success', 'email' => $order['email'], 'trx_id' => $order['trx_id']]);
     }
 
     // Langkah 9: Halaman Pembayaran
@@ -407,37 +416,6 @@ class CheckoutController extends BaseController
         echo view('layout/footer');
     }
 
-    // Langkah 10 Halaman Sukses Order
-    public function orderSuccess()
-    {
-        $orderId = session()->getFlashdata('success_order_id');
-
-        if (empty($orderId)) {
-            return redirect()->to('/');
-        }
-
-        $orderModel = new OrderModel();
-        $data['order'] = $orderModel->find($orderId);
-
-        if (empty($data['order'])) {
-            return redirect()->to('/');
-        }
-        
-        $data['email'] = $data['order']['email'];
-
-        echo view('layout/header');
-        echo view('checkout_success', $data);
-        echo view('layout/footer');
-    }
-
-    // Langkah 11 Halaman Timeout Checkout
-    public function timeout()
-    {
-        echo view('layout/header');
-        echo view('checkout_timeout');
-        echo view('layout/footer');
-    }
-
     // Langkah 12 Batalkan Checkout
     public function cancel()
     {
@@ -445,7 +423,7 @@ class CheckoutController extends BaseController
         session()->remove('checkout_expire');
         session()->remove('pending_order_id');
 
-        return redirect()->to('/');
+        return redirect()->to('/')->with('warning', 'Pesanan berhasil dibatalkan.');
     }
 
     // Fungsi Cek Waktu Sesi Checkout

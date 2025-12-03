@@ -65,6 +65,7 @@
   </div>
 </nav>
 
+<!-- Modal Pop Up -->
 <?php 
         // Ambil data session belanja
         $checkoutSession = session()->get('checkout_process');
@@ -123,3 +124,12 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <script>
+        var CI_FLASH_MESSAGES = {
+            success: <?= json_encode(session()->getFlashdata('success')) ?>,
+            error:   <?= json_encode(session()->getFlashdata('error')) ?>,
+            warning: <?= json_encode(session()->getFlashdata('warning')) ?>,
+            errors:  <?= json_encode(session()->getFlashdata('errors')) ?>
+        };
+    </script>

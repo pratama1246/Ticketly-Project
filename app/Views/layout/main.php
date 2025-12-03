@@ -17,9 +17,9 @@
                             <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent"></div>
 
                             <div class="absolute bottom-0 left-0 w-full px-6 pb-14 pt-6 md:px-8 md:pb-16 md:pt-12 lg:pb-64 lg:px-20 flex flex-col justify-end h-full pointer-events-none">
-                                <div class="max-w-4xl space-y-1 md:space-y-4">
+                                <div class="max-w-4xl space-y-0.5 md:space-y-4">
 
-                                    <span class="inline-block py-1 px-3 rounded-full bg-blue-600/90 text-white text-xs md:text-sm font-bold tracking-wider uppercase mb-2 backdrop-blur-sm">
+                                    <span class="inline-block py-0.5 px-1.5 md:py-1 md:px-3 rounded-full bg-blue-600/90 text-white text-xs md:text-sm font-bold tracking-wider uppercase mb-2 backdrop-blur-sm">
                                         <?= esc(ucfirst($item['category'] ?? 'Featured')) ?>
                                     </span>
 
@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="pt-4">
+                                    <div class="md:pt-4">
                                         <span class="inline-flex items-center gap-1 md:gap-2 text-white text-sm md:text-base font-bold border-b-2 border-yellow-400 pb-0.5 hover:text-yellow-300 transition-colors pointer-events-auto">
                                             Lihat Detail & Beli Tiket
                                             <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@
         <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
             <?php if (!empty($featured)): ?>
                 <?php foreach ($featured as $index => $item): ?>
-                    <button type="button" class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white/50 hover:bg-white"
+                    <button type="button" class="w-2 h-2 md:w-4 md:h-4 rounded-full bg-white/80 hover:bg-white aria-current:bg-white aria-current:scale-150 transition-all duration-300 shadow-sm"
                         aria-current="<?= $index === 0 ? 'true' : 'false' ?>"
                         aria-label="Slide <?= $index + 1 ?>"
                         data-carousel-slide-to="<?= $index ?>"></button>
@@ -79,7 +79,7 @@
             <?php endif; ?>
         </div>
 
-        <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+        <button type="button" class="absolute top-0 start-0 z-30 hidden md:flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
             <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/30 group-focus:ring-4 group-focus:ring-white/50 backdrop-blur-sm">
                 <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
@@ -87,7 +87,7 @@
                 <span class="sr-only">Previous</span>
             </span>
         </button>
-        <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+        <button type="button" class="absolute top-0 end-0 z-30 hidden md:flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
             <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/30 group-focus:ring-4 group-focus:ring-white/50 backdrop-blur-sm">
                 <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />

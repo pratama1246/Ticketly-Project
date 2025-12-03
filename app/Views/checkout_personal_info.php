@@ -13,23 +13,58 @@
             <?= csrf_field() ?>
                 <div class="mb-4">
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Nama Depan <span class="text-red-500">*</span></label>
-                    <input type="text" id="first_name" value="<?= old('first_name', $p['first_name'] ?? '') ?>" name="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="text" id="first_name" name="first_name" 
+                           value="<?= old('first_name', $p['first_name'] ?? '') ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['first_name']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500' ?>" 
+                           required>
+                    <?php if(isset($errors['first_name'])): ?>
+                        <p class="mt-1 text-sm text-red-600">
+                            <?= esc($errors['first_name']) ?>
+                        </p>
+                    <?php endif; ?>
                 </div>
+
                 <div class="mb-4">
                     <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">Nama Belakang</label>
-                    <input type="text" id="last_name" value="<?= old('last_name', $p['last_name'] ?? '') ?>" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <input type="text" id="last_name" name="last_name" 
+                           value="<?= old('last_name', $p['last_name'] ?? '') ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['last_name']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:border-blue-500' ?>">
+                    <?php if(isset($errors['last_name'])): ?>
+                        <p class="mt-1 text-sm text-red-600"><?= esc($errors['last_name']) ?></p>
+                    <?php endif; ?>
                 </div>
+
                 <div class="mb-4">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email <span class="text-red-500">*</span></label>
-                    <input type="email" id="email" value="<?= old('email', $p['email'] ?? '') ?>" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="email" id="email" name="email" 
+                           value="<?= old('email', $p['email'] ?? '') ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['email']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:border-blue-500' ?>" 
+                           required>
+                    <?php if(isset($errors['email'])): ?>
+                        <p class="mt-1 text-sm text-red-600"><?= esc($errors['email']) ?></p>
+                    <?php endif; ?>
                 </div>
+
                 <div class="mb-4">
                     <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Telepon <span class="text-red-500">*</span></label>
-                    <input type="tel" id="phone_number" value="<?= old('phone_number', $p['phone_number'] ?? '') ?>" name="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <input type="tel" id="phone_number" name="phone_number" 
+                           value="<?= old('phone_number', $p['phone_number'] ?? '') ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['phone_number']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:border-blue-500' ?>" 
+                           required>
+                    <?php if(isset($errors['phone_number'])): ?>
+                        <p class="mt-1 text-sm text-red-600"><?= esc($errors['phone_number']) ?></p>
+                    <?php endif; ?>
                 </div>
+
                 <div class="mb-4">
-                    <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Identitas (KTP/SIM/NIK/Paspor, dll) <span class="text-red-500">*</span></label>
-                    <input type="text" id="identity_number" value="<?= old('identity_number', $p['identity_number'] ?? '') ?>" name="identity_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Identitas (KTP/SIM/NIK/Paspor) <span class="text-red-500">*</span></label>
+                    <input type="text" id="identity_number" name="identity_number" 
+                           value="<?= old('identity_number', $p['identity_number'] ?? '') ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['identity_number']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500' ?>" 
+                           required>
+                    <?php if(isset($errors['identity_number'])): ?>
+                        <p class="mt-1 text-sm text-red-600"><?= esc($errors['identity_number']) ?></p>
+                    <?php endif; ?>
                 </div>
                 <div class="max-w-sm mb-4">
                     <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Lahir <span class="text-red-500">*</span></label>
@@ -44,8 +79,14 @@
                                 $birthVal = date('d/m/Y', strtotime($birthVal));
                             }
                         ?>
-                        <input id="birth_date" name="birth_date" type="text" value="<?= $birthVal ?>" class="block w-full ps-9 pe-3 py-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 px-3 shadow-sm placeholder:text-gray-400" placeholder="DD/MM/YYYY" required>
+                       <input id="birth_date" name="birth_date" type="text" 
+                               value="<?= $birthVal ?>" 
+                               class="ps-10 text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['birth_date']) ? 'border-red-500 bg-red-50 text-red-900 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500' ?>" 
+                               placeholder="DD/MM/YYYY" required>
                     </div>
+                    <?php if(isset($errors['birth_date'])): ?>
+                        <p class="mt-1 text-sm text-red-600"><?= esc($errors['birth_date']) ?></p>
+                    <?php endif; ?>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-900 mb-2">
@@ -82,7 +123,7 @@
             </div>
             <!-- Tombol Lanjut ke Pembayaran -->
             <div class="mt-8 text-right">
-                <button type="button" onclick="window.location.href='<?=  base_url('/checkout/cancel') ?>'" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                <button type="button" onclick="showCancelModal()" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
                     Batal
                 </button>
                 <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">

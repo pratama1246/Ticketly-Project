@@ -116,7 +116,7 @@
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Update Event
             </button>
-            <a href="/admin/events" class="ml-2 text-sm font-medium text-gray-700 hover:underline">
+            <a href="/admin/events/<?= $event['id'] ?>" class="ml-2 text-sm font-medium text-gray-700 hover:underline">
                 Batal
             </a>
         </div>

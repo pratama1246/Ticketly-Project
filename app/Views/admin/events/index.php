@@ -7,21 +7,10 @@
     </a>
 </div>
 
-<?php if (session()->getFlashdata('message')): ?>
-        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-            <span class="font-medium">Sukses!</span> <?= session()->getFlashdata('message') ?>
-        </div>
-    <?php elseif (session()->getFlashdata('error')): ?>
-        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
-            <span class="font-medium">Error!</span> <?= session()->getFlashdata('error') ?>
-        </div>
-    <?php endif; ?>
-
-
 <!-- TABEL EVENT -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 min-w-[1200px]">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <thead class="text-xs text-gray-700 uppercase bg-yellow-accent-light">
             <tr>
                 <th scope="col" class="px-6 py-3 w-50">
                     Nama Event

@@ -14,7 +14,7 @@
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
 <!-- Navbar dan Stepper Checkout-->
-<header class="bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-50 shadow-sm transition-all duration-300">
+<header class="bg-yellow-bright-light border-b border-yellow-bright-light fixed top-0 left-0 w-full z-50 shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col xl:flex-row justify-between items-center py-4 gap-6">
                 

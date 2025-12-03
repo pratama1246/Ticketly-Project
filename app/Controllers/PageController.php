@@ -67,7 +67,6 @@ class PageController extends BaseController
             $desc  = 'Menampilkan event yang cocok dengan kata kunci tersebut.';
         } else {
             $query->where('category', 'event');
-            
             $title = 'Jelajahi Semua Event';
             $desc  = 'Temukan berbagai pengalaman seru mulai dari konser hingga pameran.';
         }
@@ -75,7 +74,8 @@ class PageController extends BaseController
         $data = [
             'title'  => $title,
             'desc'   => $desc,
-            'events' => $query->orderBy('event_date', 'ASC')->findAll()
+            'events' => $query->orderBy('event_date', 'ASC')->findAll(),
+            'keyword' => $keyword
         ];
 
         return $this->renderListing($data);

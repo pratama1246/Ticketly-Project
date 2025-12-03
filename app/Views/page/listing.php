@@ -11,9 +11,25 @@
                 <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                     <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900">Belum ada event saat ini</h3>
-                <p class="text-gray-500 mt-2">Cek kembali nanti untuk update terbaru.</p>
+                
+                <?php if (!empty($keyword)): ?>
+                    <h3 class="text-xl font-bold text-gray-900">
+                        Oops! Tidak ditemukan hasil untuk "<?= esc($keyword) ?>"
+                    </h3>
+                    <p class="text-gray-500 mt-2 max-w-md mx-auto">
+                        Mungkin coba kata kunci lain, atau periksa ejaanmu.
+                    </p>
+                    <a href="/events" class="mt-6 inline-block px-6 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 transition-colors">
+                        Lihat Semua Event
+                    </a>
+                <?php else: ?>
+                    <h3 class="text-xl font-bold text-gray-900">Belum ada event saat ini</h3>
+                    <p class="text-gray-500 mt-2">
+                        Nantikan update event seru lainnya di sini.
+                    </p>
+                <?php endif; ?>
             </div>
+
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                  <?php foreach ($events as $event): ?>

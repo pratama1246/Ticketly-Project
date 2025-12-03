@@ -90,5 +90,42 @@
         </div>
     </div>
 </footer>
+
+<!-- Toast Container -->
+<div id="toast-container" class="fixed top-24 right-5 z-50 flex flex-col gap-2"></div>
+<!-- Modal Pop Up Cancel Checkout -->
+    <div id="cancel-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-xl shadow-2xl border-t-4 border-red-500 overflow-hidden animate-fade-in-up">
+            
+            <button type="button" onclick="closeCancelModal()" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Tutup</span>
+            </button>
+            
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-red-500 w-16 h-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-2 text-xl font-bold text-gray-900">Batalkan Pesanan?</h3>
+                <p class="mb-6 text-gray-500 text-sm">
+                    Tiket yang sudah kamu pilih akan dilepas dan bisa diambil orang lain. Yakin mau batal?
+                </p>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeCancelModal()" type="button" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                        Gak Jadi
+                    </button>
+                    <a href="/checkout/cancel" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center shadow-lg transition-all transform hover:-translate-y-0.5">
+                        Ya, Batalkan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

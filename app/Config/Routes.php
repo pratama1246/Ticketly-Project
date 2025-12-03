@@ -35,8 +35,6 @@ $routes->group('checkout', static function ($routes) {
 });
 
 // 4. Rute Status Pesanan
-$routes->get('/checkout/timeout', 'CheckoutController::timeout');
-$routes->get('/order/success', 'CheckoutController::orderSuccess');
 $routes->get('/checkout/cancel', 'CheckoutController::cancel');
 $routes->get('/checkout/pay/(:num)', 'CheckoutController::pay/$1');
 $routes->post('/checkout/confirm/(:num)', 'CheckoutController::confirmPayment/$1');

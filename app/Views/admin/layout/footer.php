@@ -35,5 +35,7 @@
     </div>
   </div>
 
+  <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2"></div>
+
   </body>
 </html>

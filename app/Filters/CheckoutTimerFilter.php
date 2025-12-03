@@ -25,7 +25,7 @@ class CheckoutTimerFilter implements FilterInterface
         if ((time() - $startTime) > $maxTime) {
             // WAKTU HABIS!
             $session->remove('checkout_process');
-            return redirect()->to('/checkout/timeout'); 
+            return redirect()->to('/')->with('error', 'Waktu pemesanan telah habis.');
         }
 
         // Jika waktu masih ada, set sisa waktu untuk ditampilkan di view

@@ -90,16 +90,14 @@ class EventController extends BaseController
                 'label' => 'Poster Image',
                 'rules' => 'uploaded[poster_image]'
                     . '|is_image[poster_image]'
-                    . '|mime_in[poster_image,image/jpg,image/jpeg,image/png,image/webp]'
-                    . '|max_size[poster_image,2048]',
+                    . '|mime_in[poster_image,image/jpg,image/jpeg,image/png,image/webp]',
             ],
             'category' => 'required|in_list[concert,festival,event]',
             'status'   => 'required|in_list[draft,published]',
             'seatmap_image' => [
                 'label' => 'Seatmap Image',
                 'rules' => 'permit_empty|is_image[seatmap_image]'
-                    . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]'
-                    . '|max_size[seatmap_image,2048]',
+                    . '|mime_in[seatmap_image,image/jpg,image/jpeg,image/png,image/webp]',
             ],
         ];
 

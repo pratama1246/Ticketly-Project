@@ -2,8 +2,13 @@
 <main class="w-full pt-24 mb-20 grow">
     <div class="max-w-7xl mx-auto p-4">
 
+        <a href="/" class="bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 flex items-center gap-3 w-max px-3 py-2 rounded-base">
+            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <h1 class="text-xs md:text-sm font-bold text-gray-900 m-0">Kembali Ke Halaman Utama</h1>
+        </a>
+
         <!-- Nama Event -->
-            <div class="mt-10">
+            <div class="mt-6">
                 <h1 class="text-3xl lg:text-5xl font-bold text-black">
                     <?= esc($event['name']) ?>
                 </h1>

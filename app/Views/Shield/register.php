@@ -24,13 +24,6 @@
         <!-- RIGHT SIDE (FORM) -->
         <div class="w-full md:w-1/2">
 
-            <!-- ERROR MESSAGE -->
-            <?php if (session('error')): ?>
-                <div class="mb-4 p-3 bg-red-200 text-red-700 rounded-lg">
-                    <?= session('error') ?>
-                </div>
-            <?php endif; ?>
-
             <form action="<?= url_to('register') ?>" method="post" class="space-y-5">
                 <?= csrf_field() ?>
 
