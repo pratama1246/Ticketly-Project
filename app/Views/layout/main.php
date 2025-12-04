@@ -99,10 +99,10 @@
 
     <!-- JUDUL SECTION -->
     <div class="max-w-9xl my-10 p-2 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
+        <h1 class="text-3xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
             Temukan Pengalaman <span class="bg-blue-secondary-normal text-white p-2.5 inline-block">Seru</span> Berikutnya
         </h1>
-        <p class="text-lg text-gray-600 mb-8">
+        <p class="text-md md:text-lg text-gray-600 mb-8">
             Beli tiket konser, festival, dan event favoritmu di Ticketly.
         </p>
 
@@ -114,7 +114,7 @@
                     </svg>
                 </div>
 
-                <input type="search" name="q"
+                <input type="search" name="q" id="search-input"
                     class="block w-full p-4 ps-12 text-md text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-yellow-400 focus:border-yellow-400"
                     placeholder="Cari berdasarkan artis, lokasi, atau event..." required>
 

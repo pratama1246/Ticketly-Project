@@ -2,12 +2,24 @@
 <?php
     $sessionData = session()->get('checkout_process');
     $p = $sessionData['personal_data'] ?? [];
+    $errors = session('errors'); // Ambil error validasi
 ?>
 
     <div class="max-w-4xl mx-auto p-4">
 
         <!-- Form Data Diri -->
         <h2 class="text-2xl font-bold text-black mb-4">Informasi Personal</h2>
+
+        <div class="flex items-start p-4 mb-6 text-sm text-blue-800 border border-blue-200 rounded-lg bg-blue-50 animate-fade-in-down" role="alert">
+            <svg class="shrink-0 inline w-5 h-5 me-3 mt-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <div>
+                <span class="font-bold text-base block mb-1">Tiketmu Aman! 🎉</span>
+                Kami menahan stok tiket pilihanmu selama <strong class="underline">5 menit</strong> agar tidak diambil orang lain. <br>
+                Yuk, segera lengkapi data dirimu sebelum waktu habis!
+            </div>
+        </div>
         
         <form action="/checkout/process_personal_info" method="POST">
             <?= csrf_field() ?>
@@ -15,7 +27,7 @@
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Nama Depan <span class="text-red-500">*</span></label>
                     <input type="text" id="first_name" name="first_name" 
                            value="<?= old('first_name', $p['first_name'] ?? '') ?>" 
-                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['first_name']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500' ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['first_name']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:border-blue-500' ?>" 
                            required>
                     <?php if(isset($errors['first_name'])): ?>
                         <p class="mt-1 text-sm text-red-600">
@@ -60,7 +72,7 @@
                     <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900">Nomor Identitas (KTP/SIM/NIK/Paspor) <span class="text-red-500">*</span></label>
                     <input type="text" id="identity_number" name="identity_number" 
                            value="<?= old('identity_number', $p['identity_number'] ?? '') ?>" 
-                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['identity_number']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500' ?>" 
+                           class="text-sm rounded-lg block w-full p-2.5 border <?= isset($errors['identity_number']) ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500 focus:border-red-500' : 'bg-gray-50 border-gray-300 focus:border-blue-500' ?>" 
                            required>
                     <?php if(isset($errors['identity_number'])): ?>
                         <p class="mt-1 text-sm text-red-600"><?= esc($errors['identity_number']) ?></p>

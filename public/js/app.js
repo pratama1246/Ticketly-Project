@@ -135,6 +135,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof initDashboardCharts === 'function') {
         initDashboardCharts();
     }
+
+    // 12. Responsive Search Placeholder (Main Page)
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        const updatePlaceholder = () => {
+            if (window.innerWidth < 768) { // Breakpoint Mobile (md di Tailwind)
+                searchInput.placeholder = "Cari Event...";
+            } else {
+                searchInput.placeholder = "Cari berdasarkan artis, lokasi, atau event...";
+            }
+        };
+
+        // Jalankan saat halaman dimuat
+        updatePlaceholder();
+
+        // Jalankan saat layar di-resize (misal rotasi HP)
+        window.addEventListener('resize', updatePlaceholder);
+    }
 });
 
 
