@@ -115,6 +115,7 @@ class EventController extends BaseController
             'name'        => $this->request->getPost('name'),
             'slug'        => $slug,
             'event_date'  => $this->request->getPost('event_date'),
+            'event_end_date' => $this->request->getPost('event_end_date') ?: null,
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
             'seatmap_image' => null,
@@ -221,6 +222,7 @@ class EventController extends BaseController
             'name'        => $this->request->getPost('name'),
             'slug'        => $slug,
             'event_date'  => $this->request->getPost('event_date'),
+            'event_end_date' => $this->request->getPost('event_end_date') ?: null,
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
             

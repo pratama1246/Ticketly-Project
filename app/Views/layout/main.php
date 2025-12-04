@@ -32,7 +32,25 @@
                                             <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>
-                                            <?= \CodeIgniter\I18n\Time::parse($item['event_date'])->toLocalizedString('d MMMM yyyy') ?>
+                                            <?php 
+                                                $start = \CodeIgniter\I18n\Time::parse($item['event_date']);
+                                                
+                                                // Logika Multi-Day
+                                                if (!empty($item['event_end_date']) && $item['event_end_date'] != $item['event_date']) {
+                                                    $end = \CodeIgniter\I18n\Time::parse($item['event_end_date']);
+                                                    
+                                                    if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
+                                                        // Bulan Sama: "10 - 12 Januari 2026"
+                                                        echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                                    } else {
+                                                        // Beda Bulan: "30 Jan - 02 Feb 2026"
+                                                        echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                                    }
+                                                } else {
+                                                    // Single Day
+                                                    echo $start->toLocalizedString('d MMMM yyyy');
+                                                }
+                                            ?>
                                         </div>
 
                                         <span class="hidden md:inline text-gray-500">•</span>
@@ -167,8 +185,27 @@
 
                                 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-xs font-bold text-gray-900 shadow-sm z-10">
                                     <div class="text-center leading-tight">
-                                        <span class="block text-red-600 uppercase text-2xs"><?= (new \DateTime($event['event_date']))->format('M') ?></span>
-                                        <span class="block text-lg"><?= (new \DateTime($event['event_date']))->format('d') ?></span>
+                                        <?php 
+                                            $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                            $month = $start->format('M'); // Nama Bulan (JAN, FEB)
+                                            $dateDisplay = $start->format('d'); // Tanggal (01, 15)
+
+                                            // Logika Cek Range Tanggal
+                                            if (!empty($event['event_end_date'])) {
+                                                $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
+                                                
+                                                // Jika hari berbeda...
+                                                if ($start->format('Y-m-d') !== $end->format('Y-m-d')) {
+                                                    // ...dan masih di bulan yang sama, tampilkan "10-12"
+                                                    if ($start->getMonth() === $end->getMonth()) {
+                                                        $dateDisplay .= '-' . $end->format('d');
+                                                    }
+                                                    // Jika beda bulan, tetap tampilkan tgl mulai saja biar ga berantakan di kotak kecil
+                                                }
+                                            }
+                                        ?>
+                                        <span class="block text-red-600 uppercase text-[10px]"><?= $month ?></span>
+                                        <span class="block text-lg tracking-tighter"><?= $dateDisplay ?></span>
                                     </div>
                                 </div>
                             </a>

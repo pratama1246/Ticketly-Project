@@ -184,16 +184,13 @@ class CheckoutController extends BaseController
     // Langkah 6 (GET): Menampilkan Halaman Review
     public function reviewOrder()
     {
-        if (session()->has('pending_order_id')) {
-            return redirect()->to('/checkout/pay/' . session()->get('pending_order_id'));
-        }
-        
         $timeLeft = $this->checkSessionTime();
         if ($timeLeft === false) { return redirect()->to('/'); }
 
         $session = session();
         $checkoutData = $session->get('checkout_process');
 
+        // ... (Validasi data diri & payment method biarkan sama) ...
         if (empty($checkoutData['personal_data']) || empty($checkoutData['payment_method'])) {
             return redirect()->to('/checkout/personal_info');
         }
@@ -205,67 +202,99 @@ class CheckoutController extends BaseController
         $data['personal'] = $checkoutData['personal_data'];
         $data['payment_method'] = $checkoutData['payment_method'];
         
+        // Ambil nama metode bayar
         $paymentModel = new \App\Models\PaymentMethodModel();
         $method = $paymentModel->where('code', $checkoutData['payment_method'])->first();
         $data['payment_method_name'] = $method ? $method['name'] : $checkoutData['payment_method'];
         
+        // --- HITUNG RINCIAN BIAYA ---
         $tickets = [];
-        $totalPrice = 0;
+        $subTotal = 0;
+        $totalQty = 0;
         
-        $ticketTypes = $ticketModel->whereIn('id', array_keys($checkoutData['selected_tickets']))
-                                   ->findAll();
+        $ticketTypes = $ticketModel->whereIn('id', array_keys($checkoutData['selected_tickets']))->findAll();
 
         foreach ($ticketTypes as $ticketType) {
             $quantity = $checkoutData['selected_tickets'][$ticketType['id']];
-            $subtotal = $ticketType['price'] * $quantity;
+            $lineTotal = $ticketType['price'] * $quantity;
+            
             $tickets[] = [
                 'name' => $ticketType['name'],
                 'quantity' => $quantity,
                 'price' => $ticketType['price'],
-                'subtotal' => $subtotal
+                'subtotal' => $lineTotal
             ];
-            $totalPrice += $subtotal;
+            $subTotal += $lineTotal;
+            $totalQty += $quantity;
         }
 
+        // Rumus Biaya (Configurable)
+        $taxRate = 0.10; // 10%
+        $platformFeePerTicket = 10000; 
+        $adminFee = 2500; 
+
+        $taxAmount = $subTotal * $taxRate;
+        $platformFeeTotal = $platformFeePerTicket * $totalQty;
+        $grandTotal = $subTotal + $taxAmount + $platformFeeTotal + $adminFee;
+
+        // Kirim Data ke View
         $data['selected_tickets_details'] = $tickets;
-        $data['total_price'] = $totalPrice;
+        $data['sub_total'] = $subTotal;
+        $data['tax_amount'] = $taxAmount;
+        $data['platform_fee'] = $platformFeeTotal;
+        $data['admin_fee'] = $adminFee;
+        $data['grand_total'] = $grandTotal;
+
         $data['step'] = 3;
         $data['time_left'] = $timeLeft;
 
         echo view('layout/header_checkout', $data);
-        echo view('checkout_review_order', $data);
+        echo view('checkout_review_order', $data); // View yang akan kita edit
         echo view('layout/footer');
     }
 
     // Langkah 7: Simpan dan Buat Order
-    public function createOrder()
+   public function createOrder()
     {
+        // ... (Validasi session awal biarkan sama) ...
         $session = session();
         $checkoutData = $session->get('checkout_process');
-
         if (empty($checkoutData)) { return redirect()->to('/'); }
 
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $ticketTypeModel = new TicketTypeModel();
         
-        $totalPrice = 0;
+        // 1. Hitung Ulang Total (Sama persis kayak di reviewOrder)
+        $subTotal = 0;
+        $totalQty = 0;
         $ticketDetails = [];
         $ticketTypes = $ticketTypeModel->whereIn('id', array_keys($checkoutData['selected_tickets']))->findAll();
 
         foreach ($ticketTypes as $ticketType) {
             $quantity = $checkoutData['selected_tickets'][$ticketType['id']];
-            if ($quantity > ($ticketType['quantity_total'] - $ticketType['quantity_sold'])) {
-                return redirect()->to('/checkout/review_order')->with('error', 'Stok habis.');
+            
+            // Cek Stok Lagi (Optional tapi Recommended)
+            if ($ticketType['quantity_sold'] + $quantity > $ticketType['quantity_total']) {
+                return redirect()->back()->with('error', 'Stok tiket ' . $ticketType['name'] . ' tidak mencukupi.');
             }
-            $subtotal = $ticketType['price'] * $quantity;
+
+            $lineTotal = $ticketType['price'] * $quantity;
             $ticketDetails[] = [
-                'id' => $ticketType['id'], 'price' => $ticketType['price'], 'quantity' => $quantity
+                'id' => $ticketType['id'], 
+                'price' => $ticketType['price'], 
+                'quantity' => $quantity
             ];
-            $totalPrice += $subtotal;
+            $subTotal += $lineTotal;
+            $totalQty += $quantity;
         }
 
-        // 2. GENERATE TRX ID
+        $taxAmount = $subTotal * 0.10;
+        $platformFeeTotal = 10000 * $totalQty;
+        $adminFee = 2500;
+        $grandTotal = $subTotal + $taxAmount + $platformFeeTotal + $adminFee;
+
+        // ... (Generate TRX ID biarkan sama) ...
         $randomStr = strtoupper(bin2hex(random_bytes(4))); 
         $trxId = 'TRX-' . date('Ymd') . '-' . $randomStr;
 
@@ -284,13 +313,18 @@ class CheckoutController extends BaseController
             'identity_number' => $personalData['identity_number'],
             'birth_date'      => $personalData['birth_date'],
             'payment_method'  => $checkoutData['payment_method'],
-            'order_total'     => $totalPrice,
-            'status'          => 'Pending' 
+            'order_total'     => $grandTotal, // TOTAL YANG BARU
+            'status'          => 'Pending'
         ];
+        
+        // ... (Insert Order, Insert Items, Update Stok -> Biarkan SAMA persis) ...
+        // ... (Trans Complete & Redirect -> Biarkan SAMA persis) ...
+        
         $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();
 
         foreach ($ticketDetails as $ticket) {
+            // Generate Ticket Code Unik
             $randTicket = strtoupper(bin2hex(random_bytes(3))); 
             $ticketUniqueCode = sprintf('TKT-E%02d-%d-%s', $checkoutData['event_id'], $newOrderId, $randTicket);
 
@@ -302,20 +336,21 @@ class CheckoutController extends BaseController
                 'ticket_code'    => $ticketUniqueCode
             ]);
 
+            // Potong Stok
             $ticketTypeModel->where('id', $ticket['id'])
                             ->set('quantity_sold', 'quantity_sold + ' . $ticket['quantity'], false)
                             ->update();
         }
-        
+
         $db->transComplete();
 
         if ($db->transStatus() === false) {
             return redirect()->to('/checkout/review_order')->with('error', 'Gagal membuat pesanan.');
         }
 
+        // Set Session Akhir
         $session->remove('checkout_process');
         $session->remove('checkout_expire');
-
         $session->set('pending_order_id', $newOrderId);
 
         return redirect()->to('/checkout/pay/' . $newOrderId);

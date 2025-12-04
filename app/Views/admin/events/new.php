@@ -28,9 +28,17 @@
 
             <!-- Tanggal & Waktu Event -->
             <div>
-                <label for="event_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal & Waktu Event*</label>
-                <input type="datetime-local" id="event_date" name="event_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                       value="<?= old('event_date') ?>" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="event_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Mulai*</label>
+                        <input type="datetime-local" name="event_date" id="event_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="event_end_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Selesai (Opsional)</label>
+                        <input type="datetime-local" name="event_end_date" id="event_end_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <p class="mt-1 text-xs text-gray-500">Kosongkan jika event hanya 1 hari.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Deskripsi Event -->

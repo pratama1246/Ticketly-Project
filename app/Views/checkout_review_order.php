@@ -24,8 +24,48 @@
                     </ul>
                     <hr class="my-3">
                     <div class="flex justify-between items-center font-bold text-black text-lg">
-                        <span>Total Pembayaran</span>
-                        <span>Rp <?= number_format($total_price, 0, ',', '.') ?></span>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Rincian Biaya</h3>
+                        
+                        <div class="space-y-3 mb-4 border-b border-gray-100 pb-4">
+                            <?php foreach ($selected_tickets_details as $ticket): ?>
+                            <div class="flex justify-between text-sm text-gray-700">
+                                <span><?= esc($ticket['quantity']) ?>x <?= esc($ticket['name']) ?></span>
+                                <span class="font-medium">Rp <?= number_format($ticket['subtotal'], 0, ',', '.') ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="space-y-2 text-sm text-gray-500 mb-4">
+                                <div class="flex justify-between">
+                                    <span>Subtotal Tiket</span>
+                                    <span>Rp <?= number_format($sub_total, 0, ',', '.') ?></span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center text-orange-600">
+                                    <span class="flex items-center gap-1">
+                                        Pajak Hiburan (10%) 
+                                        <svg class="w-3 h-3 cursor-help" title="Pajak Barang Jasa Tertentu (PBJT) sesuai aturan pemerintah daerah" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    <span>+ Rp <?= number_format($tax_amount, 0, ',', '.') ?></span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span>Biaya Platform</span>
+                                    <span>+ Rp <?= number_format($platform_fee, 0, ',', '.') ?></span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span>Biaya Admin</span>
+                                    <span>+ Rp <?= number_format($admin_fee, 0, ',', '.') ?></span>
+                                </div>
+                            </div>
+
+                        <div class="flex justify-between items-center pt-4 border-t-2 border-dashed border-gray-200">
+                            <span class="text-base font-bold text-gray-900">Total Bayar</span>
+                            <span class="text-xl font-extrabold text-blue-600">Rp <?= number_format($grand_total, 0, ',', '.') ?></span>
+                        </div>
+                    </div>
                     </div>
                 </div>
 
