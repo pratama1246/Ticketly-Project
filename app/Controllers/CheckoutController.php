@@ -66,6 +66,10 @@ class CheckoutController extends BaseController
     // Langkah 2 (GET): Menampilkan Form Data Diri
     public function personalInfo()
     {   
+        if (session()->has('pending_order_id')) {
+            return redirect()->to('/checkout/pay/' . session()->get('pending_order_id'));
+        }
+
         $timeLeft = $this->checkSessionTime();
         if ($timeLeft === false) {
             return redirect()->to('/')->with('error', 'Waktu pemesanan habis.');
@@ -133,6 +137,10 @@ class CheckoutController extends BaseController
     // Langkah 4 (GET): Menampilkan Halaman Metode Bayar
     public function paymentMethod()
     {
+        if (session()->has('pending_order_id')) {
+            return redirect()->to('/checkout/pay/' . session()->get('pending_order_id'));
+        }
+
         $timeLeft = $this->checkSessionTime();
         if ($timeLeft === false) { return redirect()->to('/'); }
 
@@ -176,6 +184,10 @@ class CheckoutController extends BaseController
     // Langkah 6 (GET): Menampilkan Halaman Review
     public function reviewOrder()
     {
+        if (session()->has('pending_order_id')) {
+            return redirect()->to('/checkout/pay/' . session()->get('pending_order_id'));
+        }
+        
         $timeLeft = $this->checkSessionTime();
         if ($timeLeft === false) { return redirect()->to('/'); }
 
