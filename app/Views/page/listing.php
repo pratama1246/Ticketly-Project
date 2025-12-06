@@ -47,9 +47,28 @@
                                 <div class="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                                 
                                 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-xs font-bold text-gray-900 shadow-sm z-10">
-                                <div class="text-center leading-tight">
-                                        <span class="block text-red-600 uppercase text-2xs"><?= (new \DateTime($event['event_date']))->format('M') ?></span>
-                                        <span class="block text-lg"><?= (new \DateTime($event['event_date']))->format('d') ?></span>
+                                    <div class="text-center leading-tight">
+                                        <?php 
+                                            $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                            $month = $start->format('M'); // Nama Bulan (JAN, FEB)
+                                            $dateDisplay = $start->format('d'); // Tanggal (01, 15)
+
+                                            // Logika Cek Range Tanggal
+                                            if (!empty($event['event_end_date'])) {
+                                                $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
+                                                
+                                                // Jika hari berbeda...
+                                                if ($start->format('Y-m-d') !== $end->format('Y-m-d')) {
+                                                    // ...dan masih di bulan yang sama, tampilkan "10-12"
+                                                    if ($start->getMonth() === $end->getMonth()) {
+                                                        $dateDisplay .= '-' . $end->format('d');
+                                                    }
+                                                    // Jika beda bulan, tetap tampilkan tgl mulai saja biar ga berantakan di kotak kecil
+                                                }
+                                            }
+                                        ?>
+                                        <span class="block text-red-600 uppercase text-[10px]"><?= $month ?></span>
+                                        <span class="block text-lg tracking-tighter"><?= $dateDisplay ?></span>
                                     </div>
                                 </div>
                             </a>

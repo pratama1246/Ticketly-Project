@@ -218,11 +218,14 @@ class EventController extends BaseController
             $slug .= '-' . rand(1000, 9999);
         }
 
+        $startDate = $this->request->getPost('event_date');
+        $endDate   = $this->request->getPost('event_end_date');
+
         $data = [
             'name'        => $this->request->getPost('name'),
             'slug'        => $slug,
-            'event_date'  => $this->request->getPost('event_date'),
-            'event_end_date' => $this->request->getPost('event_end_date') ?: null,
+            'event_date'  => $startDate,
+            'event_end_date' => empty($endDate) ? null : $endDate,
             'venue'       => $this->request->getPost('venue'),
             'description' => $this->request->getPost('description'),
             
@@ -254,6 +257,16 @@ class EventController extends BaseController
             $data['seatmap_image'] = 'uploads/seatmaps/' . $newName;
         }
 
+        $isSingleDay = empty($endDate) || (date('Y-m-d', strtotime($startDate)) === date('Y-m-d', strtotime($endDate)));
+
+        if ($isSingleDay) {
+            $ticketModel = new \App\Models\TicketTypeModel();
+
+            $ticketModel->where('event_id', $id)
+                        ->set(['ticket_date' => null])
+                        ->update();
+        }
+        
         // Update Database
         if ($eventModel->update($id, $data)) {
             return redirect()->to('/admin/events')->with('message', 'Event berhasil diperbarui.');

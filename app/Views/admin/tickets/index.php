@@ -8,12 +8,6 @@
     </a>
 </div>
 
-<?php if (session()->getFlashdata('message')): ?>
-    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-        <?= session()->getFlashdata('message') ?>
-    </div>
-<?php endif; ?>
-
 <!-- TABEL TIKET -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 min-w-[800px]">

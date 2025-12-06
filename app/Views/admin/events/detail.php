@@ -64,18 +64,37 @@
                 </div>
 
                 <!-- Waktu Pelaksanaan -->
-                <div>
+               <div>
                     <p class="mb-1 text-gray-500">Waktu Pelaksanaan</p>
                     <div class="font-medium text-gray-900 text-base">
                         <?php 
                             $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
-                            echo $start->toLocalizedString('d MMMM yyyy, HH:mm') . ' WIB';
+                            $end   = !empty($event['event_end_date']) ? \CodeIgniter\I18n\Time::parse($event['event_end_date']) : null;
+
+                            // SKENARIO 1: MULTI-DAY (Beda Hari)
+                            if ($end && $start->format('Y-m-d') !== $end->format('Y-m-d')) {
+                                if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
+                                    echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                } else {
+                                    echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                }
+                                
+                                echo '<span class="block text-sm text-gray-500 font-normal mt-0.5">Mulai pukul ' . $start->format('H:i') . ' WIB</span>';
+                            } 
+                            
+                            // SKENARIO 2: SINGLE DAY (Satu Hari)
+                            else {
+                                echo $start->toLocalizedString('EEEE, d MMMM yyyy');
+
+                                echo '<span class="block text-sm text-gray-500 font-normal mt-0.5">';
+                                if ($end) {
+                                    echo $start->format('H:i') . ' - ' . $end->format('H:i') . ' WIB';
+                                } else {
+                                    echo $start->format('H:i') . ' WIB';
+                                }
+                                echo '</span>';
+                            }
                         ?>
-                        <?php if(!empty($event['event_end_date'])): ?>
-                            <br>
-                            <span class="text-gray-500 text-xs">Sampai:</span>
-                            <?= \CodeIgniter\I18n\Time::parse($event['event_end_date'])->toLocalizedString('d MMMM yyyy') ?>
-                        <?php endif; ?>
                     </div>
                 </div>
 

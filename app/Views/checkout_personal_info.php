@@ -134,11 +134,11 @@
                     </label>
             </div>
             <!-- Tombol Lanjut ke Pembayaran -->
-            <div class="mt-8 text-right">
-                <button type="button" onclick="showCancelModal()" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+            <div class="mt-8 gap-2 flex justify-end">
+                <button type="button" onclick="showCancelModal()" class="text-white bg-danger hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                     Batal
                 </button>
-                <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                <button type="submit" class="text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                     Lanjut ke Pembayaran
                 </button>
             </div>

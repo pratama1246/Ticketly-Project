@@ -220,6 +220,7 @@ class CheckoutController extends BaseController
             
             $tickets[] = [
                 'name' => $ticketType['name'],
+                'ticket_date' => $ticketType['ticket_date'],
                 'quantity' => $quantity,
                 'price' => $ticketType['price'],
                 'subtotal' => $lineTotal
@@ -317,8 +318,6 @@ class CheckoutController extends BaseController
             'status'          => 'Pending'
         ];
         
-        // ... (Insert Order, Insert Items, Update Stok -> Biarkan SAMA persis) ...
-        // ... (Trans Complete & Redirect -> Biarkan SAMA persis) ...
         
         $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();

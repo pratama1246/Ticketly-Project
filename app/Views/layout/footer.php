@@ -116,7 +116,7 @@
                 
                 <div class="flex justify-center gap-3">
                     <button onclick="closeCancelModal()" type="button" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
-                        Gak Jadi
+                        Tidak, Kembali
                     </button>
                     <a href="/checkout/cancel" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center shadow-lg transition-all transform hover:-translate-y-0.5">
                         Ya, Batalkan

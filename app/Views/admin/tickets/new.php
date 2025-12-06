@@ -1,14 +1,5 @@
 <h1 class="text-3xl font-bold text-black mb-6"><?= esc($title) ?></h1>
 
-<?php if (session()->has('errors')): ?>
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert">
-        <ul class="list-disc list-inside">
-            <?php foreach (session('errors') as $error): ?>
-                <li><?= esc($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
 
 <!-- Form Tambah Tiket Baru -->
 <form action="/admin/events/<?= $event['id'] ?>/tickets" method="post">
@@ -24,6 +15,67 @@
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
                        placeholder="Contoh: VIP Standing A, CAT 1, Festival" 
                        value="<?= old('name') ?>" required>
+            </div>
+
+            <!-- Tanggal Tiket -->
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-medium text-gray-900">
+                    Berlaku Untuk Tanggal
+                </label>
+
+                <?php 
+                    $start = new \DateTime($event['event_date']);
+                    $end = !empty($event['event_end_date']) ? new \DateTime($event['event_end_date']) : null;
+
+                    // Deteksi: Apakah ini Event 1 Hari?
+                    // (End date kosong ATAU Start & End di hari yang sama)
+                    $isSingleDay = empty($end) || ($start->format('Y-m-d') === $end->format('Y-m-d'));
+                ?>
+
+                <?php if ($isSingleDay): ?>
+                    
+                    <input type="text" 
+                           class="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed" 
+                           value="<?= $start->format('d F Y') ?> (Single Day)" 
+                           disabled>
+                    
+                    <p class="mt-1 text-xs text-gray-500">
+                        Otomatis berlaku untuk tanggal event.
+                    </p>
+
+                    <input type="hidden" name="ticket_date" value="">
+
+                <?php else: ?>
+
+                    <select id="ticket_date" name="ticket_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        
+                        <option value="" <?= (old('ticket_date', $ticket['ticket_date'] ?? '') == '') ? 'selected' : '' ?>>
+                            All Days Pass
+                        </option>
+
+                        <?php 
+                            // Loop dari Start sampai End
+                            $curr = clone $start;
+                            $dayCount = 1;
+                            
+                            // Tambah +1 detik di end biar loop mencakup hari terakhir juga jika jamnya sama/lebih
+                            $endLimit = (clone $end)->modify('+1 day')->setTime(0,0,0); 
+
+                            while($curr < $endLimit):
+                                $valDate = $curr->format('Y-m-d');
+                                $label = $curr->format('d F Y') . ' (Day ' . $dayCount . ')';
+                                
+                                $selected = (old('ticket_date', $ticket['ticket_date'] ?? '') == $valDate) ? 'selected' : '';
+                                echo "<option value='$valDate' $selected>$label</option>";
+                                
+                                $curr->modify('+1 day');
+                                $dayCount++;
+                            endwhile;
+                        ?>
+                    </select>
+                    <p class="mt-1 text-xs text-gray-500">Pilih tanggal spesifik atau 'Tiket Terusan'.</p>
+
+                <?php endif; ?>
             </div>
 
             <!-- Jenis Posisi Tiket -->

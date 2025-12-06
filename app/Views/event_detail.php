@@ -21,16 +21,27 @@
                     <?php 
                         $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
                         
-                        if (!empty($event['event_end_date']) && $event['event_end_date'] != $event['event_date']) {
+                        if (!empty($event['event_end_date'])) {
                             $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
                             
-                            if ($start->getMonth() == $end->getMonth()) {
-                                echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                            // Cek apakah Tanggalnya Sama (Cuma beda jam)
+                            if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
+                                // SKENARIO B: Satu Hari dengan Durasi
+                                // Output: 10 Jan 2026 • 15:00 - 23:00 WIB
+                                echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' - ' . $end->format('H:i') . ' WIB';
                             } else {
-                                echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                // SKENARIO C: Beda Hari (Multi-Day)
+                                // Output: 10 - 12 Januari 2026
+                                if ($start->getMonth() == $end->getMonth()) {
+                                    echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                } else {
+                                    echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                }
                             }
                         } else {
-                            echo $start->toLocalizedString('EEEE, d MMMM yyyy') ;
+                            // SKENARIO A: Satu Hari (Start Only)
+                            // Output: 10 Jan 2026 • 15:00 WIB
+                            echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' WIB';
                         }
                     ?>
             </p>

@@ -29,9 +29,27 @@
                         
                         <div class="space-y-3 mb-4 border-b border-gray-100 pb-4">
                             <?php foreach ($selected_tickets_details as $ticket): ?>
-                            <div class="flex justify-between text-sm text-gray-700">
-                                <span><?= esc($ticket['quantity']) ?>x <?= esc($ticket['name']) ?></span>
-                                <span class="font-medium">Rp <?= number_format($ticket['subtotal'], 0, ',', '.') ?></span>
+                            <div class="flex justify-between items-start text-sm text-gray-700">
+                                
+                                <div>
+                                    <span class="font-bold block">
+                                        <?= esc($ticket['quantity']) ?>x <?= esc($ticket['name']) ?>
+                                    </span>
+                                    
+                                    <?php if (!empty($ticket['ticket_date'])): ?>
+                                        <span class="text-xs text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                                            Berlaku: <?= date('d M Y', strtotime($ticket['ticket_date'])) ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="text-xs text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">
+                                            All Days Pass
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <span class="font-medium whitespace-nowrap">
+                                    Rp <?= number_format($ticket['subtotal'], 0, ',', '.') ?>
+                                </span>
                             </div>
                             <?php endforeach; ?>
                         </div>

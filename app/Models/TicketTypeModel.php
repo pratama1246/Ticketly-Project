@@ -17,6 +17,7 @@ class TicketTypeModel extends Model
     protected $allowedFields    = [
         'event_id',
         'name',
+        'ticket_date',
         'ticket_category',
         'price',
         'quantity_total',

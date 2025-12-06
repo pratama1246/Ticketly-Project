@@ -73,9 +73,12 @@ class TicketController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $ticketDate = $this->request->getPost('ticket_date');
+
         $this->ticketModel->save([
             'event_id'        => $eventId,
             'name'            => $this->request->getPost('name'),
+            'ticket_date'     => empty($ticketDate) ? null : $ticketDate,
             'ticket_category' => $this->request->getPost('ticket_category'), // Simpan Kategori
             'price'           => $this->request->getPost('price'),
             'quantity_total'  => $this->request->getPost('quantity_total'),
@@ -134,8 +137,11 @@ class TicketController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $ticketDate = $this->request->getPost('ticket_date');
+
         $this->ticketModel->update($ticketId, [
             'name'            => $this->request->getPost('name'),
+            'ticket_date' => empty($ticketDate) ? null : $ticketDate,
             'ticket_category' => $this->request->getPost('ticket_category'),
             'price'           => $this->request->getPost('price'),
             'quantity_total'  => $this->request->getPost('quantity_total'),

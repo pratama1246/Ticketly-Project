@@ -153,6 +153,30 @@ document.addEventListener('DOMContentLoaded', () => {
         // Jalankan saat layar di-resize (misal rotasi HP)
         window.addEventListener('resize', updatePlaceholder);
     }
+
+    // 13. Logika Tanggal Event (Start & End Date)
+    const eventStartInput = document.getElementById('event_date');
+    const eventEndInput = document.getElementById('event_end_date');
+
+    if (eventStartInput && eventEndInput) {
+        
+        const updateEndDateConstraint = () => {
+            const startDateVal = eventStartInput.value;
+
+            if (startDateVal) {
+                eventEndInput.min = startDateVal;
+
+                if (eventEndInput.value && eventEndInput.value < startDateVal) {
+                    eventEndInput.value = '';
+                }
+            }
+        };
+
+        eventStartInput.addEventListener('change', updateEndDateConstraint);
+        eventStartInput.addEventListener('blur', updateEndDateConstraint);
+
+        updateEndDateConstraint();
+    }
 });
 
 
@@ -412,62 +436,132 @@ window.deleteTicket = function(eventId, ticketId) {
     });
 };
 
-// 8. Init Dashboard Chart
+// 8. Fungsi Inisialisasi Chart Dashboard Admin
 function initDashboardCharts() {
     const ctxRev = document.getElementById('revenueChart');
     const ctxCat = document.getElementById('categoryChart');
+    const ctxPay = document.getElementById('paymentChart');
+    const ctxStat = document.getElementById('statusChart'); // Canvas Baru
 
-    if (ctxRev && ctxCat && typeof window.dashboardData !== 'undefined' && typeof Chart !== 'undefined') {
-        const { revenue, categories } = window.dashboardData;
+    if (typeof window.dashboardData !== 'undefined' && typeof Chart !== 'undefined') {
+        const { revenue, categories, payments, statuses } = window.dashboardData;
         
-        const revLabels = revenue.map(item => {
-            const d = new Date(item.date);
-            return d.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
-        });
-        const revTotals = revenue.map(item => item.total);
+        // 1. REVENUE (Sama seperti sebelumnya)
+        if (ctxRev) {
+             new Chart(ctxRev.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: revenue.map(d => new Date(d.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})),
+                    datasets: [{
+                        label: 'Pendapatan',
+                        data: revenue.map(d => d.total),
+                        backgroundColor: '#3B82F6',
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
 
-        new Chart(ctxRev.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: revLabels,
-                datasets: [{
-                    label: 'Pendapatan (Rp)',
-                    data: revTotals,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { borderDash: [2, 4] } }, x: { grid: { display: false } } }
-            }
-        });
+        // 2. CATEGORY (Sama seperti sebelumnya)
+        if (ctxCat) {
+             new Chart(ctxCat.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: categories.map(c => c.category),
+                    datasets: [{
+                        data: categories.map(c => c.total_sold),
+                        backgroundColor: ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6', '#EC4899'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } }
+                }
+            });
+        }
 
-        const catLabels = categories.map(item => item.category.charAt(0).toUpperCase() + item.category.slice(1));
-        const catTotals = categories.map(item => item.total_sold);
+        // 3. PAYMENT (Sama seperti sebelumnya)
+        if (ctxPay) {
+             new Chart(ctxPay.getContext('2d'), {
+                type: 'polarArea',
+                data: {
+                    labels: payments.map(p => p.payment_method.toUpperCase()),
+                    datasets: [{
+                        data: payments.map(p => p.total_usage),
+                        backgroundColor: ['rgba(239, 68, 68, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } },
+                    scales: { r: { ticks: { display: false }, grid: { display: false } } }
+                }
+            });
+        }
 
-        new Chart(ctxCat.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: catLabels.length ? catLabels : ['Belum ada data'],
-                datasets: [{
-                    data: catTotals.length ? catTotals : [1],
-                    backgroundColor: ['#3b82f6', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } },
-                cutout: '70%'
-            }
-        });
+        // 4. [BARU] STATUS ORDER (PIE CHART)
+        if (ctxStat) {
+            // Mapping Warna Status Biar Intuitif
+            const statusColors = {
+                'completed': '#10B981', // Hijau
+                'pending': '#F59E0B',   // Kuning
+                'expired': '#9CA3AF',   // Abu
+                'cancelled': '#EF4444'  // Merah
+            };
+
+            const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
+            const data = statuses.map(s => s.total);
+            const colors = statuses.map(s => statusColors[s.status] || '#6366F1'); // Default Ungu
+
+            new Chart(ctxStat.getContext('2d'), {
+                type: 'pie', // Pie Chart Klasik
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { usePointStyle: true, font: { size: 10 } } 
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.parsed;
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let percentage = Math.round((value / total) * 100) + '%';
+                                    return label + ': ' + value + ' (' + percentage + ')';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 }
 
