@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
     
     // 1. Inisialisasi Flowbite
     if (typeof initFlowbite === 'function') {
@@ -436,132 +437,193 @@ window.deleteTicket = function(eventId, ticketId) {
     });
 };
 
-// 8. Fungsi Inisialisasi Chart Dashboard Admin
+// 8. Init Dashboard Chart (FLOWBITE / APEXCHARTS VERSION)
 function initDashboardCharts() {
-    const ctxRev = document.getElementById('revenueChart');
-    const ctxCat = document.getElementById('categoryChart');
-    const ctxPay = document.getElementById('paymentChart');
-    const ctxStat = document.getElementById('statusChart'); // Canvas Baru
+    // Cek ketersediaan data dan library
+    if (typeof window.dashboardData === 'undefined' || typeof ApexCharts === 'undefined') return;
+    
+    // Destructuring data dari PHP
+    const { revenue, categories, payments, statuses } = window.dashboardData;
 
-    if (typeof window.dashboardData !== 'undefined' && typeof Chart !== 'undefined') {
-        const { revenue, categories, payments, statuses } = window.dashboardData;
-        
-        // 1. REVENUE (Sama seperti sebelumnya)
-        if (ctxRev) {
-             new Chart(ctxRev.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: revenue.map(d => new Date(d.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})),
-                    datasets: [{
-                        label: 'Pendapatan',
-                        data: revenue.map(d => d.total),
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 6,
-                    }]
+    // ===============================================
+    // 1. REVENUE CHART (Column Chart Modern)
+    // ===============================================
+    if (document.getElementById("revenue-chart")) {
+        const optionsRev = {
+            chart: {
+                height: 320,
+                type: "bar",
+                fontFamily: "Inter, sans-serif",
+                toolbar: { show: false }, // Hilangkan menu download di pojok
+                animations: { enabled: true }
+            },
+            series: [{
+                name: "Pendapatan",
+                data: revenue.map(d => parseInt(d.total)),
+                color: "#1A56DB", // Flowbite Blue 600
+            }],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "50%",
+                    borderRadius: 6, // Sudut tumpul ala modern
+                    borderRadiusApplication: 'end',
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
-                        x: { grid: { display: false } }
+            },
+            dataLabels: { enabled: false },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                style: { fontFamily: "Inter, sans-serif" },
+                y: {
+                    formatter: function (value) {
+                        return "Rp " + value.toLocaleString('id-ID');
                     }
                 }
-            });
-        }
-
-        // 2. CATEGORY (Sama seperti sebelumnya)
-        if (ctxCat) {
-             new Chart(ctxCat.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: categories.map(c => c.category),
-                    datasets: [{
-                        data: categories.map(c => c.total_sold),
-                        backgroundColor: ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6', '#EC4899'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
+            },
+            xaxis: {
+                categories: revenue.map(d => {
+                    const date = new Date(d.date);
+                    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                }),
+                labels: {
+                    style: { fontFamily: "Inter, sans-serif", cssClass: 'text-xs font-normal fill-gray-500' }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } }
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+            },
+            yaxis: {
+                show: true,
+                labels: {
+                    style: { fontFamily: "Inter, sans-serif", cssClass: 'text-xs font-normal fill-gray-500' },
+                    formatter: function (value) {
+                        if (value >= 1000000) return (value / 1000000) + "Jt";
+                        if (value >= 1000) return (value / 1000) + "Rb";
+                        return value;
+                    }
                 }
-            });
-        }
+            },
+            grid: {
+                show: true,
+                strokeDashArray: 4, // Garis putus-putus
+                padding: { left: 10, right: 10, top: -20 }
+            },
+            fill: { opacity: 1 }
+        };
 
-        // 3. PAYMENT (Sama seperti sebelumnya)
-        if (ctxPay) {
-             new Chart(ctxPay.getContext('2d'), {
-                type: 'polarArea',
-                data: {
-                    labels: payments.map(p => p.payment_method.toUpperCase()),
-                    datasets: [{
-                        data: payments.map(p => p.total_usage),
-                        backgroundColor: ['rgba(239, 68, 68, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } },
-                    scales: { r: { ticks: { display: false }, grid: { display: false } } }
-                }
-            });
-        }
+        const chartRev = new ApexCharts(document.getElementById("revenue-chart"), optionsRev);
+        chartRev.render();
+    }
 
-        // 4. [BARU] STATUS ORDER (PIE CHART)
-        if (ctxStat) {
-            // Mapping Warna Status Biar Intuitif
-            const statusColors = {
-                'completed': '#10B981', // Hijau
-                'pending': '#F59E0B',   // Kuning
-                'expired': '#9CA3AF',   // Abu
-                'cancelled': '#EF4444'  // Merah
-            };
-
-            const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
-            const data = statuses.map(s => s.total);
-            const colors = statuses.map(s => statusColors[s.status] || '#6366F1'); // Default Ungu
-
-            new Chart(ctxStat.getContext('2d'), {
-                type: 'pie', // Pie Chart Klasik
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom', 
-                            labels: { usePointStyle: true, font: { size: 10 } } 
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    let value = context.parsed;
-                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    let percentage = Math.round((value / total) * 100) + '%';
-                                    return label + ': ' + value + ' (' + percentage + ')';
+    // ===============================================
+    // 2. CATEGORY CHART (Donut Modern)
+    // ===============================================
+    if (document.getElementById("category-chart")) {
+        const optionsCat = {
+            series: categories.map(c => parseInt(c.total_sold) || 0),
+            colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#F59E0B"], // Palette Flowbite
+            chart: {
+                height: 300,
+                type: "donut",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "75%", // Donat Tipis
+                        labels: {
+                            show: true,
+                            name: { show: true, fontFamily: "Inter, sans-serif", offsetY: -10 },
+                            total: {
+                                show: true,
+                                showAlways: true,
+                                label: "Total Tiket",
+                                fontFamily: "Inter, sans-serif",
+                                formatter: function (w) {
+                                    const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    return sum;
                                 }
                             }
                         }
                     }
                 }
-            });
-        }
+            },
+            labels: categories.map(c => c.category),
+            dataLabels: { enabled: false },
+            legend: {
+                position: "bottom",
+                fontFamily: "Inter, sans-serif",
+            },
+        };
+        const chartCat = new ApexCharts(document.getElementById("category-chart"), optionsCat);
+        chartCat.render();
+    }
+
+    // ===============================================
+    // 3. PAYMENT CHART (Donut/Pie)
+    // ===============================================
+    if (document.getElementById("payment-chart")) {
+        const optionsPay = {
+            series: payments.map(p => parseInt(p.total_usage)),
+            labels: payments.map(p => p.payment_method.toUpperCase()),
+            colors: ["#31C48D", "#F98080", "#8DA2FB", "#FACA15"],
+            chart: {
+                height: 300,
+                type: "donut",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "65%",
+                        labels: { show: false } // Simpel tanpa label tengah
+                    }
+                }
+            },
+            dataLabels: { enabled: false },
+            legend: { position: "bottom", fontFamily: "Inter, sans-serif" },
+        };
+        const chartPay = new ApexCharts(document.getElementById("payment-chart"), optionsPay);
+        chartPay.render();
+    }
+
+    // ===============================================
+    // 4. STATUS CHART (Radial Bar / Pie)
+    // ===============================================
+    if (document.getElementById("status-chart")) {
+        // Mapping warna status
+        const statusColors = {
+            'completed': '#0E9F6E', // Green
+            'pending': '#FACA15',   // Yellow
+            'expired': '#9CA3AF',   // Gray
+            'cancelled': '#F05252'  // Red
+        };
+        
+        const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
+        const series = statuses.map(s => parseInt(s.total));
+        const colors = statuses.map(s => statusColors[s.status] || '#3F83F8');
+
+        const optionsStat = {
+            series: series,
+            labels: labels,
+            colors: colors,
+            chart: {
+                height: 300,
+                type: "pie",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            dataLabels: { 
+                enabled: true,
+                style: { fontFamily: "Inter, sans-serif" },
+                dropShadow: { enabled: false }
+            },
+            legend: { position: "bottom", fontFamily: "Inter, sans-serif" },
+        };
+        const chartStat = new ApexCharts(document.getElementById("status-chart"), optionsStat);
+        chartStat.render();
     }
 }
 

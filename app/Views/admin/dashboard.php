@@ -62,38 +62,129 @@
             </div>
         </div>
 
-       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            
-            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200 lg:col-span-3">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Tren Pendapatan</h3>
-                <div class="relative h-80 w-full">
-                    <canvas id="revenueChart"></canvas>
+       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+
+            <div class="xl:col-span-3 bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+                <div class="flex justify-between items-start w-full mb-4">
+                    <div class="flex-col items-center">
+                        <div class="flex items-center mb-1">
+                            <h5 class="text-xl font-bold text-gray-900 me-1">Statistik Pendapatan</h5>
+                            <svg data-popover-target="revenue-info" data-popover-placement="bottom" class="w-4 h-4 text-gray-400 hover:text-gray-900 cursor-pointer ms-1" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div data-popover id="revenue-info" role="tooltip" class="absolute z-10 p-3 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72">
+                                <h3 class="font-semibold text-gray-900 mb-2">Tentang Grafik</h3>
+                                <p>Menampilkan total pemasukan kotor dari transaksi yang berstatus 'Completed' dalam 7 hari terakhir.</p>
+                                <div data-popper-arrow></div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500">Omzet Harian</p>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <input name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="7 Hari Terakhir" disabled>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="revenue-chart" class="w-full"></div>
+                
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                    <div class="flex justify-between items-center pt-4">
+                        <button class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center" type="button">
+                            Last 7 days
+                            <svg class="w-4 h-4 ms-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+                        </button>
+                        <a href="#" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
+                            Laporan Lengkap
+                            <svg class="w-4 h-4 ms-1.5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200 flex flex-col items-center">
-                <h3 class="text-lg font-bold text-gray-900 mb-4 w-full text-left">Event Terlaris</h3>
-                <div class="relative h-64 w-full flex justify-center">
-                    <canvas id="categoryChart"></canvas>
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+                <div class="flex justify-between mb-3">
+                    <div class="flex justify-center items-center">
+                        <h5 class="text-xl font-bold text-gray-900 me-1">Event Terlaris</h5>
+                        <svg data-popover-target="event-info" data-popover-placement="bottom" class="w-4 h-4 text-gray-400 hover:text-gray-900 cursor-pointer ms-1" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div data-popover id="event-info" role="tooltip" class="absolute z-10 p-3 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72">
+                            <p>Distribusi penjualan tiket berdasarkan kategori event.</p>
+                            <div data-popper-arrow></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-2" id="category-chart"></div>
+
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                    <div class="flex justify-between items-center pt-4">
+                        <span class="text-sm font-medium text-gray-500">Top 5 Events</span>
+                        <a href="/admin/events" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
+                            Kelola Event
+                            <svg class="w-4 h-4 ms-1.5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200 flex flex-col items-center">
-                <h3 class="text-lg font-bold text-gray-900 mb-4 w-full text-left">Metode Bayar</h3>
-                <div class="relative h-64 w-full flex justify-center">
-                    <canvas id="paymentChart"></canvas>
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+                <div class="flex justify-between pb-4 mb-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        </div>
+                        <div>
+                            <h5 class="text-xl font-bold text-gray-900">Pembayaran</h5>
+                            <p class="text-sm text-gray-500">Metode Favorit</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-green-400">
+                            Completed
+                        </span>
+                    </div>
+                </div>
+
+                <div id="payment-chart" class="py-2"></div>
+
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                    <div class="flex justify-between items-center pt-4">
+                        <span class="text-sm font-medium text-gray-500">Semua Transaksi</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200 flex flex-col items-center">
-                <h3 class="text-lg font-bold text-gray-900 mb-4 w-full text-left">Status Order</h3>
-                <div class="relative h-64 w-full flex justify-center">
-                    <canvas id="statusChart"></canvas>
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h5 class="text-xl font-bold text-gray-900">Status Order</h5>
+                        <p class="text-sm text-gray-500">Tingkat Keberhasilan</p>
+                    </div>
+                    <div class="flex items-center px-2.5 py-0.5 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                        Live Data
+                    </div>
+                </div>
+                
+                <div id="status-chart"></div>
+
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                    <div class="flex justify-between items-center pt-4">
+                        <button class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center" type="button">
+                            All Time
+                        </button>
+                        <a href="/admin/orders" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
+                            Cek Order
+                            <svg class="w-4 h-4 ms-1.5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
 
         </div>
-
+        
         <h2 class="text-2xl font-bold text-black mb-4">Pesanan Terbaru</h2>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-8">
             <table class="w-full text-sm text-left text-gray-500">
@@ -148,5 +239,3 @@
 <script>
     window.dashboardData = <?= json_encode($chart_data ?? []) ?>;
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
