@@ -6,9 +6,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-blue-soft-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
                 <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Pendapatan</p>
+                    <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Total Pendapatan</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
                         Rp <?= number_format($totalRevenue, 0, ',', '.') ?>
                     </h3>
@@ -22,22 +22,22 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-palette-purple-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
                 <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tiket Terjual</p>
+                    <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Tiket Terjual</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
                         <?= number_format($totalTickets) ?>
                     </h3>
-                    <span class="text-xs text-gray-400 mt-2 block">Tiket confirmed</span>
+                    <span class="text-xs text-gray-400 mt-2 block">Tiket Terkonfirmasi</span>
                 </div>
                 <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-yellow-bright-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
                 <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Pesanan</p>
+                    <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Total Pesanan</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
                         <?= number_format($totalOrders) ?>
                     </h3>
@@ -48,9 +48,9 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-palette-orange-light p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
                 <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Event Aktif</p>
+                    <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Event Aktif</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
                         <?= number_format($totalEvents) ?>
                     </h3>
