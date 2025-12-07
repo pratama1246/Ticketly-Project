@@ -143,7 +143,7 @@
                     </div>
                     <div>
                         <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-green-400">
-                            Completed
+                            Selesai
                         </span>
                     </div>
                 </div>
@@ -163,8 +163,8 @@
                         <h5 class="text-xl font-bold text-gray-900">Status Order</h5>
                         <p class="text-sm text-gray-500">Tingkat Keberhasilan</p>
                     </div>
-                    <div class="flex items-center px-2.5 py-0.5 text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                        Live Data
+                    <div class="flex items-center px-2.5 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded border border-green-400">
+                        Langsung
                     </div>
                 </div>
                 
@@ -173,7 +173,7 @@
                 <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
                     <div class="flex justify-between items-center pt-4">
                         <button class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center" type="button">
-                            All Time
+                            Setiap Saat
                         </button>
                         <a href="/admin/orders" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
                             Cek Order
