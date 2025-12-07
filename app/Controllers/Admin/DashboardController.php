@@ -73,12 +73,15 @@ class DashboardController extends BaseController
 
         // B. Data Grafik Event Terlaris (Doughnut Chart)
         // Kita hitung berdasarkan total tiket terjual per event
-        $topEvents = $eventModel->select('events.name as category, SUM(ticket_types.quantity_sold) as total_sold')
-                                ->join('ticket_types', 'ticket_types.event_id = events.id', 'left')
-                                ->groupBy('events.id')
-                                ->orderBy('total_sold', 'DESC')
-                                ->limit(5)
-                                ->findAll();
+        $topEvents = $eventModel->select('events.name as category, COALESCE(SUM(order_items.quantity), 0) as total_sold')
+            ->join('ticket_types', 'ticket_types.event_id = events.id', 'left')
+            ->join('order_items', 'order_items.ticket_type_id = ticket_types.id', 'left')
+            ->join('orders', 'orders.id = order_items.order_id', 'left')
+            ->where('orders.status', 'completed') // Hanya hitung yang sudah bayar
+            ->groupBy('events.id')
+            ->orderBy('total_sold', 'DESC')
+            ->limit(5)
+            ->findAll();
 
         // C. [BARU] Grafik Metode Pembayaran
         $paymentMethods = $orderModel

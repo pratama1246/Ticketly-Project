@@ -116,7 +116,7 @@
     </div>
 
     <!-- JUDUL SECTION -->
-    <div class="max-w-9xl my-10 p-2 text-center">
+    <div class="max-w-9xl my-10 p-2 text-center reveal-on-scroll">
         <h1 class="text-3xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
             Temukan Pengalaman <span class="bg-blue-secondary-normal text-white p-2.5 inline-block">Seru</span> Berikutnya
         </h1>
@@ -154,7 +154,7 @@
     {
         if (empty($events)) return;
     ?>
-        <div class="mx-auto my-8 p-2 md:p-4">
+        <div class="mx-auto my-8 p-2 md:p-4 reveal-on-scroll max-w-7xl">
             <div class="flex justify-between items-end px-2 mb-6 border-l-4 border-blue-600 pl-4 ml-2">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
@@ -170,7 +170,7 @@
             </div>
 
             <!-- Card Container -->
-            <div class="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth pb-6 px-2">
+            <div class="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth pb-6 px-2 reveal-on-scroll max-w-7xl">
                 <div class="flex flex-nowrap space-x-5 items-stretch">
 
                     <?php foreach ($events as $event): ?>
@@ -267,7 +267,7 @@
     ?>
 
     <!-- Promo Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-20">
+    <section class="max-w-7xl mx-auto px-4 mb-20 reveal-on-scroll">
         <div class="relative rounded-2xl overflow-hidden bg-linear-to-r from-purple-900 to-blue-900 shadow-2xl">
             <img src="<?= base_url('assets/konser2.jpg') ?>" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Concert">
 
@@ -285,7 +285,7 @@
     </section>
 
     <!-- How to Buy Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-24 text-center">
+    <section class="max-w-7xl mx-auto px-4 mb-24 text-center reveal-on-scroll">
         <div class="mb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Cara Beli Tiket</h2>
             <p class="text-gray-500 mt-2">Dapatkan tiketmu hanya dalam hitungan menit.</p>
@@ -294,25 +294,25 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
             <div class="hidden md:block absolute top-8 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group reveal-on-scroll delay-100">
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">1</div>
                 <h3 class="font-bold text-lg mb-2">Pilih Event</h3>
                 <p class="text-sm text-gray-500">Cari konser atau festival favoritmu di halaman utama.</p>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group reveal-on-scroll delay-200">
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">2</div>
                 <h3 class="font-bold text-lg mb-2">Pilih Tiket</h3>
                 <p class="text-sm text-gray-500">Tentukan kategori tiket dan jumlah yang diinginkan.</p>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group reveal-on-scroll delay-300">
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors">3</div>
                 <h3 class="font-bold text-lg mb-2">Bayar</h3>
                 <p class="text-sm text-gray-500">Selesaikan pembayaran via Transfer Bank atau E-Wallet.</p>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+            <div class="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group reveal-on-scroll delay-400">
                 <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold group-hover:bg-green-600 group-hover:text-white transition-colors">4</div>
                 <h3 class="font-bold text-lg mb-2">Selesai!</h3>
                 <p class="text-sm text-gray-500">E-Tiket otomatis dikirim ke email dan WhatsApp kamu.</p>
@@ -321,14 +321,14 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="bg-gray-50 py-16 mb-20 border-y border-gray-100">
+    <section class="bg-gray-50 py-16 mb-20 border-y border-gray-100 reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kata Mereka</h2>
                 <p class="text-gray-500 mt-2">Pengalaman seru dari pengguna Ticketly.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-on-scroll delay-100">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div class="flex items-center gap-1 text-yellow-400 mb-3">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -357,7 +357,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 reveal-on-scroll delay-200">
                     <div class="flex items-center gap-1 text-yellow-400 mb-3">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -385,7 +385,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 reveal-on-scroll delay-300">
                     <div class="flex items-center gap-1 text-yellow-400 mb-3">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -417,14 +417,14 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="max-w-4xl mx-auto px-4 mb-24">
+    <section class="max-w-4xl mx-auto px-4 mb-24 reveal-on-scroll">
         <div class="text-center mb-10">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Pertanyaan Populer</h2>
             <p class="text-gray-500 mt-2">Hal yang sering ditanyakan oleh pengguna Ticketly.</p>
         </div>
 
-        <div class="space-y-4">
-            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+        <div class="space-y-4 reveal-on-scroll">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100 reveal-on-scroll delay-100">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
                     <span>Bagaimana cara menerima tiket setelah bayar?</span>
                     <span class="transition group-open:rotate-180">
@@ -438,7 +438,7 @@
                 </div>
             </details>
 
-            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100 reveal-on-scroll delay-200">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
                     <span>Apakah tiket bisa di-refund (dibatalkan)?</span>
                     <span class="transition group-open:rotate-180">
@@ -452,7 +452,7 @@
                 </div>
             </details>
 
-            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100 reveal-on-scroll delay-300">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
                     <span>Apakah tiket bisa dipindahtangankan ke orang lain?</span>
                     <span class="transition group-open:rotate-180">
@@ -466,7 +466,7 @@
                 </div>
             </details>
 
-            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100 reveal-on-scroll delay-400">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
                     <span>Saya sudah bayar tapi belum terima email tiket?</span>
                     <span class="transition group-open:rotate-180">
@@ -480,7 +480,7 @@
                 </div>
             </details>
 
-            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100">
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md open:ring-2 open:ring-blue-100 reveal-on-scroll delay-500">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-gray-800 hover:bg-gray-50">
                     <span>Apakah E-Tiket perlu dicetak (print)?</span>
                     <span class="transition group-open:rotate-180">
@@ -497,7 +497,7 @@
     </section>
 
     <!-- Newsletter Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-20">
+    <section class="max-w-7xl mx-auto px-4 mb-20 reveal-on-scroll">
         <div class="bg-white rounded-2xl p-8 md:p-16 text-center relative overflow-hidden shadow-2xl">
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-linear-to-t from-newsletter-bg-gradient-from to-newsletter-bg-gradient-to"></div>
 
@@ -518,7 +518,7 @@
     </section>
 
     <!-- WHY BUY FROM US SECTION -->
-    <section class= "py-16 text-black relative overflow-hidden mt-10">
+    <section class= "py-16 text-black relative overflow-hidden mt-10 reveal-on-scroll">
 
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-12">
@@ -528,7 +528,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
 
-                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300 reveal-on-scroll delay-100">
                     <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -538,7 +538,7 @@
                     <p class=" text-sm leading-relaxed text-gray-500">Pembayaran terjamin aman dengan enkripsi standar bank.</p>
                 </div>
 
-                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300 reveal-on-scroll delay-200">
                     <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -548,7 +548,7 @@
                     <p class="text-sm leading-relaxed text-gray-500">Tiket langsung dikirim ke email & WhatsApp tanpa menunggu lama.</p>
                 </div>
 
-                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300">
+                <div class="p-8 bg-white backdrop-blur-sm rounded-2xl border border-black/10 hover:transition-all group hover:-translate-y-2 duration-300 reveal-on-scroll delay-300">
                     <div class="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>

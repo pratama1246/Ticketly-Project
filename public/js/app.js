@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // 1. Inisialisasi Flowbite
     if (typeof initFlowbite === 'function') {
         initFlowbite();
@@ -177,30 +177,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateEndDateConstraint();
     }
+
+    // 14. Inisialisasi Scroll Reveal
+    if (typeof initScrollReveal === 'function') {
+        initScrollReveal();
+    }
 });
 
 
-/* =========================================================
-   ZONA FUNGSI GLOBAL (DEFINISI FUNGSI)
-   ========================================================= */
+// ZONA FUNGSI GLOBAL 
 
-// 1. Fungsi Password Toggle (INI YANG SEBELUMNYA HILANG)
+// 1. Fungsi Password Toggle
 function setupPasswordToggle(buttonId, inputId) {
     const btn = document.getElementById(buttonId);
     const input = document.getElementById(inputId);
 
     if (btn && input) {
         btn.addEventListener('click', () => {
-            // Cek icon pakai ID atau Class
             const eyeOpen = btn.querySelector('#eye-open') || btn.querySelector('.eye-open');
             const eyeClosed = btn.querySelector('#eye-closed') || btn.querySelector('.eye-closed');
 
             if (input.type === 'password') {
-                input.type = 'text'; // Show
+                input.type = 'text';
                 if(eyeOpen) eyeOpen.classList.remove('hidden');
                 if(eyeClosed) eyeClosed.classList.add('hidden');
             } else {
-                input.type = 'password'; // Hide
+                input.type = 'password';
                 if(eyeOpen) eyeOpen.classList.add('hidden');
                 if(eyeClosed) eyeClosed.classList.remove('hidden');
             }
@@ -208,7 +210,7 @@ function setupPasswordToggle(buttonId, inputId) {
     }
 }
 
-// 2. Fungsi Modal Batal Pesan (Checkout)
+// 2. Fungsi Modal Batal Pesan
 window.showCancelModal = function() {
     const modal = document.getElementById('cancel-modal');
     const timerAlert = document.getElementById('checkout-timer-alert');
@@ -218,7 +220,6 @@ window.showCancelModal = function() {
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
         
-        // Sembunyikan timer sementara biar gak numpuk
         if (timerAlert) timerAlert.classList.add('hidden');
     }
 }
@@ -232,7 +233,6 @@ window.closeCancelModal = function() {
         modal.classList.remove('flex');
         document.body.style.overflow = 'auto';
         
-        // Munculkan timer lagi
         if (timerAlert) timerAlert.classList.remove('hidden');
     }
 }
@@ -436,136 +436,190 @@ window.deleteTicket = function(eventId, ticketId) {
     });
 };
 
-// 8. Fungsi Inisialisasi Chart Dashboard Admin
+// 8. Init Dashboard Chart
 function initDashboardCharts() {
-    const ctxRev = document.getElementById('revenueChart');
-    const ctxCat = document.getElementById('categoryChart');
-    const ctxPay = document.getElementById('paymentChart');
-    const ctxStat = document.getElementById('statusChart'); // Canvas Baru
+    if (typeof window.dashboardData === 'undefined' || typeof ApexCharts === 'undefined') return;
+    
+    const { revenue, categories, payments, statuses } = window.dashboardData;
 
-    if (typeof window.dashboardData !== 'undefined' && typeof Chart !== 'undefined') {
-        const { revenue, categories, payments, statuses } = window.dashboardData;
-        
-        // 1. REVENUE (Sama seperti sebelumnya)
-        if (ctxRev) {
-             new Chart(ctxRev.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: revenue.map(d => new Date(d.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})),
-                    datasets: [{
-                        label: 'Pendapatan',
-                        data: revenue.map(d => d.total),
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 6,
-                    }]
+    // 1. REVENUE CHART (Column Chart Modern)
+    if (document.getElementById("revenue-chart")) {
+        const optionsRev = {
+            chart: {
+                height: 320,
+                type: "bar",
+                fontFamily: "Inter, sans-serif",
+                toolbar: { show: false }, // Hilangkan menu download di pojok
+                animations: { enabled: true }
+            },
+            series: [{
+                name: "Pendapatan",
+                data: revenue.map(d => parseInt(d.total)),
+                color: "#1A56DB", // Flowbite Blue 600
+            }],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "50%",
+                    borderRadius: 6, // Sudut tumpul ala modern
+                    borderRadiusApplication: 'end',
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
-                        x: { grid: { display: false } }
+            },
+            dataLabels: { enabled: false },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                style: { fontFamily: "Inter, sans-serif" },
+                y: {
+                    formatter: function (value) {
+                        return "Rp " + value.toLocaleString('id-ID');
                     }
                 }
-            });
-        }
-
-        // 2. CATEGORY (Sama seperti sebelumnya)
-        if (ctxCat) {
-             new Chart(ctxCat.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: categories.map(c => c.category),
-                    datasets: [{
-                        data: categories.map(c => c.total_sold),
-                        backgroundColor: ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6', '#EC4899'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
+            },
+            xaxis: {
+                categories: revenue.map(d => {
+                    const date = new Date(d.date);
+                    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                }),
+                labels: {
+                    style: { fontFamily: "Inter, sans-serif", cssClass: 'text-xs font-normal fill-gray-500' }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } }
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+            },
+            yaxis: {
+                show: true,
+                labels: {
+                    style: { fontFamily: "Inter, sans-serif", cssClass: 'text-xs font-normal fill-gray-500' },
+                    formatter: function (value) {
+                        if (value >= 1000000) return (value / 1000000) + "Jt";
+                        if (value >= 1000) return (value / 1000) + "Rb";
+                        return value;
+                    }
                 }
-            });
-        }
+            },
+            grid: {
+                show: true,
+                strokeDashArray: 4,
+                padding: { left: 10, right: 10, top: -20 }
+            },
+            fill: { opacity: 1 }
+        };
 
-        // 3. PAYMENT (Sama seperti sebelumnya)
-        if (ctxPay) {
-             new Chart(ctxPay.getContext('2d'), {
-                type: 'polarArea',
-                data: {
-                    labels: payments.map(p => p.payment_method.toUpperCase()),
-                    datasets: [{
-                        data: payments.map(p => p.total_usage),
-                        backgroundColor: ['rgba(239, 68, 68, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } } },
-                    scales: { r: { ticks: { display: false }, grid: { display: false } } }
-                }
-            });
-        }
+        const chartRev = new ApexCharts(document.getElementById("revenue-chart"), optionsRev);
+        chartRev.render();
+    }
 
-        // 4. [BARU] STATUS ORDER (PIE CHART)
-        if (ctxStat) {
-            // Mapping Warna Status Biar Intuitif
-            const statusColors = {
-                'completed': '#10B981', // Hijau
-                'pending': '#F59E0B',   // Kuning
-                'expired': '#9CA3AF',   // Abu
-                'cancelled': '#EF4444'  // Merah
-            };
-
-            const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
-            const data = statuses.map(s => s.total);
-            const colors = statuses.map(s => statusColors[s.status] || '#6366F1'); // Default Ungu
-
-            new Chart(ctxStat.getContext('2d'), {
-                type: 'pie', // Pie Chart Klasik
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom', 
-                            labels: { usePointStyle: true, font: { size: 10 } } 
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    let value = context.parsed;
-                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    let percentage = Math.round((value / total) * 100) + '%';
-                                    return label + ': ' + value + ' (' + percentage + ')';
+    // 2. CATEGORY CHART (Donut Modern)
+    if (document.getElementById("category-chart")) {
+        const optionsCat = {
+            series: categories.map(c => parseInt(c.total_sold) || 0),
+            colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#F59E0B"],
+            chart: {
+                height: 300,
+                type: "donut",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "75%",
+                        labels: {
+                            show: true,
+                            name: { show: true, fontFamily: "Inter, sans-serif", offsetY: -10 },
+                            total: {
+                                show: true,
+                                showAlways: true,
+                                label: "Total Tiket",
+                                fontFamily: "Inter, sans-serif",
+                                formatter: function (w) {
+                                    const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    return sum;
                                 }
                             }
                         }
                     }
                 }
-            });
-        }
+            },
+            labels: categories.map(c => c.category),
+            dataLabels: { enabled: false },
+            legend: {
+                position: "bottom",
+                fontFamily: "Inter, sans-serif",
+            },
+        };
+        const chartCat = new ApexCharts(document.getElementById("category-chart"), optionsCat);
+        chartCat.render();
+    }
+
+    // 3. PAYMENT CHART (Donut/Pie)
+    if (document.getElementById("payment-chart")) {
+        const optionsPay = {
+            series: payments.map(p => parseInt(p.total_usage)),
+            labels: payments.map(p => p.payment_method.toUpperCase()),
+            colors: ["#31C48D", "#F98080", "#8DA2FB", "#FACA15"],
+            chart: {
+                height: 300,
+                type: "donut",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "65%",
+                        labels: { show: false }
+                    }
+                }
+            },
+            dataLabels: { enabled: false },
+            legend: { position: "bottom", fontFamily: "Inter, sans-serif" },
+        };
+        const chartPay = new ApexCharts(document.getElementById("payment-chart"), optionsPay);
+        chartPay.render();
+    }
+
+    // 4. STATUS CHART (Radial Bar / Pie)
+    if (document.getElementById("status-chart")) {
+
+        const statusColors = {
+            'completed': '#0E9F6E', 
+            'pending': '#FACA15',   
+            'expired': '#9CA3AF',   
+            'cancelled': '#F05252'  
+        };
+        
+        const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
+        const series = statuses.map(s => parseInt(s.total));
+        const colors = statuses.map(s => statusColors[s.status] || '#3F83F8');
+
+        const optionsStat = {
+            series: series,
+            labels: labels,
+            colors: colors,
+            chart: {
+                height: 300,
+                type: "pie",
+                fontFamily: "Inter, sans-serif",
+            },
+            stroke: { colors: ["transparent"] },
+            dataLabels: { 
+                enabled: true,
+                style: { fontFamily: "Inter, sans-serif" },
+                dropShadow: { enabled: false }
+            },
+            legend: { position: "bottom", fontFamily: "Inter, sans-serif" },
+        };
+        const chartStat = new ApexCharts(document.getElementById("status-chart"), optionsStat);
+        chartStat.render();
     }
 }
 
-// 1. Buka Modal Konfirmasi
+
+// 9. Fungsi Modal Pembayaran
+
+// 1. Tampilkan Modal Konfirmasi Pembayaran
 window.showPaymentConfirmModal = function() {
     const modal = document.getElementById('payment-confirm-modal');
     if (modal) {
@@ -589,12 +643,10 @@ window.closePaymentModals = function() {
 
 // 3. Proses AJAX ke Server
 window.processPaymentAjax = function(orderId) {
-    // 1. Ambil Elemen
-    const btn = document.getElementById('btn-process-ajax'); // ID tombol di dalam modal (bukan trigger)
+    const btn = document.getElementById('btn-process-ajax');
     const btnText = document.getElementById('btn-ajax-text');
     const btnSpinner = document.getElementById('btn-ajax-spinner');
     
-    // 2. Ambil Token dari Input Hidden
     const csrfInput = document.getElementById('csrf_security');
     
     if (!csrfInput) {
@@ -602,10 +654,9 @@ window.processPaymentAjax = function(orderId) {
         return;
     }
 
-    const csrfName = csrfInput.name; // biasanya 'csrf_test_name'
+    const csrfName = csrfInput.name;
     const csrfHash = csrfInput.value;
 
-    // 3. Ubah Tampilan Tombol (Loading)
     if(btn) {
         btn.disabled = true;
         btn.classList.add('opacity-75', 'cursor-not-allowed');
@@ -613,41 +664,31 @@ window.processPaymentAjax = function(orderId) {
     if(btnText) btnText.textContent = 'Memproses...';
     if(btnSpinner) btnSpinner.classList.remove('hidden');
 
-    // 4. Susun Data Body (Termasuk Token CSRF sebagai data POST biasa)
-    // Kita kirim sebagai FormData atau JSON. Di sini kita pakai JSON.
-    // PENTING: Masukkan token CSRF ke dalam body JSON juga, kadang CI4 membacanya dari sana.
     const postData = {
         [csrfName]: csrfHash 
     };
 
-    // 5. Kirim Request Fetch
+    // Kirim Request Fetch
     fetch('/checkout/confirm/' + orderId, {
         method: 'POST',
-        
-        // [WAJIB] Agar cookie session & csrf ikut terkirim
         credentials: 'include', 
-        
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'Content-Type': 'application/json',
-            // Kirim token di header juga (Double protection)
             'X-CSRF-TOKEN': csrfHash 
         },
         body: JSON.stringify(postData)
     })
     .then(response => {
         if (!response.ok) {
-            // Jika masih 403 Forbidden, berarti CSRF masih gagal
             throw new Error('Server menolak request (Status: ' + response.status + ')');
         }
         return response.json();
     })
     .then(data => {
-        // Tutup modal konfirmasi
         closePaymentModals(); 
 
         if (data.status === 'success') {
-            // SUKSES
             if(document.getElementById('success-email')) 
                 document.getElementById('success-email').textContent = data.email;
             
@@ -660,12 +701,10 @@ window.processPaymentAjax = function(orderId) {
                 successModal.classList.add('flex');
             }
             
-            // Hapus timer
             const timerEl = document.getElementById('checkout-timer-alert');
             if(timerEl) timerEl.remove();
 
         } else {
-            // GAGAL (Logic Error dari Controller)
             if(document.getElementById('error-message'))
                 document.getElementById('error-message').textContent = data.message;
             
@@ -675,7 +714,6 @@ window.processPaymentAjax = function(orderId) {
                 errorModal.classList.add('flex');
             }
             
-            // Reset Tombol
             resetBtnState();
         }
     })
@@ -695,4 +733,25 @@ window.processPaymentAjax = function(orderId) {
         if(btnText) btnText.textContent = 'Ya, Sudah Bayar';
         if(btnSpinner) btnSpinner.classList.add('hidden');
     }
+}
+
+// Fungsi Animasi Scroll
+function initScrollReveal() {
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1 // Elemen muncul saat 10% bagiannya terlihat
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target); // Animasi cuma sekali
+            }
+        });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach((el) => observer.observe(el));
 }

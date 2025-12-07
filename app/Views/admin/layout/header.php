@@ -9,6 +9,7 @@
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/o9x8q1gyscpyjvhjh1e6iurf4bdsr8lip0piuc59rsr5e85v/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="<?= base_url('js/app.js') ?>"></script>
     <script>
         var CI_FLASH_MESSAGES = {
