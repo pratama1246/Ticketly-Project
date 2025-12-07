@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    
     // 1. Inisialisasi Flowbite
     if (typeof initFlowbite === 'function') {
         initFlowbite();
@@ -178,30 +177,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateEndDateConstraint();
     }
+
+    // 14. Inisialisasi Scroll Reveal
+    if (typeof initScrollReveal === 'function') {
+        initScrollReveal();
+    }
 });
 
 
-/* =========================================================
-   ZONA FUNGSI GLOBAL (DEFINISI FUNGSI)
-   ========================================================= */
+// ZONA FUNGSI GLOBAL 
 
-// 1. Fungsi Password Toggle (INI YANG SEBELUMNYA HILANG)
+// 1. Fungsi Password Toggle
 function setupPasswordToggle(buttonId, inputId) {
     const btn = document.getElementById(buttonId);
     const input = document.getElementById(inputId);
 
     if (btn && input) {
         btn.addEventListener('click', () => {
-            // Cek icon pakai ID atau Class
             const eyeOpen = btn.querySelector('#eye-open') || btn.querySelector('.eye-open');
             const eyeClosed = btn.querySelector('#eye-closed') || btn.querySelector('.eye-closed');
 
             if (input.type === 'password') {
-                input.type = 'text'; // Show
+                input.type = 'text';
                 if(eyeOpen) eyeOpen.classList.remove('hidden');
                 if(eyeClosed) eyeClosed.classList.add('hidden');
             } else {
-                input.type = 'password'; // Hide
+                input.type = 'password';
                 if(eyeOpen) eyeOpen.classList.add('hidden');
                 if(eyeClosed) eyeClosed.classList.remove('hidden');
             }
@@ -209,7 +210,7 @@ function setupPasswordToggle(buttonId, inputId) {
     }
 }
 
-// 2. Fungsi Modal Batal Pesan (Checkout)
+// 2. Fungsi Modal Batal Pesan
 window.showCancelModal = function() {
     const modal = document.getElementById('cancel-modal');
     const timerAlert = document.getElementById('checkout-timer-alert');
@@ -219,7 +220,6 @@ window.showCancelModal = function() {
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
         
-        // Sembunyikan timer sementara biar gak numpuk
         if (timerAlert) timerAlert.classList.add('hidden');
     }
 }
@@ -233,7 +233,6 @@ window.closeCancelModal = function() {
         modal.classList.remove('flex');
         document.body.style.overflow = 'auto';
         
-        // Munculkan timer lagi
         if (timerAlert) timerAlert.classList.remove('hidden');
     }
 }
@@ -437,17 +436,13 @@ window.deleteTicket = function(eventId, ticketId) {
     });
 };
 
-// 8. Init Dashboard Chart (FLOWBITE / APEXCHARTS VERSION)
+// 8. Init Dashboard Chart
 function initDashboardCharts() {
-    // Cek ketersediaan data dan library
     if (typeof window.dashboardData === 'undefined' || typeof ApexCharts === 'undefined') return;
     
-    // Destructuring data dari PHP
     const { revenue, categories, payments, statuses } = window.dashboardData;
 
-    // ===============================================
     // 1. REVENUE CHART (Column Chart Modern)
-    // ===============================================
     if (document.getElementById("revenue-chart")) {
         const optionsRev = {
             chart: {
@@ -505,7 +500,7 @@ function initDashboardCharts() {
             },
             grid: {
                 show: true,
-                strokeDashArray: 4, // Garis putus-putus
+                strokeDashArray: 4,
                 padding: { left: 10, right: 10, top: -20 }
             },
             fill: { opacity: 1 }
@@ -515,13 +510,11 @@ function initDashboardCharts() {
         chartRev.render();
     }
 
-    // ===============================================
     // 2. CATEGORY CHART (Donut Modern)
-    // ===============================================
     if (document.getElementById("category-chart")) {
         const optionsCat = {
             series: categories.map(c => parseInt(c.total_sold) || 0),
-            colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#F59E0B"], // Palette Flowbite
+            colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#F59E0B"],
             chart: {
                 height: 300,
                 type: "donut",
@@ -531,7 +524,7 @@ function initDashboardCharts() {
             plotOptions: {
                 pie: {
                     donut: {
-                        size: "75%", // Donat Tipis
+                        size: "75%",
                         labels: {
                             show: true,
                             name: { show: true, fontFamily: "Inter, sans-serif", offsetY: -10 },
@@ -560,9 +553,7 @@ function initDashboardCharts() {
         chartCat.render();
     }
 
-    // ===============================================
     // 3. PAYMENT CHART (Donut/Pie)
-    // ===============================================
     if (document.getElementById("payment-chart")) {
         const optionsPay = {
             series: payments.map(p => parseInt(p.total_usage)),
@@ -578,7 +569,7 @@ function initDashboardCharts() {
                 pie: {
                     donut: {
                         size: "65%",
-                        labels: { show: false } // Simpel tanpa label tengah
+                        labels: { show: false }
                     }
                 }
             },
@@ -589,16 +580,14 @@ function initDashboardCharts() {
         chartPay.render();
     }
 
-    // ===============================================
     // 4. STATUS CHART (Radial Bar / Pie)
-    // ===============================================
     if (document.getElementById("status-chart")) {
-        // Mapping warna status
+
         const statusColors = {
-            'completed': '#0E9F6E', // Green
-            'pending': '#FACA15',   // Yellow
-            'expired': '#9CA3AF',   // Gray
-            'cancelled': '#F05252'  // Red
+            'completed': '#0E9F6E', 
+            'pending': '#FACA15',   
+            'expired': '#9CA3AF',   
+            'cancelled': '#F05252'  
         };
         
         const labels = statuses.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
@@ -627,7 +616,10 @@ function initDashboardCharts() {
     }
 }
 
-// 1. Buka Modal Konfirmasi
+
+// 9. Fungsi Modal Pembayaran
+
+// 1. Tampilkan Modal Konfirmasi Pembayaran
 window.showPaymentConfirmModal = function() {
     const modal = document.getElementById('payment-confirm-modal');
     if (modal) {
@@ -651,12 +643,10 @@ window.closePaymentModals = function() {
 
 // 3. Proses AJAX ke Server
 window.processPaymentAjax = function(orderId) {
-    // 1. Ambil Elemen
-    const btn = document.getElementById('btn-process-ajax'); // ID tombol di dalam modal (bukan trigger)
+    const btn = document.getElementById('btn-process-ajax');
     const btnText = document.getElementById('btn-ajax-text');
     const btnSpinner = document.getElementById('btn-ajax-spinner');
     
-    // 2. Ambil Token dari Input Hidden
     const csrfInput = document.getElementById('csrf_security');
     
     if (!csrfInput) {
@@ -664,10 +654,9 @@ window.processPaymentAjax = function(orderId) {
         return;
     }
 
-    const csrfName = csrfInput.name; // biasanya 'csrf_test_name'
+    const csrfName = csrfInput.name;
     const csrfHash = csrfInput.value;
 
-    // 3. Ubah Tampilan Tombol (Loading)
     if(btn) {
         btn.disabled = true;
         btn.classList.add('opacity-75', 'cursor-not-allowed');
@@ -675,41 +664,31 @@ window.processPaymentAjax = function(orderId) {
     if(btnText) btnText.textContent = 'Memproses...';
     if(btnSpinner) btnSpinner.classList.remove('hidden');
 
-    // 4. Susun Data Body (Termasuk Token CSRF sebagai data POST biasa)
-    // Kita kirim sebagai FormData atau JSON. Di sini kita pakai JSON.
-    // PENTING: Masukkan token CSRF ke dalam body JSON juga, kadang CI4 membacanya dari sana.
     const postData = {
         [csrfName]: csrfHash 
     };
 
-    // 5. Kirim Request Fetch
+    // Kirim Request Fetch
     fetch('/checkout/confirm/' + orderId, {
         method: 'POST',
-        
-        // [WAJIB] Agar cookie session & csrf ikut terkirim
         credentials: 'include', 
-        
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'Content-Type': 'application/json',
-            // Kirim token di header juga (Double protection)
             'X-CSRF-TOKEN': csrfHash 
         },
         body: JSON.stringify(postData)
     })
     .then(response => {
         if (!response.ok) {
-            // Jika masih 403 Forbidden, berarti CSRF masih gagal
             throw new Error('Server menolak request (Status: ' + response.status + ')');
         }
         return response.json();
     })
     .then(data => {
-        // Tutup modal konfirmasi
         closePaymentModals(); 
 
         if (data.status === 'success') {
-            // SUKSES
             if(document.getElementById('success-email')) 
                 document.getElementById('success-email').textContent = data.email;
             
@@ -722,12 +701,10 @@ window.processPaymentAjax = function(orderId) {
                 successModal.classList.add('flex');
             }
             
-            // Hapus timer
             const timerEl = document.getElementById('checkout-timer-alert');
             if(timerEl) timerEl.remove();
 
         } else {
-            // GAGAL (Logic Error dari Controller)
             if(document.getElementById('error-message'))
                 document.getElementById('error-message').textContent = data.message;
             
@@ -737,7 +714,6 @@ window.processPaymentAjax = function(orderId) {
                 errorModal.classList.add('flex');
             }
             
-            // Reset Tombol
             resetBtnState();
         }
     })
@@ -757,4 +733,25 @@ window.processPaymentAjax = function(orderId) {
         if(btnText) btnText.textContent = 'Ya, Sudah Bayar';
         if(btnSpinner) btnSpinner.classList.add('hidden');
     }
+}
+
+// Fungsi Animasi Scroll
+function initScrollReveal() {
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1 // Elemen muncul saat 10% bagiannya terlihat
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target); // Animasi cuma sekali
+            }
+        });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach((el) => observer.observe(el));
 }

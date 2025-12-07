@@ -102,14 +102,13 @@
 }
 
 @layer utilities {
-    /* 1. Definisi Keyframes */
-    @keyframes infinite-scroll {
-        from { transform: translateX(0); }
-        to { transform: translateX(-50%); }
-    }
 
-    /* 2. Utility Class untuk Animasi */
-    .animate-infinite-scroll {
-        animation: infinite-scroll 50s linear infinite;
+    /* Animasi Scroll Reveal */
+    .reveal-on-scroll {
+        @apply opacity-0 translate-y-10 transition-all duration-700 ease-out;
+    }
+    
+    .reveal-on-scroll.is-visible {
+        @apply opacity-100 translate-y-0;
     }
   }

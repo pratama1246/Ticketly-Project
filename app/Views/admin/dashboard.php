@@ -6,7 +6,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             
-            <div class="bg-blue-soft-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-blue-soft-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow reveal-on-scroll">
                 <div>
                     <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Total Pendapatan</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <div class="bg-palette-purple-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-palette-purple-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow reveal-on-scroll delay-100">
                 <div>
                     <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Tiket Terjual</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div class="bg-yellow-bright-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-yellow-bright-light-hover p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow reveal-on-scroll delay-200">
                 <div>
                     <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Total Pesanan</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="bg-palette-orange-light p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="bg-palette-orange-light p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow reveal-on-scroll delay-300">
                 <div>
                     <p class="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Event Aktif</p>
                     <h3 class="text-2xl font-extrabold text-gray-900">
@@ -64,7 +64,7 @@
 
        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
 
-            <div class="xl:col-span-3 bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+            <div class="xl:col-span-3 bg-yellow-bright-light border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 reveal-on-scroll">
                 <div class="flex justify-between items-start w-full mb-4">
                     <div class="flex-col items-center">
                         <div class="flex items-center mb-1">
@@ -91,7 +91,7 @@
                 
                 <div id="revenue-chart" class="w-full"></div>
                 
-                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4 reveal-on-scroll">
                     <div class="flex justify-between items-center pt-4">
                         <button class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center" type="button">
                             Last 7 days
@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+            <div class="bg-yellow-bright-light border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 reveal-on-scroll">
                 <div class="flex justify-between mb-3">
                     <div class="flex justify-center items-center">
                         <h5 class="text-xl font-bold text-gray-900 me-1">Event Terlaris</h5>
@@ -119,7 +119,7 @@
 
                 <div class="py-2" id="category-chart"></div>
 
-                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4">
+                <div class="grid grid-cols-1 items-center border-t border-gray-200 justify-between mt-4 ">
                     <div class="flex justify-between items-center pt-4">
                         <span class="text-sm font-medium text-gray-500">Top 5 Events</span>
                         <a href="/admin/events" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
@@ -130,7 +130,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+            <div class="bg-yellow-bright-light border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 reveal-on-scroll delay-100">
                 <div class="flex justify-between pb-4 mb-4 border-b border-gray-200">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center me-3">
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+            <div class="bg-yellow-bright-light border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 reveal-on-scroll delay-200">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h5 class="text-xl font-bold text-gray-900">Status Order</h5>
@@ -185,8 +185,8 @@
 
         </div>
         
-        <h2 class="text-2xl font-bold text-black mb-4">Pesanan Terbaru</h2>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-8">
+        <h2 class="text-2xl font-bold text-black mb-4 reveal-on-scroll">Pesanan Terbaru</h2>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-8 reveal-on-scroll">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-yellow-accent-light">
                     <tr>
