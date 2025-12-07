@@ -7,7 +7,7 @@
         <link href="<?= base_url('output.css') ?>" rel="stylesheet">
         <script src="<?= base_url('flowbite.min.js') ?>"></script>
         <script src="<?= base_url('js/app.js') ?>"></script>
-    <title>Ticketly - Nikmati Konsermu</title>
+    <title><?= esc($title ?? 'Ticketly') ?> - Ticketly</title>
     <?= csrf_meta() ?>
 </head>
 

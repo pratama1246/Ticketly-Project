@@ -35,7 +35,7 @@
                                 if ($start->getMonth() == $end->getMonth()) {
                                     echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
                                 } else {
-                                    echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                    echo $start->toLocalizedString('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
                                 }
                             }
                         } else {

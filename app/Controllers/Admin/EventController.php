@@ -40,7 +40,7 @@ class EventController extends BaseController
         }
 
         $data = [
-            'title'   => 'Detail Event',
+            'title'   => 'Detail Event: ' . $event['name'],
             'event'   => $event,
             'tickets' => $ticketModel->where('event_id', $id)->findAll() 
         ];
@@ -48,20 +48,6 @@ class EventController extends BaseController
         echo view('admin/layout/header', $data);
         echo view('admin/events/detail', $data);
         echo view('admin/layout/footer');
-    }
-
-    // Menerima $slug (string) event
-    public function detail($slug = null)
-    {
-        $eventModel = new EventModel();
-        
-        // Cari berdasarkan kolom 'slug'
-        $event = $eventModel->where('slug', $slug)->first();
-
-        if (!$event) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-        }
-
     }
 
     // 2. Menampilkan form tambah event
@@ -257,18 +243,37 @@ class EventController extends BaseController
             $data['seatmap_image'] = 'uploads/seatmaps/' . $newName;
         }
 
-        $isSingleDay = empty($endDate) || (date('Y-m-d', strtotime($startDate)) === date('Y-m-d', strtotime($endDate)));
+        $oldStartDate = date('Y-m-d', strtotime($existingEvent['event_date']));
+        $newStartDate = date('Y-m-d', strtotime($startDate));
 
-        if ($isSingleDay) {
+        $oldEndDate = !empty($existingEvent['event_end_date']) ? date('Y-m-d', strtotime($existingEvent['event_end_date'])) : $oldStartDate;
+        $newEndDate = !empty($endDate) ? date('Y-m-d', strtotime($endDate)) : $newStartDate;
+
+        // Logic Update
+        if ($eventModel->update($id, $data)) {
+            
             $ticketModel = new \App\Models\TicketTypeModel();
 
-            $ticketModel->where('event_id', $id)
-                        ->set(['ticket_date' => null])
-                        ->update();
-        }
-        
-        // Update Database
-        if ($eventModel->update($id, $data)) {
+            // SKENARIO 1: Berubah jadi Single Day
+            $isNewSingleDay = ($newStartDate === $newEndDate);
+            
+            if ($isNewSingleDay) {
+                // Paksa semua tiket jadi NULL (karena cuma 1 hari, ga butuh tanggal spesifik)
+                $ticketModel->where('event_id', $id)
+                            ->set(['ticket_date' => null])
+                            ->update();
+            } 
+            // SKENARIO 2: Tanggal Bergeser (Reschedule)
+            elseif ($oldStartDate !== $newStartDate || $oldEndDate !== $newEndDate) {
+                // Reset semua tiket jadi NULL biar Admin set ulang manual
+                // Ini mencegah tiket 'nyangkut' di tanggal yang udah gak ada
+                $ticketModel->where('event_id', $id)
+                            ->set(['ticket_date' => null])
+                            ->update();
+                
+                session()->setFlashdata('warning', 'Tanggal event berubah. Mohon atur ulang tanggal per tiket di menu Kelola Tiket.');
+            }
+
             return redirect()->to('/admin/events')->with('message', 'Event berhasil diperbarui.');
         } else {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui event.');

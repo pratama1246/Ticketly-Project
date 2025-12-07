@@ -151,4 +151,21 @@ class TicketController extends BaseController
 
         return redirect()->to("/admin/events/$eventId/tickets")->with('message', 'Tiket berhasil diperbarui.');
     }
+
+    public function duplicate($eventId, $ticketId)
+    {
+        $ticket = $this->ticketModel->find($ticketId);
+
+        if ($ticket) {
+            $newTicket = $ticket;
+            unset($newTicket['id']); // Hapus ID lama biar jadi record baru
+            $newTicket['name'] = $newTicket['name'] . ' (Copy)'; // Kasih tanda
+            $newTicket['quantity_sold'] = 0; // Reset penjualan
+            
+            $this->ticketModel->insert($newTicket);
+            return redirect()->back()->with('message', 'Tiket berhasil diduplikasi! Tinggal edit dikit.');
+        }
+
+        return redirect()->back()->with('error', 'Tiket tidak ditemukan.');
+    }
 }

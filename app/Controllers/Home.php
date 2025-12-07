@@ -38,7 +38,7 @@ class Home extends BaseController
             ->findAll(4);
 
         $data = [
-            'title'     => 'Home',
+            'title'     => 'Nikmati Semua Event',
             'featured'  => $featuredEvents,
             'concerts'  => $concerts,
             'festivals' => $festivals,

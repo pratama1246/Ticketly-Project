@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use PHPUnit\Framework\Attributes\Ticket;
 
 class OrderItemsModel extends Model
  {

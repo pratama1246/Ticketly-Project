@@ -59,6 +59,7 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
     $routes->post('events/(:num)/tickets/(:num)/update', 'Admin\TicketController::update/$1/$2');
     $routes->post('events/(:num)/tickets', 'Admin\TicketController::create/$1');
     $routes->delete('events/(:num)/tickets/(:num)', 'Admin\TicketController::delete/$1/$2');
+    $routes->get('events/(:num)/tickets/(:num)/duplicate', 'Admin\TicketController::duplicate/$1/$2');
 });
 
 // 6. Auth Routes

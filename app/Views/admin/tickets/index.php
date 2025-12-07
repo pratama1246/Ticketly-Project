@@ -8,96 +8,86 @@
     </a>
 </div>
 
-<!-- TABEL TIKET -->
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 min-w-[800px]">
-        <thead class="text-xs text-gray-700 uppercase bg-yellow-accent-light">
-            <tr>
-                <th class="px-6 py-3">Nama Tiket</th>
-                <th class="px-6 py-3">Warna UI</th>
-                <th class="px-6 py-3">Harga</th>
-                <th class="px-6 py-3">Kuota</th>
-                <th class="px-6 py-3">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (empty($tickets)): ?>
-                <tr class="bg-white border-b">
-                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                        Belum ada tiket untuk event ini.
-                    </td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($tickets as $ticket): ?>
-                <tr id="row-ticket-<?= $ticket['id'] ?>" class="bg-white border-b hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium text-gray-900"><?= esc($ticket['name']) ?></td>
-                    <td class="px-6 py-4">
-                        <?php
-                            $colors = [
-                                'green' => 'bg-green-100 text-green-800 border-green-200',
-                                'blue' => 'bg-blue-100 text-blue-800 border-blue-200',
-                                'yellow' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
-                                'purple' => 'bg-purple-100 text-purple-800 border-purple-200',
-                                'red' => 'bg-red-100 text-red-800 border-red-200',
-                                'gray' => 'bg-gray-100 text-gray-800 border-gray-200',
-                            ];
-                            $class = $colors[$ticket['ui_color']] ?? 'bg-gray-100';
-                        ?>
-                        <span class="px-3 py-1 rounded text-xs font-bold uppercase border <?= $class ?>">
-                            <?= esc($ticket['ui_color']) ?>
-                        </span>
-                    </td>
-                    <td class="px-6 py-4">Rp <?= number_format($ticket['price'], 0, ',', '.') ?></td>
-                    <td class="px-6 py-4">
-                        <?= $ticket['quantity_sold'] ?> / <strong><?= $ticket['quantity_total'] ?></strong>
-                    </td>
-                    <td class="px-6 py-4 flex items-center gap-3">
-                        <a href="/admin/events/<?= $event['id'] ?>/tickets/<?= $ticket['id'] ?>/edit" 
-                        class="font-medium text-blue-600 hover:underline">
-                        Edit
-                        </a>
-                        
-                        <button onclick="deleteTicket(<?= $event['id'] ?>, <?= $ticket['id'] ?>)" 
-                                class="font-medium text-red-600 hover:underline">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+<?php if (empty($tickets)): ?>
+    <div class="p-10 text-center bg-white rounded-lg shadow border border-gray-200">
+        <p class="text-gray-500">Belum ada tiket untuk event ini.</p>
+    </div>
+<?php else: ?>
 
-<!-- Skrip Hapus Tiket (Bakal di ganti) -->
-<script>
-function deleteTicket(eventId, ticketId) {
-    if(typeof customModal !== 'undefined') {
-        customModal.show(
-            'Hapus Tiket?', 
-            'Data tiket akan dihapus permanen.', 
-            'Hapus', 
-            'bg-red-600', 
-            () => {
-                fetch(`/admin/events/${eventId}/tickets/${ticketId}`, {
-                    method: 'DELETE',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'success') {
-                        document.getElementById(`row-ticket-${ticketId}`).remove();
-                        alert('Tiket dihapus!'); // Bisa ganti toast/alert lain
-                    } else {
-                        alert('Gagal.');
-                    }
-                });
-            }
-        );
-    } else {
-        if(confirm('Hapus tiket?')) {
-            // Fallback logic fetch sama...
+    <?php
+    // LOGIKA GROUPING DI VIEW BIAR PRAKTIS
+    $groupedTickets = [
+        'pass' => [],  // Untuk All Days Pass
+        'daily' => []  // Untuk tiket harian
+    ];
+
+    foreach ($tickets as $t) {
+        if (empty($t['ticket_date'])) {
+            $groupedTickets['pass'][] = $t;
+        } else {
+            $groupedTickets['daily'][$t['ticket_date']][] = $t;
         }
     }
-}
-</script>
+    // Urutkan tanggal biar rapi (Day 1, Day 2, dst)
+    ksort($groupedTickets['daily']);
+    ?>
+
+    <div class="space-y-8">
+        
+        <?php if (!empty($groupedTickets['pass'])): ?>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200">
+            <div class="bg-purple-100 px-6 py-3 border-b border-purple-200">
+                <h3 class="font-bold text-purple-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                    ALL DAYS PASS (Tiket Terusan)
+                </h3>
+            </div>
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3">Nama Tiket</th>
+                        <th class="px-6 py-3">Warna UI</th>
+                        <th class="px-6 py-3">Harga</th>
+                        <th class="px-6 py-3">Kuota</th>
+                        <th class="px-6 py-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($groupedTickets['pass'] as $ticket): ?>
+                        <?= view('admin/tickets/_row_ticket', ['ticket' => $ticket, 'event' => $event]) ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
+
+        <?php foreach ($groupedTickets['daily'] as $dateKey => $dailyTickets): ?>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200">
+            <div class="bg-blue-100 px-6 py-3 border-b border-blue-200">
+                <h3 class="font-bold text-blue-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <?= date('d F Y', strtotime($dateKey)) ?> 
+                    <span class="text-xs font-normal text-blue-600 ml-2 bg-white px-2 py-0.5 rounded-full border border-blue-200">Daily Pass</span>
+                </h3>
+            </div>
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3">Nama Tiket</th>
+                        <th class="px-6 py-3">Warna UI</th>
+                        <th class="px-6 py-3">Harga</th>
+                        <th class="px-6 py-3">Kuota</th>
+                        <th class="px-6 py-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($dailyTickets as $ticket): ?>
+                        <?= view('admin/tickets/_row_ticket', ['ticket' => $ticket, 'event' => $event]) ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endforeach; ?>
+
+    </div>
+<?php endif; ?>

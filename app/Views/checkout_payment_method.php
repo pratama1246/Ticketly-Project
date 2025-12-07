@@ -1,6 +1,6 @@
-    <script type="text/javascript"
+    <!-- <script type="text/javascript"
         src="https://app.sandbox.midtrans.com/snap/snap.js"
-        data-client-key="Mid-client-luIJNWBXVVrc0zac"></script>
+        data-client-key="Mid-client-luIJNWBXVVrc0zac"></script> -->
 <main class="w-full pt-60 md:pt-42 mb-20 grow transition-all duration-300">
         <div class="max-w-4xl mx-auto p-4">
 

@@ -34,7 +34,6 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'checkout_timer' => \App\Filters\CheckoutTimerFilter::class,
 
          'session'       => \CodeIgniter\Shield\Filters\SessionAuth::class,
         'token'         => \CodeIgniter\Shield\Filters\TokenAuth::class,

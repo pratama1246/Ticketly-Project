@@ -80,24 +80,24 @@
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Posisi</label>
                 <div class="grid grid-cols-2 gap-4">
-                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-checked:border-blue-500 has-checked:bg-blue-50">
-                        <input type="radio" name="ticket_category" value="Standing" class="w-4 h-4 text-blue-600" 
-                               <?= (old('ticket_category', $ticket['ticket_category']) == 'Standing') ? 'checked' : '' ?>>
+                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 has-checked:border-blue-500 has-checked:bg-blue-50 transition-all">
+                        <input type="radio" name="ticket_category" value="Standing" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= old('ticket_category') == 'Standing' ? 'checked' : 'checked' ?>>
                         <div class="ms-3">
                             <span class="block text-sm font-medium text-gray-900">Standing</span>
+                            <span class="block text-xs text-gray-500">Berdiri (Festival)</span>
                         </div>
                     </label>
 
-                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer has-checked:border-blue-500 has-checked:bg-blue-50">
-                        <input type="radio" name="ticket_category" value="Seating" class="w-4 h-4 text-blue-600" 
-                               <?= (old('ticket_category', $ticket['ticket_category']) == 'Seating') ? 'checked' : '' ?>>
+                    <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 has-checked:border-blue-500 has-checked:bg-blue-50 transition-all">
+                        <input type="radio" name="ticket_category" value="Seating" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= old('ticket_category') == 'Seating' ? 'checked' : '' ?>>
                         <div class="ms-3">
                             <span class="block text-sm font-medium text-gray-900">Seating</span>
+                            <span class="block text-xs text-gray-500">Duduk (Bernomor/Free)</span>
                         </div>
                     </label>
                 </div>
             </div>
-
+            
             <!-- Harga dan Kuota Tiket -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
