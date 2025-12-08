@@ -15,7 +15,7 @@
 
 <!-- NAVBAR -->
 <nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-default">
-  <div class="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <div class="flex flex-wrap items-center justify-between mx-auto p-6">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
          <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
     </a>

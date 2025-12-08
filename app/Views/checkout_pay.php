@@ -1,88 +1,135 @@
-<main class="w-full pt-40 mb-20 grow transition-all duration-300">
-    <div class="max-w-5xl mx-auto p-4">
+<main class="w-full pt-60 md:pt-42 mb-20 grow transition-all duration-300">
+    <input type="hidden" id="csrf_security" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
-        <input type="hidden" id="csrf_security" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
-        
-        <div class="mb-8 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4 animate-pulse">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <div class="max-w-4xl mx-auto w-full space-y-6">
+
+        <div class="relative w-full rounded-t-2xl overflow-hidden shadow-lg">
+            <img src="<?= base_url($event['poster_image']) ?>" 
+                 alt="<?= esc($event['name']) ?>" 
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+                <h2 class="font-bold text-lg leading-tight mb-1"><?= esc($event['name']) ?></h2>
+                <p class="text-xs text-gray-300 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <?= esc($event['venue']) ?>
+                </p>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Menunggu Pembayaran</h2>
+        </div>
+
+        <div class="bg-white rounded-b-2xl rounded-t-none shadow-xl border border-gray-100 overflow-hidden -mt-6 relative z-10">
             
-            <div class="flex flex-col items-center justify-center gap-2 text-gray-500">
-                <span>Selesaikan pembayaran Anda dalam waktu:</span>
-                
-                <div class="bg-red-50 text-red-600 px-6 py-2 rounded-full border border-red-100 flex items-center gap-2 shadow-sm">
+            <div class="text-center pt-8 pb-4 border-b border-dashed border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Masih ada waktu untuk menyelesaikan pembayaran</h1>
+                <div class="inline-flex items-center gap-2 text-blue-700 px-4 mt-4 mb-4 py-1.5 font-sans font-bold text-2xl">
                     <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span id="body-timer-text" class="font-mono font-bold text-2xl tabular-nums pt-0.5">15:00</span>
-                    <span class="text-sm font-medium uppercase tracking-wide opacity-70">Menit</span>
+                    <span id="body-timer-text">15:00</span>
                 </div>
-            </div>    
+                <p class="text-gray-500 text-md mb-2">Batas waktu untuk melakukan pembayaran</p>
+                <h1>
+                    <p class="text-gray-900 font-bold text-2xl">
+                        <?php 
+                            // 1. Ambil waktu pesanan dibuat
+                            $createdAt = \CodeIgniter\I18n\Time::parse($order['created_at']);
+                            
+                            // 2. Tambah 15 menit
+                            $deadline  = $createdAt->addMinutes(15);
+                            
+                            // 3. Format ke Bahasa Indonesia (Contoh: Kamis, 23 Agustus 2025 (15:00 WIB))
+                            echo $deadline->toLocalizedString('EEEE, d MMMM yyyy (HH:mm') . ' WIB)';
+                        ?>
+                    </p>
+                </h1>
+                <p class="text-sm text-gray-400 mt-2 px-6">Jika melewati batas waktu, pesanan Anda akan dibatalkan otomatis.</p>
             </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            
-            <div class="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                    <span class="font-bold text-gray-700">Metode Pembayaran</span>
-                    <img src="<?= base_url('assets/payment/' . ($order['payment_method'] ?? 'bca') . '.svg') ?>" class="h-8 w-auto object-contain">
-                </div>
+            <div class="p-6 space-y-6">
                 
-                <div class="p-8 text-center">
-                    <p class="text-sm text-gray-500 mb-2">Nomor Virtual Account</p>
-                    
-                    <div class="flex justify-center items-center gap-3 mb-6">
-                        <span id="va-number" class="text-3xl md:text-4xl font-sans font-bold text-blue-600 tracking-wider">
-                            <?= '8800' . rand(1000000000, 9999999999) ?>
+                <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm font-semibold text-gray-600">Metode Pembayaran</span>
+                        <img src="<?= base_url('assets/payment/' . ($order['payment_method'] ?? 'bca') . '.svg') ?>" class="h-6 w-auto object-contain">
+                    </div>
+
+                    <div class="space-y-1">
+                        <p class="text-xs text-gray-400 uppercase tracking-wide">Nomor Virtual Account</p>
+                        <div class="flex justify-between items-end">
+                            <span id="va-number" class="text-2xl font-bold text-gray-800 tracking-wider">
+                                <?= '8800' . rand(1000000000, 9999999999) ?>
+                            </span>
+                            <button type="button" id="btn-copy-va" class="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                Salin
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-xs text-gray-400 uppercase tracking-wide">Total Pembayaran</p>
+                        <span class="text-xl font-bold text-orange-600">
+                            Rp <?= number_format($order['order_total'], 0, ',', '.') ?>
                         </span>
-                        <button type="button" id="btn-copy-va" class="text-gray-400 hover:text-blue-600 transition-colors" title="Salin">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        </button>
                     </div>
-
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800 max-w-md mx-auto mb-6">
-                        <strong class="block mb-1">Total Pembayaran</strong>
-                        <span class="text-2xl font-bold">Rp <?= number_format($order['order_total'], 0, ',', '.') ?></span>
-                    </div>
-
-                    <form action="/checkout/confirm/<?= $order['id'] ?>" method="POST" class="mt-6">
-                        <?= csrf_field() ?>
-                        <button type="button" onclick="showPaymentConfirmModal()" id="btn-pay-trigger" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3 text-base font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
-                            Saya Sudah Bayar
-                        </button>
-                    </form>
-                    <button type="button" onclick="window.showCancelModal()" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3 mt-2 text-base font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl">
-                            Batalkan Pesanan
-                        </button>
-                    <p class="mt-4 text-xs text-gray-400">Sistem akan memverifikasi pembayaran secara otomatis.</p>
                 </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-gray-800">Detail Pesanan</h3>
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>Order ID</span>
+                        <span class="font-mono font-medium text-gray-900"><?= esc($order['trx_id'] ?? '#'.$order['id']) ?></span>
+                    </div>
+                     <div class="flex justify-between text-sm text-gray-600">
+                        <span>Tanggal Event</span>
+                        <span class="font-medium text-gray-900 text-right">
+                              <?php 
+                                $s = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                if (!empty($event['event_end_date'])) {
+                                    $e = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
+                                    if ($s->format('Y-m-d') === $e->format('Y-m-d')) {
+                                        echo $s->toLocalizedString('d F Y') . ' • ' . $s->format('H:i') . ' - ' . $e->format('H:i') . ' WIB';
+                                    } else {
+                                        echo $s->toLocalizedString('d MMMM') . ' - ' . $e->toLocalizedString('d MMMM Y');
+                                    }
+                                } else {
+                                    echo $s->toLocalizedString('d F Y') . ' • ' . $s->format('H:i') . ' WIB';
+                                }
+                            ?>
+                        </span>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="lg:col-span-1 bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-                <h3 class="font-bold text-gray-900 mb-4 border-b pb-2">Detail Pesanan</h3>
+            <div class="p-6 pt-0 space-y-3">
+                <form action="/checkout/confirm/<?= $order['id'] ?>" method="POST" class="w-full">
+                    <?= csrf_field() ?>
+                    <button type="button" onclick="showPaymentConfirmModal()" id="btn-pay-trigger" 
+                        class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        Konfirmasi Pembayaran
+                    </button>
+                </form>
                 
-                <img src="<?= base_url($event['poster_image']) ?>" alt="Event" class="w-full h-40 object-cover rounded-lg mb-4 shadow-sm">
-                
-                <h4 class="font-bold text-lg text-gray-900 leading-tight mb-2"><?= esc($event['name']) ?></h4>
-                
-                <div class="space-y-2 text-sm text-gray-600 mb-6">
-                    <p class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <?= (new \DateTime($event['event_date']))->format('d F Y') ?>
-                    </p>
-                    <p class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <?= esc($event['venue']) ?>
-                    </p>
-                </div>
-
-                <div class="border-t pt-4">
-                    <span class="text-xs font-bold text-gray-400 uppercase">Order ID</span>
-                    <p class="font-mono font-bold text-gray-900 text-sm"><?= esc($order['trx_id'] ?? '#'.$order['id']) ?></p>
-                </div>
+                <button type="button" onclick="window.showCancelModal()" 
+                    class="w-full py-3 px-4 bg-white border border-gray-200 text-gray-500 font-medium rounded-xl hover:bg-gray-50 hover:text-red-600 transition-colors">
+                    Batalkan Pesanan
+                </button>
             </div>
 
         </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Instruksi Pembayaran</h3>
+            <div class="space-y-4">
+                <div class="text-sm text-gray-600 space-y-2">
+                    <p>1. Buka aplikasi Mobile Banking atau ATM Anda.</p>
+                    <p>2. Pilih menu <strong>Transfer Virtual Account</strong>.</p>
+                    <p>3. Masukkan nomor VA: <span class="font-mono bg-gray-100 px-1 rounded">8800...</span></p>
+                    <p>4. Periksa detail nama dan total tagihan.</p>
+                    <p>5. Masukkan PIN Anda dan simpan bukti transaksi.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 <!-- Modal Sections -->

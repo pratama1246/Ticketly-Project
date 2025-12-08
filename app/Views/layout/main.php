@@ -32,22 +32,26 @@
                                             <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>
-                                            <?php 
+                                           <?php 
                                                 $start = \CodeIgniter\I18n\Time::parse($item['event_date']);
                                                 
-                                                // Logika Multi-Day
-                                                if (!empty($item['event_end_date']) && $item['event_end_date'] != $item['event_date']) {
+                                                if (!empty($item['event_end_date'])) {
                                                     $end = \CodeIgniter\I18n\Time::parse($item['event_end_date']);
                                                     
-                                                    if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
-                                                        // Bulan Sama: "10 - 12 Januari 2026"
-                                                        echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                                    // Logika Tampilan Tanggal
+                                                    if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
+                                                        // Satu Hari: "10 Januari 2026"
+                                                        echo $start->toLocalizedString('d MMMM yyyy');
                                                     } else {
-                                                        // Beda Bulan: "30 Jan - 02 Feb 2026"
-                                                        echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                                        // Multi-Day: "10 - 12 Januari 2026" atau "30 Des - 02 Jan 2026"
+                                                        if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
+                                                            echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                                        } else {
+                                                            echo $start->format('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                                        }
                                                     }
                                                 } else {
-                                                    // Single Day
+                                                    // Default Single Day
                                                     echo $start->toLocalizedString('d MMMM yyyy');
                                                 }
                                             ?>
@@ -154,7 +158,7 @@
     {
         if (empty($events)) return;
     ?>
-        <div class="mx-auto my-8 p-2 md:p-4 reveal-on-scroll max-w-7xl">
+        <div class="mx-auto max-w-8xl my-8 p-2 md:p-4 reveal-on-scroll">
             <div class="flex justify-between items-end px-2 mb-6 border-l-4 border-blue-600 pl-4 ml-2">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
@@ -267,7 +271,7 @@
     ?>
 
     <!-- Promo Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-20 reveal-on-scroll">
+    <section class="max-w-8xl mx-auto px-4 mb-20 reveal-on-scroll">
         <div class="relative rounded-2xl overflow-hidden bg-linear-to-r from-purple-900 to-blue-900 shadow-2xl">
             <img src="<?= base_url('assets/konser2.jpg') ?>" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Concert">
 
@@ -285,7 +289,7 @@
     </section>
 
     <!-- How to Buy Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-24 text-center reveal-on-scroll">
+    <section class="max-w-8xl mx-auto px-4 mb-24 text-center reveal-on-scroll">
         <div class="mb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Cara Beli Tiket</h2>
             <p class="text-gray-500 mt-2">Dapatkan tiketmu hanya dalam hitungan menit.</p>
@@ -322,7 +326,7 @@
 
     <!-- Testimonials Section -->
     <section class="bg-gray-50 py-16 mb-20 border-y border-gray-100 reveal-on-scroll">
-        <div class="max-w-7xl mx-auto px-4">
+        <div class="max-w-8xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kata Mereka</h2>
                 <p class="text-gray-500 mt-2">Pengalaman seru dari pengguna Ticketly.</p>
@@ -497,7 +501,7 @@
     </section>
 
     <!-- Newsletter Section -->
-    <section class="max-w-7xl mx-auto px-4 mb-20 reveal-on-scroll">
+    <section class="max-w-8xl mx-auto px-4 mb-20 reveal-on-scroll">
         <div class="bg-white rounded-2xl p-8 md:p-16 text-center relative overflow-hidden shadow-2xl">
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-linear-to-t from-newsletter-bg-gradient-from to-newsletter-bg-gradient-to"></div>
 
@@ -520,7 +524,7 @@
     <!-- WHY BUY FROM US SECTION -->
     <section class= "py-16 text-black relative overflow-hidden mt-10 reveal-on-scroll">
 
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="max-w-8xl mx-auto px-6 relative z-10">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Kenapa Beli di Ticketly?</h2>
                 <p class="max-w-2xl mx-auto text-lg">Platform tiket event terpercaya dengan jutaan pengguna di seluruh Indonesia.</p>
@@ -564,7 +568,7 @@
 
      <!-- PARTNER & SPONSOR SECTION -->
     <section class="py-16 bg-white border-t border-gray-100">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-8xl mx-auto px-6">
             <div class="text-center mb-10">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">Official Partners & Sponsors</h3>
             </div>

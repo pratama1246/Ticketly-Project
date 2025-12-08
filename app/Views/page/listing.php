@@ -87,7 +87,20 @@
                                     </p>
                                     <p class="text-gray-500 text-xs font-medium flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                                        <?= (new \DateTime($event['event_date']))->format('H:i') ?> WIB
+                                        <<?php
+                                            $startT = new \DateTime($event['event_date']);
+                                            $timeStr = $startT->format('H:i');
+                                            
+                                            // Cek End Date
+                                            if (!empty($event['event_end_date'])) {
+                                                $endT = new \DateTime($event['event_end_date']);
+                                                // Kalau hari sama, tampilin range jam
+                                                if ($startT->format('Y-m-d') === $endT->format('Y-m-d')) {
+                                                    $timeStr .= ' - ' . $endT->format('H:i');
+                                                }
+                                            }
+                                            echo $timeStr . ' WIB';
+                                        ?>
                                     </p>
                                 </div>
                                 
