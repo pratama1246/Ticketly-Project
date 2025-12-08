@@ -19,37 +19,52 @@
                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                 </svg>
                     <?php 
-                        $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                    $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                    
+                    if (!empty($event['event_end_date'])) {
+                        $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
                         
-                        if (!empty($event['event_end_date'])) {
-                            $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
-                            
-                            // Cek apakah Tanggalnya Sama (Cuma beda jam)
-                            if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
-                                // SKENARIO B: Satu Hari dengan Durasi
-                                // Output: 10 Jan 2026 • 15:00 - 23:00 WIB
-                                echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' - ' . $end->format('H:i') . ' WIB';
-                            } else {
-                                // SKENARIO C: Beda Hari (Multi-Day)
-                                // Output: 10 - 12 Januari 2026
-                                if ($start->getMonth() == $end->getMonth()) {
-                                    echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
-                                } else {
-                                    echo $start->toLocalizedString('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
-                                }
-                            }
+                        // Logika Tampilan Tanggal
+                        if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
+                            // Satu Hari: "10 Januari 2026"
+                            echo $start->toLocalizedString('d MMMM yyyy');
                         } else {
-                            // SKENARIO A: Satu Hari (Start Only)
-                            // Output: 10 Jan 2026 • 15:00 WIB
-                            echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' WIB';
+                            // Multi-Day: "10 - 12 Januari 2026" atau "30 Des - 02 Jan 2026"
+                            if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
+                                echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                            } else {
+                                echo $start->toLocalizedString('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                            }
                         }
-                    ?>
+                    } else {
+                        // Default Single Day
+                        echo $start->toLocalizedString('d MMMM yyyy');
+                    }
+                ?>
             </p>
 
         <!-- Waktu Event: -->
             <p class="text-gray-500 text-s font-medium flex items-center gap-1">
                     <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                    <?= (new \DateTime($event['event_date']))->format('H:i') ?> WIB
+                    <?php 
+                    $startTime = $start->format('H:i');
+                    
+                    if (!empty($event['event_end_date'])) {
+                        $endTime = \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('H:i');
+                        
+                        // Cek apakah tanggalnya sama? Kalau beda hari, mungkin cuma nampilin jam mulai (Open Gate)
+                        // Tapi kalau sama hari, tampilin range jam (15:00 - 23:00)
+                        $isSameDay = ($start->format('Y-m-d') === \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('Y-m-d'));
+
+                        if ($isSameDay) {
+                            echo $startTime . ' - ' . $endTime . ' WIB';
+                        } else {
+                            echo 'Mulai pukul ' . $startTime . ' WIB';
+                        }
+                    } else {
+                        echo $startTime . ' WIB';
+                    }
+                ?>
             </p>
         
         <!-- Lokasi Event -->
