@@ -497,4 +497,42 @@ class CheckoutController extends BaseController
 
         return $timeLeft;
     }
+
+    /**
+     * Mencari kursi yang tersedia secara otomatis.
+     *
+     * @param int $eventId
+     * @param int $ticketTypeId
+     * @param int $quantity
+     * @return array|false Daftar ID kursi atau false jika tidak cukup
+     */
+
+    private function assignSeats($eventId, $ticketTypeId, $quantity)
+    {
+        $db = \Config\Database::connect();
+
+        $takenSeatsQuery = $db->table('order_items')
+            ->select('seat_id')
+            ->join('orders', 'orders.id = order_items.order_id')
+            ->whereIn('orders.status', ['pending', 'completed'])
+            ->where('seat_id IS NOT NULL');
+
+        $takenSeatsSql = $takenSeatsQuery->getCompiledSelect();
+
+        $availableSeats = $db->table('seats')
+            ->where('event_id', $eventId)
+            ->where('ticket_type_id', $ticketTypeId)
+            ->where("id NOT IN ($takenSeatsSql)", null, false)
+            ->orderBy('id', 'ASC')
+            ->limit($quantity)
+            ->get()
+            ->getResultArray();
+
+        if (count($availableSeats) < $quantity) {
+            return false; // Kursi gak cukup!
+        }
+
+            // Ambil kolom 'id'-nya saja
+            return array_column($availableSeats, 'id');
+    }
 }
