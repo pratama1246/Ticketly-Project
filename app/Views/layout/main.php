@@ -174,7 +174,7 @@
             </div>
 
             <!-- Card Container -->
-            <div class="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth pb-6 px-2 reveal-on-scroll max-w-7xl">
+            <div class="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth pb-6 reveal-on-scroll max-w-7xl">
                 <div class="flex flex-nowrap space-x-5 items-stretch">
 
                     <?php foreach ($events as $event): ?>
