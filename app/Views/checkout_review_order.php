@@ -13,7 +13,7 @@
                     <!-- EVENT + TIKET -->
                     <div class="bg-white border border-gray-300 rounded-lg shadow-sm p-6">
 
-                        <h2 class="text-2xl font-bold text-black mb-6">Konfirmasi Pesanan</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Konfirmasi Pesanan</h2>
 
                         <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
                             <img src="<?= base_url(esc($event['poster_image'])) ?>"
@@ -22,7 +22,7 @@
                         </div>
 
                         <div  class="mb-6 pb-6 border-b border-gray-200">
-                            <h1 class="text-2xl lg:text-3xl font-bold text-black">
+                            <h1 class="text-xl lg:text-3xl font-bold text-black">
                                 <?= esc($event['name']) ?>
                             </h1>
 
@@ -58,7 +58,19 @@
                                 <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                                 </svg>
-                                <?= (new \DateTime($event['event_date']))->format('H:i') ?> WIB
+                                <?php 
+                                    $s = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                    if (!empty($event['event_end_date'])) {
+                                        $e = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
+                                        if ($s->format('Y-m-d') === $e->format('Y-m-d')) {
+                                            echo $s->toLocalizedString('d F Y') . ' • ' . $s->format('H:i') . ' - ' . $e->format('H:i') . ' WIB';
+                                        } else {
+                                            echo $s->toLocalizedString('d MMMM') . ' - ' . $e->toLocalizedString('d MMMM Y');
+                                        }
+                                    } else {
+                                        echo $s->toLocalizedString('d F Y') . ' • ' . $s->format('H:i') . ' WIB';
+                                    }
+                                ?>
                             </p>
 
                             <p class="text-gray-500 text-s font-medium flex items-center gap-1">
