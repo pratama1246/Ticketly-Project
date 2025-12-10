@@ -323,6 +323,24 @@ class CheckoutController extends BaseController
         $newOrderId = $orderModel->getInsertID();
 
         foreach ($ticketDetails as $ticket) {
+            $ticketInfo = $ticketTypeModel->find($ticket['id']);
+            $isSeating = ($ticketInfo['ticket_category'] === 'Seating');
+
+            $assignedSeatId = [];
+
+            if ($isSeating) {
+                $assignedSeatId = $this->assignSeats($checkoutData['event_id'], $ticket['id'], $ticket['quantity']);
+
+                // Cek Ketersediaan Kursi
+                if ($assignedSeatId === false) {
+                    $db->transRollback();
+                    return redirect()->to('/checkout/review_order')
+                     ->with('error', 'Mohon maaf, kursi untuk tiket ' . $ticketInfo['name'] . ' baru saja habis atau sedang dipesan orang lain. Silakan pilih tiket lain atau coba lagi.');
+                }        
+            }
+
+            for ($i = 0; $i < $ticket['quantity']; $i++) {
+
             // Generate Ticket Code Unik
             $randTicket = strtoupper(bin2hex(random_bytes(3))); 
             $ticketUniqueCode = sprintf('TKT-E%02d-%d-%s', $checkoutData['event_id'], $newOrderId, $randTicket);
@@ -330,10 +348,14 @@ class CheckoutController extends BaseController
             $orderItemsModel->insert([
                 'order_id'       => $newOrderId,
                 'ticket_type_id' => $ticket['id'],
-                'quantity'       => $ticket['quantity'],
+                'quantity'       => 1,
+                'seat_id'        => $isSeating ? $assignedSeatId[$i] : null,
                 'price_per_ticket' => $ticket['price'],
                 'ticket_code'    => $ticketUniqueCode
             ]);
+
+            $orderItemsModel->insert($itemData);
+        }
 
             // Potong Stok
             $ticketTypeModel->where('id', $ticket['id'])

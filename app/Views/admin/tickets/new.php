@@ -116,9 +116,39 @@
                 <div>
                     <label for="quantity_total" class="block mb-2 text-sm font-medium text-gray-900">Total Kuota (Stok)</label>
                     <input type="number" id="quantity_total" name="quantity_total" 
-                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                           placeholder="Contoh: 100" value="<?= old('quantity_total') ?>" required>
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 transition-colors" 
+                           placeholder="Contoh: 100" value="<?= old('quantity_total') ?>">
                 </div>
+            </div>
+
+            <div id="seat-generator-box" class="hidden mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg animate-fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-bold text-blue-800 uppercase tracking-wide flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        Generator Kursi Otomatis
+                    </label>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <input type="text" id="seat_row_start" name="seat_row_start" placeholder="Row Awal (A)" maxlength="2" 
+                               oninput="autoCalculateStock()"
+                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                    <div>
+                        <input type="text" id="seat_row_end" name="seat_row_end" placeholder="Row Akhir (C)" maxlength="2" 
+                               oninput="autoCalculateStock()"
+                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                    <div>
+                        <input type="number" id="seats_per_row" name="seats_per_row" placeholder="Kursi/Row (20)" 
+                               oninput="autoCalculateStock()"
+                               class="text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                </div>
+                <p class="mt-2 text-[10px] text-blue-600">
+                    *Isi form ini, maka Total Stok di atas akan terisi & terkunci otomatis.
+                </p>
             </div>
 
             <!-- Warna Tiket -->

@@ -80,8 +80,10 @@
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Posisi</label>
                 <div class="grid grid-cols-2 gap-4">
+                    <?php $currentCategory = old('ticket_category', $ticket['ticket_category'] ?? 'Standing'); ?>
+
                     <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 has-checked:border-blue-500 has-checked:bg-blue-50 transition-all">
-                        <input type="radio" name="ticket_category" value="Standing" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= old('ticket_category') == 'Standing' ? 'checked' : 'checked' ?>>
+                        <input type="radio" name="ticket_category" value="Standing" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= $currentCategory === 'Standing' ? 'checked' : '' ?>>
                         <div class="ms-3">
                             <span class="block text-sm font-medium text-gray-900">Standing</span>
                             <span class="block text-xs text-gray-500">Berdiri (Festival)</span>
@@ -89,7 +91,7 @@
                     </label>
 
                     <label class="relative flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 has-checked:border-blue-500 has-checked:bg-blue-50 transition-all">
-                        <input type="radio" name="ticket_category" value="Seating" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= old('ticket_category') == 'Seating' ? 'checked' : '' ?>>
+                        <input type="radio" name="ticket_category" value="Seating" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" <?= $currentCategory === 'Seating' ? 'checked' : '' ?>>
                         <div class="ms-3">
                             <span class="block text-sm font-medium text-gray-900">Seating</span>
                             <span class="block text-xs text-gray-500">Duduk (Bernomor/Free)</span>
@@ -112,6 +114,36 @@
                            class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" 
                            value="<?= old('quantity_total', $ticket['quantity_total']) ?>" required>
                 </div>
+            </div>
+
+            <div id="seat-generator-box" class="hidden mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg animate-fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-bold text-blue-800 uppercase tracking-wide flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        Generator Kursi Otomatis
+                    </label>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <input type="text" id="seat_row_start" name="seat_row_start" placeholder="Row Awal (A)" maxlength="2" 
+                               oninput="autoCalculateStock()"
+                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                    <div>
+                        <input type="text" id="seat_row_end" name="seat_row_end" placeholder="Row Akhir (C)" maxlength="2" 
+                               oninput="autoCalculateStock()"
+                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                    <div>
+                        <input type="number" id="seats_per_row" name="seats_per_row" placeholder="Kursi/Row (20)" 
+                               oninput="autoCalculateStock()"
+                               class="text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                    </div>
+                </div>
+                <p class="mt-2 text-[10px] text-blue-600">
+                    *Isi form ini, maka Total Stok di atas akan terisi & terkunci otomatis.
+                </p>
             </div>
 
             <!-- Warna Tiket -->

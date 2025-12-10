@@ -182,6 +182,56 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof initScrollReveal === 'function') {
         initScrollReveal();
     }
+
+    // 15. Logika Ticket Category (Standing vs Seating)
+    const stockInput = document.getElementById('quantity_total');
+    const generatorBox = document.getElementById('seat-generator-box');
+    const radioStanding = document.querySelector('input[name="ticket_category"][value="Standing"]');
+    const radioSeating = document.querySelector('input[name="ticket_category"][value="Seating"]');
+    const radios = document.querySelectorAll('input[name="ticket_category"]');
+
+    // 1. Fungsi Ganti Mode (Standing vs Seating)
+    function toggleCategoryMode() {
+        if (!stockInput || !generatorBox) return;
+
+        // Cek mana yang dipilih
+        const isSeating = radioSeating.checked;
+
+        if (isSeating) {
+            // MODE SEATING: 
+            // 1. Stok jadi Abu-abu & Readonly
+            stockInput.setAttribute('readonly', true);
+            stockInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+            stockInput.classList.remove('bg-gray-50', 'text-gray-900');
+            stockInput.placeholder = "Otomatis dari Generator...";
+            stockInput.value = ""; // Reset nilai biar bersih
+
+            // 2. Munculin Generator
+            generatorBox.classList.remove('hidden');
+        } else {
+            // MODE STANDING:
+            // 1. Stok jadi Putih & Bisa Diedit
+            stockInput.removeAttribute('readonly');
+            stockInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+            stockInput.classList.add('bg-gray-50', 'text-gray-900');
+            stockInput.placeholder = "Contoh: 100";
+
+            // 2. Umpetin Generator & Reset isinya
+            generatorBox.classList.add('hidden');
+            document.getElementById('seat_row_start').value = '';
+            document.getElementById('seat_row_end').value = '';
+            document.getElementById('seats_per_row').value = '';
+        }
+    }
+
+    // Pasang Event Listener ke Radio Button
+    radios.forEach(radio => {
+        radio.addEventListener('change', toggleCategoryMode);
+    });
+
+    // Jalankan sekali pas loading (buat handle old input kalau validasi gagal)
+    toggleCategoryMode();
+    
 });
 
 
@@ -754,4 +804,27 @@ function initScrollReveal() {
 
     const elements = document.querySelectorAll('.reveal-on-scroll');
     elements.forEach((el) => observer.observe(el));
+}
+
+window.autoCalculateStock = function() {
+    const stockInput  = document.getElementById('quantity_total');
+    const inputStart  = document.getElementById('seat_row_start');
+    const inputEnd    = document.getElementById('seat_row_end');
+    const inputPerRow = document.getElementById('seats_per_row');
+
+    if (!stockInput || !inputStart || !inputEnd || !inputPerRow) return;
+
+    const startChar = inputStart.value.toUpperCase().trim();
+    const endChar   = inputEnd.value.toUpperCase().trim();
+    const perRow    = parseInt(inputPerRow.value) || 0;
+
+    if (startChar && endChar && perRow > 0) {
+        const startCode = startChar.charCodeAt(0);
+        const endCode   = endChar.charCodeAt(0);
+
+        if (endCode >= startCode && startCode >= 65 && startCode <= 90) { 
+            const totalRows = (endCode - startCode) + 1;
+            stockInput.value = totalRows * perRow;
+        }
+    }
 }

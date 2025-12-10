@@ -67,7 +67,7 @@
                                                 }
                                             }
                                         ?>
-                                        <span class="block text-red-600 uppercase text-[10px]"><?= $month ?></span>
+                                        <span class="block text-red-600 uppercase text-2xs"><?= $month ?></span>
                                         <span class="block text-lg tracking-tighter"><?= $dateDisplay ?></span>
                                     </div>
                                 </div>

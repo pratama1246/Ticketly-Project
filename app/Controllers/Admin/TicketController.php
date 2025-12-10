@@ -87,6 +87,46 @@ class TicketController extends BaseController
             'description'     => $this->request->getPost('description')
         ]);
 
+    $newTicketId = $this->ticketModel->getInsertID(); // ID Tiket Baru
+
+    // === LOGIC GENERATOR KURSI (BARU) ===
+    $startRow = $this->request->getPost('seat_row_start');
+    $endRow   = $this->request->getPost('seat_row_end');
+    $perRow   = $this->request->getPost('seats_per_row');
+
+    // Cek: Kalau admin ngisi generator, berarti ini tiket seating
+    if (!empty($startRow) && !empty($endRow) && !empty($perRow)) {
+        
+        $seatData = [];
+        $startCode = ord(strtoupper($startRow)); // A -> 65
+        $endCode   = ord(strtoupper($endRow));   // E -> 69
+
+        // Loop Baris (A sampai E)
+        for ($rowCode = $startCode; $rowCode <= $endCode; $rowCode++) {
+            $rowChar = chr($rowCode); // 65 -> A
+            
+            // Loop Nomor Kursi (1 sampai 20)
+            for ($num = 1; $num <= $perRow; $num++) {
+                $seatData[] = [
+                    'event_id'       => $eventId,
+                    'ticket_type_id' => $newTicketId,
+                    'seat_row'       => $rowChar,
+                    'seat_number'    => $num,
+                    'label'          => $rowChar . '-' . $num, // Format: A-1
+                ];
+            }
+        }
+
+        // Masukin ke Database (Batch Insert biar cepet)
+        if (!empty($seatData)) {
+            $db = \Config\Database::connect();
+            $db->table('seats')->insertBatch($seatData);
+            
+            // Opsional: Update tiket jadi kategori 'Seating' kalau belum
+            $this->ticketModel->update($newTicketId, ['ticket_category' => 'Seating']);
+        }
+    }
+
         return redirect()->to("/admin/events/$eventId/tickets")->with('message', 'Tiket berhasil ditambahkan.');
     }
 
