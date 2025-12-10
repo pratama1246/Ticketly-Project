@@ -75,7 +75,7 @@
             </a>
          </li>
          <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-yellow-accent-light-hover group">
+            <a href="/admin/orders" class="flex items-center p-2 rounded-lg group <?= $uri->getSegment(2) == 'orders' ? 'bg-yellow-accent-normal text-black' : 'text-gray-900 hover:bg-yellow-accent-light-hover' ?>">
                <svg class="w-5 h-5 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4Zm-2 13H4V8h14v9Z"/></svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Orders</span>
             </a>

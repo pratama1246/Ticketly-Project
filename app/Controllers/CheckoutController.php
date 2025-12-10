@@ -371,99 +371,90 @@ class CheckoutController extends BaseController
 
     public function confirmPayment($orderId)
     {   
-        // BUNGKAM WARNING BIAR JSON AMAN
-        error_reporting(0); 
+        error_reporting(0);
 
-        if (!$this->request->isAJAX()) {
-            return redirect()->to('/');
-        }
+        if (!$this->request->isAJAX()) { return redirect()->to('/'); }
 
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();
-        $ticketTypeModel = new TicketTypeModel();
-
+        
         $order = $orderModel->find($orderId);
         if (!$order) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Pesanan tidak ditemukan.']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Order not found']);
         }
 
         if ($order['status'] != 'completed') {
             $orderModel->update($orderId, ['status' => 'completed']);
         }
 
-        $firstItem = $items[0];
-
-        $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number') 
+        // 1. QUERY SAKTI: Ambil semua data Item + Kursi + Nama Tiket sekaligus
+        $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
+            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left') // Join biar dapet nama tiket per item
             ->where('order_id', $orderId)
             ->findAll();
 
-        $firstItem = $items[0];
-        $ticketType = $ticketTypeModel->find($firstItem['ticket_type_id']);
-        $event = $eventModel->find($ticketType['event_id']);
-
-        // FIX: Logic Seat String
-        $seatList = [];
-        foreach ($items as $item) {
-            if (!empty($item['label'])) {
-                $seatList[] = $item['label']; 
-            } elseif (!empty($item['seat_row'])) {
-                $seatList[] = $item['seat_row'] . '-' . $item['seat_number'];
-            }
+        if (empty($items)) {
+             return $this->response->setJSON(['status' => 'error', 'message' => 'Tiket tidak ditemukan']);
         }
-        $seatString = !empty($seatList) ? implode(', ', $seatList) : '-';
 
-        // Generate QR
-        $qrContent = !empty($firstItem['ticket_code']) ? $firstItem['ticket_code'] : 'INVALID-CODE-' . $orderId;
+        // Ambil Data Event dari item pertama (karena 1 order pasti 1 event)
+        $event = $eventModel->find($items[0]['event_id']);
+
+        // 2. LOOPING DATA TIKET: Siapkan data unik untuk SETIAP tiket
+        $ticketList = [];
         $qrCode = new QrCodeGenerator();
-        $qrCodeBase64 = base64_encode($qrCode->format('png')->size(150)->generate($qrContent));
 
+        foreach ($items as $item) {
+            // Logic Nama Kursi per Tiket
+            $seatLabel = 'Free Seating'; // Default kalau standing
+            if (!empty($item['label'])) {
+                $seatLabel = $item['label']; 
+            } elseif (!empty($item['seat_row'])) {
+                $seatLabel = $item['seat_row'] . '-' . $item['seat_number'];
+            }
+
+            // Generate QR Unik per Tiket
+            $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
+            $qrBase64 = base64_encode($qrCode->format('png')->size(150)->generate($qrContent));
+
+            $ticketList[] = [
+                'type' => $item['ticket_name'], // Nama Tiket (misal: CAT 1 / Festival)
+                'seat' => $seatLabel,           // Kursi (misal: A-1 / Free Seating)
+                'code' => $item['ticket_code'], // Kode Tiket Unik
+                'qr'   => $qrBase64             // QR Code Unik
+            ];
+        }
+
+        // 3. Kirim Array $tickets ke View
         $pdfData = [
-            'eventName'     => $event['name'],
-            'buyerName'     => $order['first_name'] . ' ' . $order['last_name'],
-            'eventDate'     => (new \DateTime($event['event_date']))->format('Y-m-d H:i:s'),
-            'venue'         => $event['venue'],
-            'ticketType'    => $ticketType['name'],
-            'quantity'      => count($items), 
-            'orderId'       => $order['trx_id'],
-            'qrCodeBase64'  => $qrCodeBase64,
-            'ticketCode'    => $firstItem['ticket_code'],
-            'seatNumber'    => $seatString
+            'event'     => $event,
+            'order'     => $order,
+            'tickets'   => $ticketList // <--- Ini array isinya BANYAK tiket
         ];
 
-        // 6. Generate PDF & Kirim Email
         try {
             $dompdf = new Dompdf();
-            $dompdf->loadHtml(view('ticket_template', $pdfData));
+            $dompdf->loadHtml(view('ticket_template', $pdfData)); // Load view baru
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
             $pdfOutput = $dompdf->output();
 
             $email = \Config\Services::email();
             $email->setTo($order['email']);
-            $email->setSubject('E-Tiket Anda untuk ' . $event['name']);
-            
-            $email->setMessage("
-                <h3>Halo, {$order['first_name']}!</h3>
-                <p>Terima kasih atas pembayaran Anda. Tiket elektronik Anda terlampir dalam email ini.</p>
-                <p><strong>Detail Order:</strong><br>
-                Event: {$event['name']}<br>
-                Order ID: {$order['trx_id']}</p>
-            ");
-            
-            $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $order['trx_id'] . '.pdf', 'application/pdf');
-            $email->send(); // Kirim email (mau sukses/gagal, bodo amat, lanjut ke bawah)
-
+            $email->setSubject('E-Tiket: ' . $event['name']);
+            $email->setMessage("Halo {$order['first_name']}, ini tiket kamu. Total ada " . count($items) . " tiket ya!");
+            $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
+            $email->send();
         } catch (\Exception $e) {
-            // Ignore error PDF/Email
+            // Ignore
         }
 
         session()->remove('checkout_process');
         session()->remove('checkout_expire');
         session()->remove('pending_order_id');
 
-        // Return JSON Success
         return $this->response->setJSON([
             'status'     => 'success', 
             'email'      => $order['email'], 

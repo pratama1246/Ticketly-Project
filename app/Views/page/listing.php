@@ -1,10 +1,6 @@
 <main class="w-full pt-16 grow bg-yellow-bright-light min-h-screen">
 
     <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
-        <a href="/" class="bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 flex items-center gap-3 w-max px-3 py-2 rounded-base">
-            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-            <h1 class="text-xs md:text-sm font-bold text-gray-900 m-0">Kembali Ke Halaman Utama</h1>
-        </a>
         <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 mt-6"><?= esc($title) ?></h1>
         <p class="text-md md:text-lg text-gray-600 max-w-2xl"><?= esc($desc) ?></p>
     </div>
