@@ -104,8 +104,8 @@ class Filters extends BaseFilters
      * @var array<string, list<string>>
      */
     public array $methods = [
-        'post' => ['csrf'],
-        'get'  => ['csrf'],
+        'POST' => ['csrf'],
+        'GET'  => ['honeypot'],
     ];
 
     /**

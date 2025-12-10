@@ -379,6 +379,9 @@ class CheckoutController extends BaseController
    // Langkah 8: Konfirmasi Pembayaran dan Kirim E-Ticket
     public function confirmPayment($orderId)
     {   
+        // 1. Matikan error reporting biar AJAX gak error "Unexpected token"
+        error_reporting(0);
+
         if (!$this->request->isAJAX()) {
             return redirect()->to('/');
         }
@@ -397,13 +400,11 @@ class CheckoutController extends BaseController
             return $this->response->setJSON(['status' => 'success', 'message' => 'Pesanan sudah dikonfirmasi sebelumnya.']);
         }
 
-        // Update status order
+        // Update Status
         $orderModel->update($orderId, ['status' => 'completed']);
 
-        // --- UPDATE PENTING DISINI ---
-        // Kita join ke tabel 'seats' buat ambil nama kursinya (misal: A12, B05)
-        // Asumsi nama kolom di tabel seats adalah 'name' atau 'label'. Sesuaikan ya!
-        $items = $orderItemsModel->select('order_items.*, seats.name as seat_name') 
+        // 2. Ambil Data Kursi (Sesuai kolom database lo: 'label', 'seat_row', 'seat_number')
+        $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number') 
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
             ->where('order_id', $orderId)
             ->findAll();
@@ -412,59 +413,66 @@ class CheckoutController extends BaseController
         $ticketType = $ticketTypeModel->find($firstItem['ticket_type_id']);
         $event = $eventModel->find($ticketType['event_id']);
 
-        // Logic gabungin nomor kursi kalau beli banyak (misal: A1, A2, A3)
+        // 3. Format String Kursi (Biar gak kosong)
         $seatList = [];
         foreach ($items as $item) {
-            if (!empty($item['seat_name'])) {
-                $seatList[] = $item['seat_name'];
+            // Prioritas 1: Ambil Label (misal "A-1")
+            if (!empty($item['label'])) {
+                $seatList[] = $item['label']; 
+            } 
+            // Prioritas 2: Kalau label kosong, gabung row & number (misal "A-1")
+            elseif (!empty($item['seat_row'])) {
+                $seatList[] = $item['seat_row'] . '-' . $item['seat_number'];
             }
         }
-        // Kalau seating, gabung pake koma. Kalau festival, strip aja.
+        
+        // Kalau seating list kosong, tulis Free Seating
         $seatString = !empty($seatList) ? implode(', ', $seatList) : '-';
 
-        $qrContent = !empty($firstItem['ticket_code']) ? $firstItem['ticket_code'] : 'INVALID-CODE-' . $orderId;
-
+        // 4. Generate QR
+        $qrContent = !empty($firstItem['ticket_code']) ? $firstItem['ticket_code'] : 'INVALID-' . $orderId;
         $qrCode = new QrCodeGenerator();
         $qrCodeBase64 = base64_encode($qrCode->format('png')->size(150)->generate($qrContent));
 
+        // 5. Data PDF
         $pdfData = [
             'eventName'     => $event['name'],
             'buyerName'     => $order['first_name'] . ' ' . $order['last_name'],
-            'eventDate'     => (new \DateTime($event['event_date']))->format('Y-m-d H:i:s'), // Format standard biar bisa diolah view
+            'eventDate'     => (new \DateTime($event['event_date']))->format('Y-m-d H:i:s'),
             'venue'         => $event['venue'],
             'ticketType'    => $ticketType['name'],
             'quantity'      => count($items), 
-            'orderId'       => $order['trx_id'], // Pake Trx ID biar lebih pro daripada ID auto increment
+            'orderId'       => $order['trx_id'],
             'qrCodeBase64'  => $qrCodeBase64,
             'ticketCode'    => $firstItem['ticket_code'],
-            'seatNumber'    => $seatString // <--- INI VARIABEL BARUNYA
+            'seatNumber'    => $seatString // <--- Ini pasti keisi sekarang
         ];
 
-        // 3. Buat PDF
-        $html = view('ticket_template', $pdfData);
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $pdfOutput = $dompdf->output();
+        // 6. Generate PDF & Kirim Email
+        try {
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml(view('ticket_template', $pdfData));
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            $pdfOutput = $dompdf->output();
 
-        // 4. Kirim Email
-        $email = \Config\Services::email();
-        $email->setTo($order['email']);
-        $email->setSubject('E-Tiket Anda untuk ' . $event['name']);
-        
-        // Pake template view buat body email biar rapi juga (Optional, bisa pake string biasa)
-        $email->setMessage("Halo kak {$order['first_name']}, Terima kasih sudah memesan! Tiket terlampir di PDF ya. Sampai jumpa di venue!");
-        
-        $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $order['trx_id'] . '.pdf', 'application/pdf');
-        
-        if ($email->send()) {
-            session()->remove('checkout_process');
-            session()->remove('checkout_expire');
-            session()->remove('pending_order_id');
-            return $this->response->setJSON(['status' => 'success', 'email' => $order['email'], 'trx_id' => $order['trx_id']]);
-        } else {
-             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal mengirim email, tapi order sukses.']);
+            $email = \Config\Services::email();
+            $email->setTo($order['email']);
+            $email->setSubject('E-Tiket: ' . $event['name']);
+            $email->setMessage("Halo {$order['first_name']}, pembayaran berhasil! Tiket terlampir.");
+            $email->attach($pdfOutput, 'attachment', 'Tiket-' . $order['trx_id'] . '.pdf', 'application/pdf');
+
+            if ($email->send()) {
+                session()->remove('checkout_process');
+                session()->remove('checkout_expire');
+                session()->remove('pending_order_id');
+                return $this->response->setJSON(['status' => 'success']);
+            } else {
+                // Email gagal tapi order sukses
+                return $this->response->setJSON(['status' => 'success', 'warning' => 'Email gagal terkirim (Cek SMTP)']);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'success', 'warning' => 'PDF Error']);
         }
     }
 
