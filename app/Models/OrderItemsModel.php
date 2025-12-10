@@ -13,7 +13,7 @@ class OrderItemsModel extends Model
   protected $useSoftDeletes   = false;
   protected $protectFields    = true;
   protected $allowedFields    = [
-    'order_id', 'ticket_type_id', 'quantity', 'price_per_ticket', 'ticket_code'
+    'order_id', 'ticket_type_id', 'quantity', 'price_per_ticket', 'ticket_code', 'seat_id'
   ];
 
   // Tidak ada timestamps di tabel ini
