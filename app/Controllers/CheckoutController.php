@@ -354,7 +354,6 @@ class CheckoutController extends BaseController
                 'ticket_code'    => $ticketUniqueCode
             ]);
 
-            $orderItemsModel->insert($itemData);
         }
 
             // Potong Stok
@@ -377,7 +376,7 @@ class CheckoutController extends BaseController
         return redirect()->to('/checkout/pay/' . $newOrderId);
     }
 
-    // Langkah 8: Konfirmasi Pembayaran dan Kirim E-Ticket
+   // Langkah 8: Konfirmasi Pembayaran dan Kirim E-Ticket
     public function confirmPayment($orderId)
     {   
         if (!$this->request->isAJAX()) {
@@ -398,12 +397,30 @@ class CheckoutController extends BaseController
             return $this->response->setJSON(['status' => 'success', 'message' => 'Pesanan sudah dikonfirmasi sebelumnya.']);
         }
 
+        // Update status order
         $orderModel->update($orderId, ['status' => 'completed']);
 
-        $items = $orderItemsModel->where('order_id', $orderId)->findAll();
+        // --- UPDATE PENTING DISINI ---
+        // Kita join ke tabel 'seats' buat ambil nama kursinya (misal: A12, B05)
+        // Asumsi nama kolom di tabel seats adalah 'name' atau 'label'. Sesuaikan ya!
+        $items = $orderItemsModel->select('order_items.*, seats.name as seat_name') 
+            ->join('seats', 'seats.id = order_items.seat_id', 'left')
+            ->where('order_id', $orderId)
+            ->findAll();
+
         $firstItem = $items[0];
         $ticketType = $ticketTypeModel->find($firstItem['ticket_type_id']);
         $event = $eventModel->find($ticketType['event_id']);
+
+        // Logic gabungin nomor kursi kalau beli banyak (misal: A1, A2, A3)
+        $seatList = [];
+        foreach ($items as $item) {
+            if (!empty($item['seat_name'])) {
+                $seatList[] = $item['seat_name'];
+            }
+        }
+        // Kalau seating, gabung pake koma. Kalau festival, strip aja.
+        $seatString = !empty($seatList) ? implode(', ', $seatList) : '-';
 
         $qrContent = !empty($firstItem['ticket_code']) ? $firstItem['ticket_code'] : 'INVALID-CODE-' . $orderId;
 
@@ -413,13 +430,14 @@ class CheckoutController extends BaseController
         $pdfData = [
             'eventName'     => $event['name'],
             'buyerName'     => $order['first_name'] . ' ' . $order['last_name'],
-            'eventDate'     => (new \DateTime($event['event_date']))->format('d F Y, H:i') . ' WIB',
+            'eventDate'     => (new \DateTime($event['event_date']))->format('Y-m-d H:i:s'), // Format standard biar bisa diolah view
             'venue'         => $event['venue'],
             'ticketType'    => $ticketType['name'],
             'quantity'      => count($items), 
-            'orderId'       => '#' . $orderId,
+            'orderId'       => $order['trx_id'], // Pake Trx ID biar lebih pro daripada ID auto increment
             'qrCodeBase64'  => $qrCodeBase64,
-            'ticketCode'    => $firstItem['ticket_code']
+            'ticketCode'    => $firstItem['ticket_code'],
+            'seatNumber'    => $seatString // <--- INI VARIABEL BARUNYA
         ];
 
         // 3. Buat PDF
@@ -434,15 +452,20 @@ class CheckoutController extends BaseController
         $email = \Config\Services::email();
         $email->setTo($order['email']);
         $email->setSubject('E-Tiket Anda untuk ' . $event['name']);
-        $email->setMessage('Pembayaran berhasil! Berikut adalah tiket Anda.');
-        $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $orderId . '.pdf', 'application/pdf');
-        $email->send();
-
-        session()->remove('checkout_process');
-        session()->remove('checkout_expire');
-        session()->remove('pending_order_id');
-
-        return $this->response->setJSON(['status' => 'success', 'email' => $order['email'], 'trx_id' => $order['trx_id']]);
+        
+        // Pake template view buat body email biar rapi juga (Optional, bisa pake string biasa)
+        $email->setMessage("Halo kak {$order['first_name']}, Terima kasih sudah memesan! Tiket terlampir di PDF ya. Sampai jumpa di venue!");
+        
+        $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $order['trx_id'] . '.pdf', 'application/pdf');
+        
+        if ($email->send()) {
+            session()->remove('checkout_process');
+            session()->remove('checkout_expire');
+            session()->remove('pending_order_id');
+            return $this->response->setJSON(['status' => 'success', 'email' => $order['email'], 'trx_id' => $order['trx_id']]);
+        } else {
+             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal mengirim email, tapi order sukses.']);
+        }
     }
 
     // Langkah 9: Halaman Pembayaran

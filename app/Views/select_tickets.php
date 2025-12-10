@@ -1,13 +1,27 @@
-<main class="w-full pt-20 grow">
-    <div class="max-w-8xl mx-auto p-4 mb-20">
+<main class="w-full pt-24 mb-20 grow">
+    <div class="max-w-7xl mx-auto p-4">
 
-        <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
-            <img src="<?= base_url(esc($event['poster_image'])) ?>"
-                alt="<?= esc($event['name']) ?>"
-                class="w-auto max-w-full h-auto max-h-[700px] md:max-h-[800px] object-contain shadow-sm rounded-lg">
-        </div>
+        <?php
+            $category = strtolower($event['category']);
 
-        <div class="mb-6">
+            if ($category === 'concert') {
+                $label = 'Kembali ke Detail Konser';
+            } elseif ($category === 'festival') {
+                $label = 'Kembali ke Detail Festival';
+            } else {
+                $label = 'Kembali ke Detail Event';
+            }
+            ?>
+
+            <a href="/event/<?= esc($event['slug']) ?>"
+                class="mt-4 inline-flex bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 items-center gap-3 w-max px-3 py-2 rounded-base">
+                <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <p class="text-xs md:text-sm font-bold text-gray-900 m-0"><?= esc($label) ?></p>
+            </a>
+
+        <div class="mt-6">
             <h1 class="text-3xl lg:text-5xl font-bold text-black">
                 <?= esc($event['name']) ?>
             </h1>
@@ -62,27 +76,13 @@
                 <?= esc($event['venue']) ?>
             </p>
 
-            <?php
-            $category = strtolower($event['category']);
-
-            if ($category === 'concert') {
-                $label = 'Kembali ke Detail Konser';
-            } elseif ($category === 'festival') {
-                $label = 'Kembali ke Detail Festival';
-            } else {
-                $label = 'Kembali ke Detail Event';
-            }
-            ?>
-
-            <a href="/event/<?= esc($event['slug']) ?>"
-                class="mt-4 inline-flex bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 items-center gap-3 w-max px-3 py-2 rounded-base">
-                <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <p class="text-xs md:text-sm font-bold text-gray-900 m-0"><?= esc($label) ?></p>
-            </a>
-
         </div>
+
+        <div class="w-full rounded-xl overflow-hidden mb-8 mt-8 flex justify-center items-center">
+            <img src="<?= base_url(esc($event['poster_image'])) ?>"
+                alt="<?= esc($event['name']) ?>"
+                class="w-auto max-w-full h-auto max-h-[700px] md:max-h-[800px] object-contain shadow-sm rounded-lg">
+        </div> 
 
         <form action="/checkout/start" method="post" id="ticketForm">
             <?= csrf_field() ?>

@@ -146,7 +146,7 @@
                                class="text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
                     </div>
                 </div>
-                <p class="mt-2 text-[10px] text-blue-600">
+                <p class="mt-2 text-2xs text-blue-600">
                     *Isi form ini, maka Total Stok di atas akan terisi & terkunci otomatis.
                 </p>
             </div>

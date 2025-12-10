@@ -110,7 +110,7 @@
                 </div>
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-900">Total Kuota</label>
-                    <input type="number" name="quantity_total" 
+                    <input type="number" name="quantity_total" id="quantity_total"
                            class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" 
                            value="<?= old('quantity_total', $ticket['quantity_total']) ?>" required>
                 </div>
@@ -127,22 +127,27 @@
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <input type="text" id="seat_row_start" name="seat_row_start" placeholder="Row Awal (A)" maxlength="2" 
-                               oninput="autoCalculateStock()"
-                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                            oninput="autoCalculateStock()"
+                            value="<?= old('seat_row_start', $ticket['seat_row_start'] ?? '') ?>" 
+                            class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
                     </div>
+
                     <div>
                         <input type="text" id="seat_row_end" name="seat_row_end" placeholder="Row Akhir (C)" maxlength="2" 
-                               oninput="autoCalculateStock()"
-                               class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                            oninput="autoCalculateStock()"
+                            value="<?= old('seat_row_end', $ticket['seat_row_end'] ?? '') ?>"
+                            class="uppercase text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
                     </div>
+
                     <div>
                         <input type="number" id="seats_per_row" name="seats_per_row" placeholder="Kursi/Row (20)" 
-                               oninput="autoCalculateStock()"
-                               class="text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                            oninput="autoCalculateStock()"
+                            value="<?= old('seats_per_row', $ticket['seats_per_row'] ?? '') ?>"
+                            class="text-center bg-white border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
                     </div>
                 </div>
-                <p class="mt-2 text-[10px] text-blue-600">
-                    *Isi form ini, maka Total Stok di atas akan terisi & terkunci otomatis.
+                <p class="mt-2 text-2xs text-blue-600">
+                    *Data ini diambil dari settingan kursi saat ini. Ubah jika ingin generate ulang struktur kursi.
                 </p>
             </div>
 
