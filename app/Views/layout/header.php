@@ -34,6 +34,11 @@
                     <span class="block text-body truncate"><?= auth()->user()->email ?></span>
                 </div>
                 <ul class="p-2 text-sm text-body font-medium" aria-labelledby="user-menu-button">
+                    <?php if (auth()->user()->inGroup('admin')) : ?>
+                        <li>
+                            <a href="/admin/dashboard" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Dashboard Admin</a>
+                        </li>
+                    <?php endif; ?>
                     <li><a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Profile Saya</a></li>
                     <li><a href="/profile/edit" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit Profile</a></li>
                     <li><a href="<?= base_url('logout') ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a></li>
