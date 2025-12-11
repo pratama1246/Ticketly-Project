@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. Inisialisasi Flowbite
+    // Inisialisasi Flowbite
     if (typeof initFlowbite === 'function') {
         initFlowbite();
     }
 
-    // 2. Logika Timer Checkout (Floating Alert) - AKTIF
+    // Logika Timer Checkout (Floating Alert) - AKTIF
     if (typeof CI_TIME_LEFT !== 'undefined' && CI_TIME_LEFT > 0) {
         startFloatingTimer(CI_TIME_LEFT);
     }
 
-    // 3. Inisialisasi TinyMCE (Admin)
+    // Inisialisasi TinyMCE (Admin)
     if (document.getElementById('description') && typeof tinymce !== 'undefined') {
         tinymce.init({
             selector: 'textarea#description',
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Logika Hitung Total Harga (Pilih Tiket)
+    // Logika Hitung Total Harga (Pilih Tiket)
     const ticketInputs = document.querySelectorAll('.ticket-input');
     if (ticketInputs.length > 0) {
         ticketInputs.forEach(input => {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Datepicker (Tanggal Lahir)
+    // Datepicker (Tanggal Lahir)
     const birthDateInput = document.getElementById('birth_date');
     if (birthDateInput && typeof Datepicker !== 'undefined') {
         const dateLimit = new Date();
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Tombol Salin Nomor VA
+    // Salin Nomor VA
     const btnCopyVa = document.getElementById('btn-copy-va');
     if (btnCopyVa) {
         btnCopyVa.addEventListener('click', function() {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. Modal Active Session
+    // Modal Active Session
     if (typeof HAS_ACTIVE_SESSION !== 'undefined' && HAS_ACTIVE_SESSION === true) {
         const currentPath = window.location.pathname;
         if (!currentPath.includes('/checkout')) {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 8. Flash Messages (Toast)
+    // Flash Messages (Toast)
     if (typeof CI_FLASH_MESSAGES !== 'undefined') {
         if (CI_FLASH_MESSAGES.success) showToast('success', CI_FLASH_MESSAGES.success);
         if (CI_FLASH_MESSAGES.error) showToast('error', CI_FLASH_MESSAGES.error);
@@ -83,12 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 9. Password Toggle (Login & Register)
-    // Fungsi ini sekarang sudah ada definisinya di bawah, jadi tidak akan error lagi
+    // Password Toggle (Login & Register)
     setupPasswordToggle('toggle-password-btn', 'password');             
     setupPasswordToggle('toggle-password-confirm-btn', 'password_confirm');
 
-    // 10. Logika OTP 6 Digit
+    // Logika OTP 6 Digit
     const otpContainer = document.getElementById('otp-container');
     if (otpContainer) {
         const inputs = otpContainer.querySelectorAll('.otp-box');
@@ -131,30 +130,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputs[0]) inputs[0].focus();
     }
 
-    // 11. Init Chart Admin (Safe Check)
+    // Init Chart Admin (Safe Check)
     if (typeof initDashboardCharts === 'function') {
         initDashboardCharts();
     }
 
-    // 12. Responsive Search Placeholder (Main Page)
+    // Responsive Search Placeholder (Main Page)
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         const updatePlaceholder = () => {
-            if (window.innerWidth < 768) { // Breakpoint Mobile (md di Tailwind)
+            if (window.innerWidth < 768) {
                 searchInput.placeholder = "Cari Event...";
             } else {
                 searchInput.placeholder = "Cari berdasarkan artis, lokasi, atau event...";
             }
         };
 
-        // Jalankan saat halaman dimuat
         updatePlaceholder();
 
-        // Jalankan saat layar di-resize (misal rotasi HP)
         window.addEventListener('resize', updatePlaceholder);
     }
 
-    // 13. Logika Tanggal Event (Start & End Date)
+    // Logika Tanggal Event (Start & End Date)
     const eventStartInput = document.getElementById('event_date');
     const eventEndInput = document.getElementById('event_end_date');
 
@@ -178,45 +175,38 @@ document.addEventListener('DOMContentLoaded', () => {
         updateEndDateConstraint();
     }
 
-    // 14. Inisialisasi Scroll Reveal
+    // Scroll Reveal
     if (typeof initScrollReveal === 'function') {
         initScrollReveal();
     }
 
-    // 15. Logika Ticket Category (Standing vs Seating)
+    // Logika Ticket Category
     const stockInput = document.getElementById('quantity_total');
     const generatorBox = document.getElementById('seat-generator-box');
     const radioStanding = document.querySelector('input[name="ticket_category"][value="Standing"]');
     const radioSeating = document.querySelector('input[name="ticket_category"][value="Seating"]');
     const radios = document.querySelectorAll('input[name="ticket_category"]');
 
-    // 1. Fungsi Ganti Mode (Standing vs Seating)
+    // Fungsi Ganti Mode
     function toggleCategoryMode() {
         if (!stockInput || !generatorBox) return;
 
-        // Cek mana yang dipilih
         const isSeating = radioSeating.checked;
 
         if (isSeating) {
-            // MODE SEATING: 
-            // 1. Stok jadi Abu-abu & Readonly
             stockInput.setAttribute('readonly', true);
             stockInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
             stockInput.classList.remove('bg-gray-50', 'text-gray-900');
             stockInput.placeholder = "Otomatis dari Generator...";
-            stockInput.value = ""; // Reset nilai biar bersih
+            stockInput.value = "";
 
-            // 2. Munculin Generator
             generatorBox.classList.remove('hidden');
         } else {
-            // MODE STANDING:
-            // 1. Stok jadi Putih & Bisa Diedit
             stockInput.removeAttribute('readonly');
             stockInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
             stockInput.classList.add('bg-gray-50', 'text-gray-900');
             stockInput.placeholder = "Contoh: 100";
 
-            // 2. Umpetin Generator & Reset isinya
             generatorBox.classList.add('hidden');
             document.getElementById('seat_row_start').value = '';
             document.getElementById('seat_row_end').value = '';
@@ -224,20 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Pasang Event Listener ke Radio Button
     radios.forEach(radio => {
         radio.addEventListener('change', toggleCategoryMode);
     });
 
-    // Jalankan sekali pas loading (buat handle old input kalau validasi gagal)
     toggleCategoryMode();
     
 });
 
 
-// ZONA FUNGSI GLOBAL 
+// FUNGSI GLOBAL 
 
-// 1. Fungsi Password Toggle
+// Password Toggle
 function setupPasswordToggle(buttonId, inputId) {
     const btn = document.getElementById(buttonId);
     const input = document.getElementById(inputId);
@@ -260,7 +248,7 @@ function setupPasswordToggle(buttonId, inputId) {
     }
 }
 
-// 2. Fungsi Modal Batal Pesan
+// Modal Batal Pesan
 window.showCancelModal = function() {
     const modal = document.getElementById('cancel-modal');
     const timerAlert = document.getElementById('checkout-timer-alert');
@@ -287,7 +275,7 @@ window.closeCancelModal = function() {
     }
 }
 
-// 3. Fungsi Timer (Floating)
+// Timer (Floating)
 function startFloatingTimer(duration) {
     let timer = duration;
     const timerAlert = document.getElementById('checkout-timer-alert');
@@ -330,7 +318,7 @@ function startFloatingTimer(duration) {
     }, 1000);
 }
 
-// 4. Fungsi Copy Clipboard
+// Copy Clipboard
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
         const popup = document.getElementById('custom-copy-popup');
@@ -341,7 +329,7 @@ function copyToClipboard(text) {
     });
 }
 
-// 5. Fungsi Hitung Total
+// Hitung Total
 function calculateTotal() {
     const inputs = document.querySelectorAll('.ticket-input');
     const cartContainer = document.getElementById('cartItems');
@@ -383,7 +371,7 @@ function calculateTotal() {
     }
 }
 
-// 6. Fungsi Toast
+// Toast
 function showToast(type, message) {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -419,7 +407,7 @@ function showToast(type, message) {
     setTimeout(() => { if (container.firstElementChild) container.firstElementChild.remove(); }, 4000);
 }
 
-// 7. Fungsi Admin Modal
+// Admin Modal
 function toggleAdminModal(show, title = '', message = '', onConfirm = null) {
     const modal = document.getElementById('custom-confirm-modal');
     const backdrop = document.getElementById('modal-backdrop');
@@ -486,32 +474,32 @@ window.deleteTicket = function(eventId, ticketId) {
     });
 };
 
-// 8. Init Dashboard Chart
+// Dashboard Chart
 function initDashboardCharts() {
     if (typeof window.dashboardData === 'undefined' || typeof ApexCharts === 'undefined') return;
     
     const { revenue, categories, payments, statuses } = window.dashboardData;
 
-    // 1. REVENUE CHART (Column Chart Modern)
+    // Revenue Chart
     if (document.getElementById("revenue-chart")) {
         const optionsRev = {
             chart: {
                 height: 320,
                 type: "bar",
                 fontFamily: "Inter, sans-serif",
-                toolbar: { show: false }, // Hilangkan menu download di pojok
+                toolbar: { show: false },
                 animations: { enabled: true }
             },
             series: [{
                 name: "Pendapatan",
                 data: revenue.map(d => parseInt(d.total)),
-                color: "#1A56DB", // Flowbite Blue 600
+                color: "#1A56DB", 
             }],
             plotOptions: {
                 bar: {
                     horizontal: false,
                     columnWidth: "50%",
-                    borderRadius: 6, // Sudut tumpul ala modern
+                    borderRadius: 6, 
                     borderRadiusApplication: 'end',
                 },
             },
@@ -560,7 +548,7 @@ function initDashboardCharts() {
         chartRev.render();
     }
 
-    // 2. CATEGORY CHART (Donut Modern)
+    // Category Chart
     if (document.getElementById("category-chart")) {
         const optionsCat = {
             series: categories.map(c => parseInt(c.total_sold) || 0),
@@ -603,7 +591,7 @@ function initDashboardCharts() {
         chartCat.render();
     }
 
-    // 3. PAYMENT CHART (Donut/Pie)
+    // Payment Chart
     if (document.getElementById("payment-chart")) {
         const optionsPay = {
             series: payments.map(p => parseInt(p.total_usage)),
@@ -630,7 +618,7 @@ function initDashboardCharts() {
         chartPay.render();
     }
 
-    // 4. STATUS CHART (Radial Bar / Pie)
+    // Status Chart
     if (document.getElementById("status-chart")) {
 
         const statusColors = {
@@ -667,9 +655,8 @@ function initDashboardCharts() {
 }
 
 
-// 9. Fungsi Modal Pembayaran
+// Payment Modal
 
-// 1. Tampilkan Modal Konfirmasi Pembayaran
 window.showPaymentConfirmModal = function() {
     const modal = document.getElementById('payment-confirm-modal');
     if (modal) {
@@ -679,7 +666,6 @@ window.showPaymentConfirmModal = function() {
     }
 }
 
-// 2. Tutup Semua Modal Pembayaran
 window.closePaymentModals = function() {
     ['payment-confirm-modal', 'payment-success-modal', 'payment-error-modal'].forEach(id => {
         const el = document.getElementById(id);
@@ -691,7 +677,7 @@ window.closePaymentModals = function() {
     document.body.style.overflow = 'auto';
 }
 
-// 3. Proses AJAX ke Server
+// Proses AJAX ke Server
 window.processPaymentAjax = function(orderId) {
     const btn = document.getElementById('btn-process-ajax');
     const btnText = document.getElementById('btn-ajax-text');
@@ -718,7 +704,6 @@ window.processPaymentAjax = function(orderId) {
         [csrfName]: csrfHash 
     };
 
-    // Kirim Request Fetch
     fetch('/checkout/confirm/' + orderId, {
         method: 'POST',
         credentials: 'include', 
@@ -774,7 +759,6 @@ window.processPaymentAjax = function(orderId) {
         resetBtnState();
     });
 
-    // Helper reset tombol
     function resetBtnState() {
         if(btn) {
             btn.disabled = false;
@@ -790,14 +774,14 @@ function initScrollReveal() {
     const observerOptions = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.1 // Elemen muncul saat 10% bagiannya terlihat
+        threshold: 0.1 
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target); // Animasi cuma sekali
+                observer.unobserve(entry.target); 
             }
         });
     }, observerOptions);
@@ -829,57 +813,51 @@ window.autoCalculateStock = function() {
     }
 }
 
-// Function untuk Filter Dropdown (Index Page)
+// Dropdown Filter
 function selectStatus(value, label) {
     const input = document.getElementById('statusInput');
     const btnText = document.getElementById('btnText');
-    const dropdown = document.getElementById('dropdownStatus'); // Ambil elemen dropdown
+    const dropdown = document.getElementById('dropdownStatus');
     
     if (input && btnText) {
         input.value = value;
         btnText.innerText = label;
     }
     
-    // Tutup dropdown setelah memilih
     if (dropdown) {
         dropdown.classList.add('hidden');
     }
 }
 
-// Function untuk Update Status Dropdown (Detail Page)
+// Update Status Dropdown
 function setUpdateStatus(value, label) {
     const input = document.getElementById('updateStatusInput');
     const btnText = document.getElementById('btnUpdateText');
-    const dropdown = document.getElementById('dropdownUpdateStatus'); // Ambil elemen dropdown
-    
+    const dropdown = document.getElementById('dropdownUpdateStatus');
     if (input && btnText) {
         input.value = value;
         btnText.innerText = label;
     }
 
-    // Tutup dropdown setelah memilih
     if (dropdown) {
         dropdown.classList.add('hidden');
     }
 }
 
-// --- LOGIC "KLIK DI LUAR NUTUP" (Global Click Listener) ---
 document.addEventListener('click', function(event) {
-    // Daftar ID dropdown dan tombol pemicunya
+
     const dropdowns = [
-        { btn: 'dropdownStatusBtn', menu: 'dropdownStatus' },       // Dropdown di Index
-        { btn: 'updateStatusBtn', menu: 'dropdownUpdateStatus' }    // Dropdown di Detail
+        { btn: 'dropdownStatusBtn', menu: 'dropdownStatus' },       
+        { btn: 'updateStatusBtn', menu: 'dropdownUpdateStatus' }    
     ];
 
     dropdowns.forEach(function(item) {
         const button = document.getElementById(item.btn);
         const menu = document.getElementById(item.menu);
-
-        // Cek jika elemen ada di halaman ini
+i
         if (button && menu) {
-            // Jika yang diklik BUKAN tombol DAN BUKAN menu dropdown itu sendiri
             if (!button.contains(event.target) && !menu.contains(event.target)) {
-                menu.classList.add('hidden'); // Paksa tutup
+                menu.classList.add('hidden');
             }
         }
     });
