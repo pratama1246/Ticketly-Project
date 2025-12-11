@@ -418,15 +418,31 @@ class CheckoutController extends BaseController
             ];
         }
 
+        $logoPath = FCPATH . 'assets/ticketly-logo.png';
+        $logoBase64 = '';
+        
+        if (file_exists($logoPath)) {
+            $type = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $data = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
         $pdfData = [
             'event'     => $event,
             'order'     => $order,
-            'tickets'   => $ticketList
+            'tickets'   => $ticketList,
+            'logoBase64' => $logoBase64
         ];
 
         try {
+            $htmlContent = view('ticket_template', [
+                'event'     => $event,
+                'order'     => $order,
+                'tickets'   => $ticketList
+            ]);
+
             $dompdf = new Dompdf();
-            $dompdf->loadHtml(view('ticket_template', $pdfData));
+            $dompdf->loadHtml($htmlContent);
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
             $pdfOutput = $dompdf->output();
@@ -434,7 +450,7 @@ class CheckoutController extends BaseController
             $email = \Config\Services::email();
             $email->setTo($order['email']);
             $email->setSubject('E-Tiket: ' . $event['name']);
-            $email->setMessage("Halo {$order['first_name']}, ini tiket kamu. Total ada " . count($items) . " tiket ya!");
+            $email->setMessage("$htmlContent<br><br>Terima kasih telah melakukan pemesanan tiket di sistem kami.");
             $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
             $email->send();
         } catch (\Exception $e) {

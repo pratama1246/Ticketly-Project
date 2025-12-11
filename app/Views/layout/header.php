@@ -41,6 +41,7 @@
                     <?php endif; ?>
                     <li><a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Profile Saya</a></li>
                     <li><a href="/profile/edit" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit Profile</a></li>
+                    <li><a href="/profile/history" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Riwayat Transaksi</a></li>
                     <li><a href="<?= base_url('logout') ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a></li>
                 </ul>
             </div>

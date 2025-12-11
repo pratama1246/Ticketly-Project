@@ -58,7 +58,7 @@
                         <tr>
                             <td class="label">PEMBELI</td>
                             <td class="value">: <?= esc($order['first_name'] . ' ' . $order['last_name']) ?></td>
-                        </tr>
+                        </tr>-
                         <tr>
                             <td class="label">TANGGAL</td>
                             <td class="value">: <?= date('d F Y', strtotime($event['event_date'])) ?></td>

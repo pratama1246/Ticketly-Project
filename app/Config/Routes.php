@@ -78,4 +78,6 @@ $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'ProfileController::index');
     $routes->get('edit', 'ProfileController::edit');
     $routes->post('update', 'ProfileController::update');
+    $routes->get('transactions/(:num)', 'ProfileController::detail/$1');
+    $routes->get('history', 'ProfileController::transactions');
 });
