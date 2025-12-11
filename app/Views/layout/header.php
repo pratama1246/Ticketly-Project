@@ -21,7 +21,6 @@
     </a>
     <div class="flex md:order-2 space-x-3 md:space-x-3 rtl:space-x-reverse">
 
-        <!-- LOGIN LOGIC (Bakal Di Perbarui) -->
         <?php if (auth()->loggedIn()): ?>
             <button type="button" class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Buka menu pengguna</span>
@@ -67,7 +66,6 @@
 
 <!-- Modal Pop Up -->
 <?php 
-        // Ambil data session belanja
         $checkoutSession = session()->get('checkout_process');
         $hasCheckoutSession = !empty($checkoutSession) && 
                               session()->has('checkout_expire') && 

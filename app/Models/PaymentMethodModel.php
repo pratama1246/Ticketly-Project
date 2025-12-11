@@ -11,7 +11,6 @@ class PaymentMethodModel extends Model
     protected $useAutoIncrement = true;
     protected $allowedFields    = ['name', 'code', 'type', 'logo_image', 'is_active'];
     
-    // Helper untuk ambil yang aktif saja
     public function getActiveMethods()
     {
         return $this->where('is_active', 1)->findAll();

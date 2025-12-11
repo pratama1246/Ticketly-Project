@@ -2,7 +2,7 @@
 <?php
     $sessionData = session()->get('checkout_process');
     $p = $sessionData['personal_data'] ?? [];
-    $errors = session('errors'); // Ambil error validasi
+    $errors = session('errors');
 ?>
 
     <div class="max-w-4xl mx-auto p-4">
@@ -133,6 +133,7 @@
                         Dengan mengklik “Lanjut”, kamu menyetujui <a href="#" class="text-blue-600 hover:underline font-bold">Kebijakan Pemrosesan Data Pribadi</a> Ticketly.
                     </label>
             </div>
+            
             <!-- Tombol Lanjut ke Pembayaran -->
             <div class="mt-8 gap-2 flex justify-end">
                 <button type="button" onclick="showCancelModal()" class="text-white bg-danger hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">

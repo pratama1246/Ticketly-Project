@@ -1,4 +1,3 @@
-<!-- Halaman Detail Event -->
 <main class="w-full pt-24 mb-20 grow">
     <div class="max-w-7xl mx-auto p-4">
 
@@ -24,12 +23,9 @@
                     if (!empty($event['event_end_date'])) {
                         $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
                         
-                        // Logika Tampilan Tanggal
                         if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
-                            // Satu Hari: "10 Januari 2026"
                             echo $start->toLocalizedString('d MMMM yyyy');
                         } else {
-                            // Multi-Day: "10 - 12 Januari 2026" atau "30 Des - 02 Jan 2026"
                             if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
                                 echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
                             } else {
@@ -37,7 +33,6 @@
                             }
                         }
                     } else {
-                        // Default Single Day
                         echo $start->toLocalizedString('d MMMM yyyy');
                     }
                 ?>
@@ -52,8 +47,6 @@
                     if (!empty($event['event_end_date'])) {
                         $endTime = \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('H:i');
                         
-                        // Cek apakah tanggalnya sama? Kalau beda hari, mungkin cuma nampilin jam mulai (Open Gate)
-                        // Tapi kalau sama hari, tampilin range jam (15:00 - 23:00)
                         $isSameDay = ($start->format('Y-m-d') === \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('Y-m-d'));
 
                         if ($isSameDay) {

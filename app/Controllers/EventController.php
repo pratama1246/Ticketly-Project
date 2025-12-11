@@ -7,7 +7,7 @@ use App\Models\TicketTypeModel;
 
 class EventController extends BaseController
 {
-    // Fungsi detail event berdasarkan SLUG
+    // Detail Event SLUG
     public function detail($slug = null)
     {
         $eventModel = new EventModel();
@@ -35,7 +35,7 @@ class EventController extends BaseController
         $remaining = $totalStock - $totalSold;
         $percentageLeft = ($totalStock > 0) ? ($remaining / $totalStock) * 100 : 0;
 
-        // Default Status (Hijau - Bisa Dibeli)
+        // Status Berlangsung
         $status = [
             'text'        => 'Sedang Berlangsung',
             'color'       => 'bg-green-500 text-white',
@@ -43,7 +43,7 @@ class EventController extends BaseController
             'purchasable' => true
         ];
 
-        // Cek 1: Telah Berakhir (Merah Abu/Gelap) -> TIDAK BISA DIBELI
+        // Telah Berakhir
         if ($now > $eventDate) {
             $status = [
                 'text'        => 'Telah Berakhir',
@@ -52,7 +52,7 @@ class EventController extends BaseController
                 'purchasable' => false
             ];
         }
-        // Cek 2: Terjual Habis (Merah) -> TIDAK BISA DIBELI
+        // Terjual Habis
         elseif ($totalStock > 0 && $remaining <= 0) {
             $status = [
                 'text'        => 'Terjual Habis',
@@ -61,7 +61,7 @@ class EventController extends BaseController
                 'purchasable' => false
             ];
         }
-        // Cek 3: Segera Habis (Kuning) -> MASIH BISA DIBELI
+        // Segera Habis
         elseif ($percentageLeft <= 20) {
             $status = [
                 'text'        => 'Segera Habis',
@@ -82,7 +82,7 @@ class EventController extends BaseController
              . view('layout/footer');
     }
 
-    // Fungsi pemilihan tiket berdasarkan SLUG
+    // Pemilihan Tiket SLUG
     public function select($slug = null)
     {
         $eventModel = new EventModel();

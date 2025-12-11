@@ -7,7 +7,7 @@
         body { font-family: Helvetica, Arial, sans-serif; background-color: #f3f4f6; color: #333; margin: 0; padding: 0; }
         .wrapper { width: 100%; padding-bottom: 20px; }
         
-        /* Style Card Tiket */
+        
         .ticket-container {
             max-width: 600px;
             margin: 20px auto;
@@ -15,10 +15,9 @@
             border: 1px solid #ddd;
             border-radius: 12px;
             overflow: hidden;
-            page-break-inside: avoid; /* Biar tiket gak kepotong pas print */
+            page-break-inside: avoid; 
         }
         
-        /* Page Break: Biar tiap tiket pindah halaman baru (Opsional, matikan kalau mau numpuk) */
         .page-break { page-break-after: always; }
 
         .header { background-color: #0d6efd; padding: 20px; text-align: center; color: #fff; }

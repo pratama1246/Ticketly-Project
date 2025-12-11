@@ -16,6 +16,5 @@ class OrderItemsModel extends Model
     'order_id', 'ticket_type_id', 'quantity', 'price_per_ticket', 'ticket_code', 'seat_id'
   ];
 
-  // Tidak ada timestamps di tabel ini
   protected $useTimestamps = false;
 }

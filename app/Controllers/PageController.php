@@ -13,7 +13,7 @@ class PageController extends BaseController
         $this->eventModel = new EventModel();
     }
 
-    // Fungsi Statis Halaman Tentang Kami
+    // Halaman Tentang Kami
     public function tentang()
     {
         echo view('layout/header', ['title' => 'Tentang Kami']);
@@ -21,7 +21,7 @@ class PageController extends BaseController
         echo view('layout/footer');
     }
 
-    // Fungsi Statis Halaman Konser
+    // Halaman Konser
     public function concerts()
     {
         $data = [
@@ -35,7 +35,7 @@ class PageController extends BaseController
         return $this->renderListing($data);
     }
 
-    // Fungsi Statis Halaman Festival
+    // Halaman Festival
     public function festivals()
     {
         $data = [
@@ -49,7 +49,7 @@ class PageController extends BaseController
         return $this->renderListing($data);
     }
 
-    // Fungsi Statis Halaman Event Lainnya dan Pencarian
+    // Halaman Event dan Pencarian
     public function events()
     {
         $keyword = $this->request->getGet('q');

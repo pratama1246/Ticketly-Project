@@ -1,5 +1,4 @@
 <div class="p-4">
-        
         <h1 class="text-2xl font-bold text-black mb-6">
             Statistik Penjualan
         </h1>
@@ -219,8 +218,8 @@
                             </td>
                             <td class="px-6 py-4">
                                 <?php if ($order['status'] === 'completed'): ?>
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-                                        Completed
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">
+                                        Selesai
                                     </span>
                                 <?php else: ?>
                                     <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">

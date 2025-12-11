@@ -14,7 +14,6 @@
                 </p>
             </div>
 
-            <!-- Grid Menu Footer -->
             <div class="grid grid-cols-2 gap-8 sm:gap-6 md:grid-cols-3">
 
                 <!-- Quick Links -->
@@ -91,7 +90,7 @@
     </div>
 </footer>
 
-<!-- Toast Container -->
+
 <div id="toast-container" class="fixed top-24 right-5 z-50 flex flex-col gap-2"></div>
 <!-- Modal Pop Up Cancel Checkout -->
     <div id="cancel-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300">

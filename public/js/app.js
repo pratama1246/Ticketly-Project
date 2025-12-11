@@ -828,3 +828,59 @@ window.autoCalculateStock = function() {
         }
     }
 }
+
+// Function untuk Filter Dropdown (Index Page)
+function selectStatus(value, label) {
+    const input = document.getElementById('statusInput');
+    const btnText = document.getElementById('btnText');
+    const dropdown = document.getElementById('dropdownStatus'); // Ambil elemen dropdown
+    
+    if (input && btnText) {
+        input.value = value;
+        btnText.innerText = label;
+    }
+    
+    // Tutup dropdown setelah memilih
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+    }
+}
+
+// Function untuk Update Status Dropdown (Detail Page)
+function setUpdateStatus(value, label) {
+    const input = document.getElementById('updateStatusInput');
+    const btnText = document.getElementById('btnUpdateText');
+    const dropdown = document.getElementById('dropdownUpdateStatus'); // Ambil elemen dropdown
+    
+    if (input && btnText) {
+        input.value = value;
+        btnText.innerText = label;
+    }
+
+    // Tutup dropdown setelah memilih
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+    }
+}
+
+// --- LOGIC "KLIK DI LUAR NUTUP" (Global Click Listener) ---
+document.addEventListener('click', function(event) {
+    // Daftar ID dropdown dan tombol pemicunya
+    const dropdowns = [
+        { btn: 'dropdownStatusBtn', menu: 'dropdownStatus' },       // Dropdown di Index
+        { btn: 'updateStatusBtn', menu: 'dropdownUpdateStatus' }    // Dropdown di Detail
+    ];
+
+    dropdowns.forEach(function(item) {
+        const button = document.getElementById(item.btn);
+        const menu = document.getElementById(item.menu);
+
+        // Cek jika elemen ada di halaman ini
+        if (button && menu) {
+            // Jika yang diklik BUKAN tombol DAN BUKAN menu dropdown itu sendiri
+            if (!button.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.add('hidden'); // Paksa tutup
+            }
+        }
+    });
+});

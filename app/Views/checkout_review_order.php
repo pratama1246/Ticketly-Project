@@ -7,7 +7,7 @@
             <!-- GRID UTAMA -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                <!-- ================= LEFT SIDE ================= -->
+                <!-- Sisi Kiri -->
                 <div class="lg:col-span-7 space-y-6">
                 
                     <!-- EVENT + TIKET -->
@@ -36,7 +36,6 @@
                                 if (!empty($event['event_end_date'])) {
                                     $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
 
-                                    // Cek apakah Tanggalnya Sama (Cuma beda jam)
                                     if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
                                         echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' - ' . $end->format('H:i') . ' WIB';
                                     } else {
@@ -47,8 +46,6 @@
                                         }
                                     }
                                 } else {
-                                    // SKENARIO A: Satu Hari (Start Only)
-                                    // Output: 10 Jan 2026 • 15:00 WIB
                                     echo $start->toLocalizedString('d MMMM yyyy') . ' • ' . $start->format('H:i') . ' WIB';
                                 }
                                 ?>
@@ -126,7 +123,7 @@
                 </div>
 
 
-                    <!-- ================= RIGHT SIDE ================= -->
+                    <!-- Sisi Kanan -->
                     <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
 
                         <!-- RINCIAN BIAYA -->

@@ -17,7 +17,6 @@ class OrderModel extends Model
     'identity_number', 'birth_date', 'payment_method', 'order_total', 'status',
   ];
 
-  // Menggunakan created_at dan updated_at secara otomatis
   protected $useTimestamps = true;
   protected $createdField  = 'created_at';
   protected $updatedField  = 'updated_at';

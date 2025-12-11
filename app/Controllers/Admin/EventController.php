@@ -17,6 +17,7 @@ class EventController extends BaseController
     {
         $eventModel = new EventModel();
         
+        
         $data = [
             'title'  => 'Manajemen Event',
             'events' => $eventModel->findAll()
@@ -50,7 +51,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 2. Menampilkan form tambah event
+    // Form tambah event
     public function new()
     {
         $data = [
@@ -63,7 +64,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 3. Memproses penyimpanan event baru
+    // Proses menyimpanan event baru
     public function create()
     {
         // Aturan Validasi
@@ -136,7 +137,7 @@ class EventController extends BaseController
         }
     }
 
-    // 4. Menampilkan form edit
+    // Menampilkan form edit
     public function edit($id = null)
     {
         $eventModel = new EventModel();
@@ -162,7 +163,7 @@ class EventController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 5. Menyimpan perubahan
+    // Menyimpan perubahan
     public function update($id = null)
     {
         $eventModel = new EventModel();
@@ -254,19 +255,14 @@ class EventController extends BaseController
             
             $ticketModel = new \App\Models\TicketTypeModel();
 
-            // SKENARIO 1: Berubah jadi Single Day
             $isNewSingleDay = ($newStartDate === $newEndDate);
             
             if ($isNewSingleDay) {
-                // Paksa semua tiket jadi NULL (karena cuma 1 hari, ga butuh tanggal spesifik)
                 $ticketModel->where('event_id', $id)
                             ->set(['ticket_date' => null])
                             ->update();
             } 
-            // SKENARIO 2: Tanggal Bergeser (Reschedule)
             elseif ($oldStartDate !== $newStartDate || $oldEndDate !== $newEndDate) {
-                // Reset semua tiket jadi NULL biar Admin set ulang manual
-                // Ini mencegah tiket 'nyangkut' di tanggal yang udah gak ada
                 $ticketModel->where('event_id', $id)
                             ->set(['ticket_date' => null])
                             ->update();
@@ -280,7 +276,7 @@ class EventController extends BaseController
         }
     }
 
-    // 6. Menghapus event dan gambarnya
+    // Menghapus event dan gambarnya
     public function delete($id = null)
     {
         $eventModel = new EventModel();

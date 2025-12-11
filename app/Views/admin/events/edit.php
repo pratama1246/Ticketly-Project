@@ -1,6 +1,4 @@
-<!-- HALAMAN EDIT EVENT -->
-
-<h1 class="text-3xl font-bold text-black mb-6">
+<h1 class="text-3xl font-bold text-black mb-6 p-4">
     <?= esc($title) ?>
 </h1>
 

@@ -22,11 +22,13 @@ class OrderController extends BaseController
         $this->eventModel = new EventModel();
     }
 
-    // 1. LIST ORDER (RIWAYAT)
+    // LIST ORDER
     public function index()
     {
         $keyword = $this->request->getGet('keyword');
         $status = $this->request->getGet('status');
+
+        $perPage = $this->request->getGet('per_page') ?? 10;
 
         $builder = $this->orderModel->orderBy('created_at', 'DESC');
 
@@ -47,7 +49,8 @@ class OrderController extends BaseController
             'orders' => $builder->paginate(10),
             'pager'  => $this->orderModel->pager,
             'keyword' => $keyword,
-            'status' => $status
+            'status' => $status,
+            'perPage' => $perPage
         ];
 
         echo view('admin/layout/header', $data);
@@ -55,7 +58,7 @@ class OrderController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 2. DETAIL ORDER
+    // DETAIL ORDER
     public function detail($id)
     {
         $order = $this->orderModel->find($id);
@@ -63,10 +66,9 @@ class OrderController extends BaseController
             return redirect()->to('/admin/orders')->with('error', 'Order tidak ditemukan');
         }
 
-        // Ambil item + info tiket + info event + info kursi
         $items = $this->orderItemsModel->select('order_items.*, ticket_types.name as ticket_name, events.name as event_name, seats.label, seats.seat_row, seats.seat_number')
             ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
-            ->join('events', 'events.id = ticket_types.event_id', 'left') // Join ke event via ticket type
+            ->join('events', 'events.id = ticket_types.event_id', 'left')
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
             ->where('order_id', $id)
             ->findAll();
@@ -82,7 +84,7 @@ class OrderController extends BaseController
         echo view('admin/layout/footer');
     }
 
-    // 3. UPDATE STATUS (Fitur Tambahan)
+    // UPDATE STATUS
     public function updateStatus()
     {
         $id = $this->request->getPost('order_id');
@@ -94,13 +96,12 @@ class OrderController extends BaseController
         return redirect()->back()->with('error', 'Gagal update status.');
     }
 
-    // 4. DOWNLOAD PDF (Admin Privilege)
+    // DOWNLOAD PDF
     public function downloadPdf($orderId)
     {
         $order = $this->orderModel->find($orderId);
         if (!$order) return redirect()->back()->with('error', 'Order not found');
 
-        // Logic sama persis kayak CheckoutController
         $items = $this->orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
             ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
@@ -139,7 +140,6 @@ class OrderController extends BaseController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         
-        // Langsung download ke browser admin
         $dompdf->stream('Admin-Copy-Ticket-' . $order['trx_id'] . '.pdf', ['Attachment' => 0]); 
     }
 }

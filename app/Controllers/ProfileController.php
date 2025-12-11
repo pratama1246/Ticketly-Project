@@ -13,6 +13,7 @@ class ProfileController extends BaseController
         $this->userModel = new UserModel();
     }
 
+    // Halaman Profil Saya
     public function index()
     {
         $data = [
@@ -25,6 +26,7 @@ class ProfileController extends BaseController
         echo view('layout/footer');
     }
 
+    // Edit Profil
     public function edit()
     {
         $data = [
@@ -38,6 +40,7 @@ class ProfileController extends BaseController
         echo view('layout/footer');
     }
 
+    // Update Profil
     public function update()
     {
         $user = auth()->user();

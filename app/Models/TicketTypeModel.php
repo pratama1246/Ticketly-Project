@@ -13,7 +13,6 @@ class TicketTypeModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
 
-    // Kolom yang boleh diisi
     protected $allowedFields    = [
         'event_id',
         'name',
@@ -27,6 +26,5 @@ class TicketTypeModel extends Model
 
     ];
 
-    // Kita tidak pakai 'created_at' & 'updated_at' di tabel ini
     protected $useTimestamps = false;
 }

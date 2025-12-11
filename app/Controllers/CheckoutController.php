@@ -14,7 +14,7 @@ use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
 class CheckoutController extends BaseController
 {
 
-    // LANGKAH 1: MEMULAI PROSES CHECKOUT
+    // START CHECKOUT
 
     public function start()
     {
@@ -59,13 +59,13 @@ class CheckoutController extends BaseController
         ];
         
         session()->set('checkout_process', $checkoutData);
-        session()->set('checkout_expire', time() + 300); // 5 Menit
+        session()->set('checkout_expire', time() + 300);
 
         return redirect()->to('/checkout/personal_info');
     }
 
 
-    // LANGKAH 2: FORM DATA DIRI (GET)
+    // FORM DATA DIRI
 
     public function personalInfo()
     {   
@@ -95,7 +95,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 3: PROSES DATA DIRI (POST)
+    // PROSES DATA DIRI
 
     public function processPersonalInfo()
     {
@@ -139,7 +139,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 4: PILIH METODE PEMBAYARAN (GET)
+    // METODE PEMBAYARAN
 
     public function paymentMethod()
     {
@@ -167,7 +167,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 5: PROSES METODE PEMBAYARAN (POST)
+    // PROSES METODE PEMBAYARAN
 
     public function processPayment()
     {
@@ -187,7 +187,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 6: REVIEW PESANAN (GET)
+    // REVIEW PESANAN
 
     public function reviewOrder()
     {
@@ -210,7 +210,6 @@ class CheckoutController extends BaseController
         $method = $paymentModel->where('code', $checkoutData['payment_method'])->first();
         $data['payment_method_name'] = $method ? $method['name'] : $checkoutData['payment_method'];
         
-        // GUNAKAN HELPER CALCULATE
         $calculation = $this->calculateTransaction($checkoutData['selected_tickets']);
 
         $data['selected_tickets_details'] = $calculation['items'];
@@ -229,7 +228,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 7: BUAT ORDER & SIMPAN KE DB (POST)
+    // BUAT ORDER & SIMPAN KE DATABASE
 
     public function createOrder()
     {
@@ -240,11 +239,9 @@ class CheckoutController extends BaseController
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $ticketTypeModel = new TicketTypeModel();
-        
-        // 1. Hitung Ulang Total
+
         $calculation = $this->calculateTransaction($checkoutData['selected_tickets']);
 
-        // 2. Cek Stok Lagi
         foreach ($calculation['items'] as $item) {
             $ticketDb = $ticketTypeModel->find($item['id']);
             if ($ticketDb['quantity_sold'] + $item['quantity'] > $ticketDb['quantity_total']) {
@@ -279,7 +276,6 @@ class CheckoutController extends BaseController
         foreach ($calculation['items'] as $ticket) {
             $ticketInfo = $ticketTypeModel->find($ticket['id']);
             
-            // FIX: Case-insensitive check untuk 'Seating'
             $isSeating = (strcasecmp($ticketInfo['ticket_category'], 'Seating') === 0);
 
             $assignedSeatId = [];
@@ -327,7 +323,7 @@ class CheckoutController extends BaseController
     }
 
 
-    // LANGKAH 8: HALAMAN PEMBAYARAN (GET)
+    // HALAMAN PEMBAYARAN
 
     public function pay($orderId)
     {
@@ -367,7 +363,7 @@ class CheckoutController extends BaseController
         echo view('layout/footer');
     }
 
-    // LANGKAH 9: KONFIRMASI PEMBAYARAN & KIRIM E-TICKET (AJAX POST)
+    // KONFIRMASI PEMBAYARAN & KIRIM E-TICKET
 
     public function confirmPayment($orderId)
     {   
@@ -388,27 +384,22 @@ class CheckoutController extends BaseController
             $orderModel->update($orderId, ['status' => 'completed']);
         }
 
-        // 1. QUERY SAKTI: Ambil semua data Item + Kursi + Nama Tiket sekaligus
         $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
-            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left') // Join biar dapet nama tiket per item
+            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
             ->where('order_id', $orderId)
             ->findAll();
 
         if (empty($items)) {
              return $this->response->setJSON(['status' => 'error', 'message' => 'Tiket tidak ditemukan']);
         }
-
-        // Ambil Data Event dari item pertama (karena 1 order pasti 1 event)
         $event = $eventModel->find($items[0]['event_id']);
 
-        // 2. LOOPING DATA TIKET: Siapkan data unik untuk SETIAP tiket
         $ticketList = [];
         $qrCode = new QrCodeGenerator();
 
         foreach ($items as $item) {
-            // Logic Nama Kursi per Tiket
-            $seatLabel = 'Free Seating'; // Default kalau standing
+            $seatLabel = 'Free Seating';
             if (!empty($item['label'])) {
                 $seatLabel = $item['label']; 
             } elseif (!empty($item['seat_row'])) {
@@ -417,26 +408,25 @@ class CheckoutController extends BaseController
 
             // Generate QR Unik per Tiket
             $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
-            $qrBase64 = base64_encode($qrCode->format('png')->size(150)->generate($qrContent));
+            $qrBase64 = base64_encode($qrCode->format('png')->size(250)->generate($qrContent));
 
             $ticketList[] = [
-                'type' => $item['ticket_name'], // Nama Tiket (misal: CAT 1 / Festival)
-                'seat' => $seatLabel,           // Kursi (misal: A-1 / Free Seating)
-                'code' => $item['ticket_code'], // Kode Tiket Unik
-                'qr'   => $qrBase64             // QR Code Unik
+                'type' => $item['ticket_name'],
+                'seat' => $seatLabel,
+                'code' => $item['ticket_code'],
+                'qr'   => $qrBase64
             ];
         }
 
-        // 3. Kirim Array $tickets ke View
         $pdfData = [
             'event'     => $event,
             'order'     => $order,
-            'tickets'   => $ticketList // <--- Ini array isinya BANYAK tiket
+            'tickets'   => $ticketList
         ];
 
         try {
             $dompdf = new Dompdf();
-            $dompdf->loadHtml(view('ticket_template', $pdfData)); // Load view baru
+            $dompdf->loadHtml(view('ticket_template', $pdfData));
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
             $pdfOutput = $dompdf->output();
@@ -448,7 +438,6 @@ class CheckoutController extends BaseController
             $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
             $email->send();
         } catch (\Exception $e) {
-            // Ignore
         }
 
         session()->remove('checkout_process');
@@ -463,7 +452,7 @@ class CheckoutController extends BaseController
         ]);
     }
 
-    // LANGKAH 10: BATALKAN PESANAN
+    //BATALKAN PESANAN
 
     public function cancel()
     {
@@ -559,7 +548,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $taxRate = 0.10; // 10%
+        $taxRate = 0.10;
         $platformFeePerTicket = 10000; 
         $adminFee = 2500; 
 

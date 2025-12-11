@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\OrderModel;
 use App\Models\OrderItemsModel;
 use App\Models\EventModel;
-use App\Models\TicketTypeModel; // Tambahan Model
+use App\Models\TicketTypeModel;
 
 class DashboardController extends BaseController
 {
@@ -16,12 +16,9 @@ class DashboardController extends BaseController
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();
         
-        // 1. Bersihkan order kadaluarsa otomatis
         $orderModel->autoExpireOrders();
 
-        // =========================================================
-        // BAGIAN 1: STATISTIK KARTU (CARD STATS)
-        // =========================================================
+        // STATISTIK KARTU
 
         // Total Pendapatan (Status Completed)
         $totalRevenue = $orderModel
@@ -44,22 +41,20 @@ class DashboardController extends BaseController
         // Total Event Aktif
         $totalEvents = $eventModel->countAllResults();
 
-        // 5 Pesanan Terbaru (List Bawah)
+        // 5 Pesanan Terbaru
         $recentOrders = $orderModel
             ->orderBy('created_at', 'DESC')
             ->limit(5)
             ->findAll();
 
-        // =========================================================
-        // BAGIAN 2: DATA GRAFIK (CHARTS) - INI YANG KURANG TADI
-        // =========================================================
         
-        // A. Data Grafik Pendapatan (Line Chart - 7 Hari Terakhir)
+        // DATA GRAFIK
+        
+        // Data Grafik Pendapatan
         $revenueData = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = date('Y-m-d', strtotime("-$i days"));
             
-            // Hitung omzet per tanggal tersebut
             $sum = $orderModel->where('status', 'completed')
                               ->like('created_at', $date)
                               ->selectSum('order_total', 'total')
@@ -71,19 +66,18 @@ class DashboardController extends BaseController
             ];
         }
 
-        // B. Data Grafik Event Terlaris (Doughnut Chart)
-        // Kita hitung berdasarkan total tiket terjual per event
+        // Data Grafik Event Terlaris
         $topEvents = $eventModel->select('events.name as category, COALESCE(SUM(order_items.quantity), 0) as total_sold')
             ->join('ticket_types', 'ticket_types.event_id = events.id', 'left')
             ->join('order_items', 'order_items.ticket_type_id = ticket_types.id', 'left')
             ->join('orders', 'orders.id = order_items.order_id', 'left')
-            ->where('orders.status', 'completed') // Hanya hitung yang sudah bayar
+            ->where('orders.status', 'completed')
             ->groupBy('events.id')
             ->orderBy('total_sold', 'DESC')
             ->limit(5)
             ->findAll();
 
-        // C. [BARU] Grafik Metode Pembayaran
+        // Grafik Metode Pembayaran
         $paymentMethods = $orderModel
             ->where('status', 'completed')
             ->select('payment_method, COUNT(*) as total_usage')
@@ -91,20 +85,17 @@ class DashboardController extends BaseController
             ->orderBy('total_usage', 'DESC')
             ->findAll();
 
-        // D. [BARU] Grafik Status Pesanan
+        // Grafik Status Pesanan
         $orderStats = $orderModel
             ->select('status, COUNT(*) as total')
             ->groupBy('status')
             ->findAll();
 
-        // Handle data kosong biar grafik gak error
         if (empty($topEvents)) {
             $topEvents = []; 
         }
 
-        // =========================================================
         // BAGIAN 3: KIRIM KE VIEW
-        // =========================================================
         $data = [
             'title'        => 'Admin Dashboard',
             
@@ -115,7 +106,7 @@ class DashboardController extends BaseController
             'totalEvents'  => $totalEvents,
             'recentOrders' => $recentOrders,
 
-            // Data Grafik (PENTING!)
+            // Data Grafik
             'chart_data'   => [
                 'revenue'    => $revenueData,
                 'categories' => $topEvents,

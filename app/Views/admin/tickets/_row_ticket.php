@@ -4,8 +4,8 @@
         <div class="text-xs text-gray-400 mt-1"><?= esc($ticket['ticket_category']) ?></div>
     </td>
     <td class="px-6 py-4">
-        <span class="px-3 py-1 rounded text-xs font-bold uppercase border" 
-              style="background-color: <?= $ticket['ui_color'] ?>20; color: <?= $ticket['ui_color'] ?>; border-color: <?= $ticket['ui_color'] ?>;">
+        <span class="px-3 py-1 rounded text-xs font-bold uppercase bg-gray-100"
+              style="border-color: <?= $ticket['ui_color'] ?>; border-width: 2px;">
             <?= esc($ticket['ui_color']) ?>
         </span>
     </td>

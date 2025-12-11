@@ -29,13 +29,10 @@
                 <h1>
                     <p class="text-gray-900 font-bold text-2xl">
                         <?php 
-                            // 1. Ambil waktu pesanan dibuat
                             $createdAt = \CodeIgniter\I18n\Time::parse($order['created_at']);
                             
-                            // 2. Tambah 15 menit
                             $deadline  = $createdAt->addMinutes(15);
                             
-                            // 3. Format ke Bahasa Indonesia (Contoh: Kamis, 23 Agustus 2025 (15:00 WIB))
                             echo $deadline->toLocalizedString('EEEE, d MMMM yyyy (HH:mm') . ' WIB)';
                         ?>
                     </p>

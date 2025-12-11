@@ -46,20 +46,16 @@
                                     <div class="text-center leading-tight">
                                         <?php 
                                             $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
-                                            $month = $start->format('M'); // Nama Bulan (JAN, FEB)
-                                            $dateDisplay = $start->format('d'); // Tanggal (01, 15)
+                                            $month = $start->format('M');
+                                            $dateDisplay = $start->format('d');
 
-                                            // Logika Cek Range Tanggal
                                             if (!empty($event['event_end_date'])) {
                                                 $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
                                                 
-                                                // Jika hari berbeda...
                                                 if ($start->format('Y-m-d') !== $end->format('Y-m-d')) {
-                                                    // ...dan masih di bulan yang sama, tampilkan "10-12"
                                                     if ($start->getMonth() === $end->getMonth()) {
                                                         $dateDisplay .= '-' . $end->format('d');
                                                     }
-                                                    // Jika beda bulan, tetap tampilkan tgl mulai saja biar ga berantakan di kotak kecil
                                                 }
                                             }
                                         ?>
@@ -87,10 +83,8 @@
                                             $startT = new \DateTime($event['event_date']);
                                             $timeStr = $startT->format('H:i');
                                             
-                                            // Cek End Date
                                             if (!empty($event['event_end_date'])) {
                                                 $endT = new \DateTime($event['event_end_date']);
-                                                // Kalau hari sama, tampilin range jam
                                                 if ($startT->format('Y-m-d') === $endT->format('Y-m-d')) {
                                                     $timeStr .= ' - ' . $endT->format('H:i');
                                                 }

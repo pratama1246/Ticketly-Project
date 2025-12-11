@@ -60,13 +60,12 @@ class TicketController extends BaseController
     // Proses simpan tiket baru
    public function create($eventId)
     {
-        // Validasi
         $rules = [
             'name'            => 'required|string|max_length[255]',
-            'ticket_category' => 'required|in_list[Seating,Standing]', // Validasi Kategori
+            'ticket_category' => 'required|in_list[Seating,Standing]',
             'price'           => 'required|numeric',
             'quantity_total'  => 'required|integer',
-            'ui_color'        => 'required|string|max_length[7]', // Validasi Hex Color
+            'ui_color'        => 'required|string|max_length[7]',
         ];
 
         if (! $this->validate($rules)) {
@@ -79,50 +78,44 @@ class TicketController extends BaseController
             'event_id'        => $eventId,
             'name'            => $this->request->getPost('name'),
             'ticket_date'     => empty($ticketDate) ? null : $ticketDate,
-            'ticket_category' => $this->request->getPost('ticket_category'), // Simpan Kategori
+            'ticket_category' => $this->request->getPost('ticket_category'),
             'price'           => $this->request->getPost('price'),
             'quantity_total'  => $this->request->getPost('quantity_total'),
             'quantity_sold'   => 0,
-            'ui_color'        => $this->request->getPost('ui_color'), // Simpan Hex
+            'ui_color'        => $this->request->getPost('ui_color'),
             'description'     => $this->request->getPost('description')
         ]);
 
-    $newTicketId = $this->ticketModel->getInsertID(); // ID Tiket Baru
+    $newTicketId = $this->ticketModel->getInsertID();
 
-    // === LOGIC GENERATOR KURSI (BARU) ===
     $startRow = $this->request->getPost('seat_row_start');
     $endRow   = $this->request->getPost('seat_row_end');
     $perRow   = $this->request->getPost('seats_per_row');
 
-    // Cek: Kalau admin ngisi generator, berarti ini tiket seating
     if (!empty($startRow) && !empty($endRow) && !empty($perRow)) {
         
         $seatData = [];
-        $startCode = ord(strtoupper($startRow)); // A -> 65
-        $endCode   = ord(strtoupper($endRow));   // E -> 69
+        $startCode = ord(strtoupper($startRow));
+        $endCode   = ord(strtoupper($endRow));
 
-        // Loop Baris (A sampai E)
         for ($rowCode = $startCode; $rowCode <= $endCode; $rowCode++) {
-            $rowChar = chr($rowCode); // 65 -> A
+            $rowChar = chr($rowCode);
             
-            // Loop Nomor Kursi (1 sampai 20)
             for ($num = 1; $num <= $perRow; $num++) {
                 $seatData[] = [
                     'event_id'       => $eventId,
                     'ticket_type_id' => $newTicketId,
                     'seat_row'       => $rowChar,
                     'seat_number'    => $num,
-                    'label'          => $rowChar . '-' . $num, // Format: A-1
+                    'label'          => $rowChar . '-' . $num,
                 ];
             }
         }
 
-        // Masukin ke Database (Batch Insert biar cepet)
         if (!empty($seatData)) {
             $db = \Config\Database::connect();
             $db->table('seats')->insertBatch($seatData);
             
-            // Opsional: Update tiket jadi kategori 'Seating' kalau belum
             $this->ticketModel->update($newTicketId, ['ticket_category' => 'Seating']);
         }
     }
@@ -130,7 +123,6 @@ class TicketController extends BaseController
         return redirect()->to("/admin/events/$eventId/tickets")->with('message', 'Tiket berhasil ditambahkan.');
     }
 
-    // Proses hapus tiket
     public function delete($eventId, $ticketId)
     {
         $this->ticketModel->delete($ticketId);
@@ -156,13 +148,10 @@ class TicketController extends BaseController
         $hasSeats = $builder->where('ticket_type_id', $ticketId)->countAllResults() > 0;
 
         if ($hasSeats) {
-            // 1. Cari Row Paling Awal
             $minRow = $db->table('seats')->where('ticket_type_id', $ticketId)->selectMin('seat_row')->get()->getRow()->seat_row;
             
-            // 2. Cari Row Paling Akhir
             $maxRow = $db->table('seats')->where('ticket_type_id', $ticketId)->selectMax('seat_row')->get()->getRow()->seat_row;
             
-            // 3. Cari Jumlah Kursi Per Baris
             $maxNum = $db->table('seats')->where('ticket_type_id', $ticketId)->selectMax('seat_number')->get()->getRow()->seat_number;
 
             $ticket['seat_row_start'] = $minRow;
@@ -219,32 +208,28 @@ class TicketController extends BaseController
 
         if (!empty($startRow) && !empty($endRow) && !empty($perRow)) {
             
-            // STEP 1: Ambil dulu semua data kursi yang UDAH ADA di database buat tiket ini
-            // Biar kita ga perlu query berulang-ulang di dalem loop (bikin berat)
             $db = \Config\Database::connect();
             $db->table('seats')->where('ticket_type_id', $ticketId)->delete();
             
 
-            // B. Generate Kursi Baru
             $seatData = [];
-            $startCode = ord(strtoupper($startRow)); // A -> 65
-            $endCode   = ord(strtoupper($endRow));   // E -> 69
+            $startCode = ord(strtoupper($startRow));
+            $endCode   = ord(strtoupper($endRow));
 
             for ($rowCode = $startCode; $rowCode <= $endCode; $rowCode++) {
-                $rowChar = chr($rowCode); // 65 -> A
+                $rowChar = chr($rowCode);
                 
                 for ($num = 1; $num <= $perRow; $num++) {
                     $seatData[] = [
                         'event_id'       => $eventId,
-                        'ticket_type_id' => $ticketId, // Pake ID tiket yang lagi diedit
+                        'ticket_type_id' => $ticketId,
                         'seat_row'       => $rowChar,
                         'seat_number'    => $num,
-                        'label'          => $rowChar . '-' . $num, // Format: A-1
+                        'label'          => $rowChar . '-' . $num,
                     ];
                 }
             }
 
-            // STEP 3: Insert cuma data yang bener-bener baru
             if (!empty($seatData)) {
                 $db->table('seats')->insertBatch($seatData);
                 $msg = 'Data tiket diperbarui & ' . count($seatData) . ' kursi baru ditambahkan.';
@@ -258,38 +243,34 @@ class TicketController extends BaseController
         return redirect()->to("/admin/events/$eventId/tickets")->with('message', $msg);
     }
 
-    // Fitur Duplikasi Tiket (Versi Upgrade: Bawa Kursi)
+    // Copy Tiket
     public function duplicate($eventId, $ticketId)
     {
         $ticket = $this->ticketModel->find($ticketId);
 
         if ($ticket) {
-            // 1. Duplikasi Data Utama Tiket
             $newTicket = $ticket;
-            unset($newTicket['id']); // Hapus ID lama
+            unset($newTicket['id']); 
             $newTicket['name'] = $newTicket['name'] . ' (Copy)'; 
-            $newTicket['quantity_sold'] = 0; // Reset penjualan
+            $newTicket['quantity_sold'] = 0;
             
             $this->ticketModel->insert($newTicket);
-            $newTicketId = $this->ticketModel->getInsertID(); // Ambil ID Tiket Baru yang barusan dibuat
+            $newTicketId = $this->ticketModel->getInsertID();
 
-            // 2. Duplikasi Data Kursi (PENTING!)
             $db = \Config\Database::connect();
-            
-            // Ambil semua kursi dari tiket lama
+
             $oldSeats = $db->table('seats')->where('ticket_type_id', $ticketId)->get()->getResultArray();
 
             if (!empty($oldSeats)) {
                 $newSeats = [];
                 foreach ($oldSeats as $seat) {
-                    // Siapkan data kursi baru
-                    $seat['ticket_type_id'] = $newTicketId; // Sambungkan ke tiket baru
-                    unset($seat['id']); // Hapus ID kursi lama (biar auto-increment baru)
+
+                    $seat['ticket_type_id'] = $newTicketId; 
+                    unset($seat['id']);
                     
                     $newSeats[] = $seat;
                 }
                 
-                // Masukkan semua kursi baru sekaligus (Batch Insert)
                 $db->table('seats')->insertBatch($newSeats);
             }
 

@@ -26,7 +26,6 @@ class EventModel extends Model
         'status'
     ];
 
-    // Menggunakan created_at dan updated_at secara otomatis
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

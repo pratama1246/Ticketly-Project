@@ -38,12 +38,9 @@
                                                 if (!empty($item['event_end_date'])) {
                                                     $end = \CodeIgniter\I18n\Time::parse($item['event_end_date']);
                                                     
-                                                    // Logika Tampilan Tanggal
                                                     if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
-                                                        // Satu Hari: "10 Januari 2026"
                                                         echo $start->toLocalizedString('d MMMM yyyy');
                                                     } else {
-                                                        // Multi-Day: "10 - 12 Januari 2026" atau "30 Des - 02 Jan 2026"
                                                         if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
                                                             echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
                                                         } else {
@@ -51,7 +48,6 @@
                                                         }
                                                     }
                                                 } else {
-                                                    // Default Single Day
                                                     echo $start->toLocalizedString('d MMMM yyyy');
                                                 }
                                             ?>
@@ -191,20 +187,16 @@
                                     <div class="text-center leading-tight">
                                         <?php 
                                             $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
-                                            $month = $start->format('M'); // Nama Bulan (JAN, FEB)
-                                            $dateDisplay = $start->format('d'); // Tanggal (01, 15)
+                                            $month = $start->format('M');
+                                            $dateDisplay = $start->format('d');
 
-                                            // Logika Cek Range Tanggal
                                             if (!empty($event['event_end_date'])) {
                                                 $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
                                                 
-                                                // Jika hari berbeda...
                                                 if ($start->format('Y-m-d') !== $end->format('Y-m-d')) {
-                                                    // ...dan masih di bulan yang sama, tampilkan "10-12"
                                                     if ($start->getMonth() === $end->getMonth()) {
                                                         $dateDisplay .= '-' . $end->format('d');
                                                     }
-                                                    // Jika beda bulan, tetap tampilkan tgl mulai saja biar ga berantakan di kotak kecil
                                                 }
                                             }
                                         ?>
@@ -241,7 +233,6 @@
 
                                                 if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
                                                     $timeString .= ' - ' . $end->format('H:i'); 
-                                                    // Hasil: "15:00 - 23:00"
                                                 }
                                             }
                                             
@@ -264,7 +255,6 @@
     <?php
     }
 
-    // Panggil fungsi render
     renderEventSection('Konser Terbaru', $concerts, '', '/concerts');
     renderEventSection('Festival Seru', $festivals, '', '/festivals');
     renderEventSection('Event Lainnya', $events, '', '/events');

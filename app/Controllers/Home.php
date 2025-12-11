@@ -10,7 +10,7 @@ class Home extends BaseController
     {
         $eventModel = new EventModel();
 
-        // 1. Ambil Event untuk Carousel (Featured & Published)
+        // Ambil Event Carousel
         $featuredEvents = $eventModel
             ->where('is_featured', 1)
             ->where('status', 'published')
@@ -18,7 +18,7 @@ class Home extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // 2. Ambil Event per Kategori
+        // Ambil Event Kategori
         $concerts = $eventModel
             ->where('category', 'concert')
             ->where('status', 'published')
