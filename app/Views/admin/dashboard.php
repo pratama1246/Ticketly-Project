@@ -191,7 +191,7 @@
                     <tr>
                         <th scope="col" class="px-6 py-3 w-58">Order ID</th>
                         <th scope="col" class="px-6 py-3">Nama Pembeli</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Tanggal Transaksi</th>
                         <th scope="col" class="px-6 py-3">Total</th>
                         <th scope="col" class="px-6 py-3">Status</th>
                     </tr>
@@ -211,7 +211,7 @@
                                 <?= esc($order['first_name'] . ' ' . $order['last_name']) ?>
                             </td>
                             <td class="px-6 py-4">
-                                <?= esc($order['email']) ?>
+                                <?= \CodeIgniter\I18n\Time::parse($order['created_at'])->toLocalizedString('d MMMM yyyy, HH:mm') ?>
                             </td>
                             <td class="px-6 py-4">
                                 Rp <?= number_format($order['order_total'], 0, ',', '.') ?>
