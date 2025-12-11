@@ -315,7 +315,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="bg-gray-50 py-16 mb-20 border-y border-gray-100 reveal-on-scroll">
+    <section class="py-16 mb-20 border-y border-gray-100 reveal-on-scroll">
         <div class="max-w-8xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kata Mereka</h2>
