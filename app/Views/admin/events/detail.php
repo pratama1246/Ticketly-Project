@@ -7,7 +7,7 @@
             <h1 class="text-2xl font-bold text-black max-w-[600px] mb-4"><?= esc($title) ?></h1>
            <a href="/admin/events" class="bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 flex items-center gap-3 w-max px-3 py-2 rounded-base">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <h1 class="text-xs font-bold text-gray-900 m-0">Kembali Ke Daftar Event</h1>
+                    <h1 class="text-xs font-bold text-gray-900 m-0">Kembali</h1>
             </a>
         </div>
     </div>

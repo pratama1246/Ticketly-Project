@@ -3,7 +3,7 @@
             
             <a href="/admin/orders" class="bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover text-gray-700 hover:text-gray-900 flex items-center gap-3 w-max px-3 py-2 rounded-base mb-4">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <h1 class="text-xs font-bold text-gray-900 m-0">Kembali Ke Halaman Order</h1>
+                    <h1 class="text-xs font-bold text-gray-900 m-0">Kembali</h1>
                 </a>
                 
             <div class="bg-yellow-accent-light border border-gray-200 rounded-lg shadow-sm p-6">
