@@ -175,14 +175,16 @@
 
                                 <div class="flex justify-between items-center text-orange-600">
                                     <span class="flex items-center gap-1">
-                                        Pajak Hiburan (10%)
-                                        <svg class="w-3 h-3 cursor-help" title="Pajak PBJT"
+                                        PPN (11%)
+                                        <svg data-popover-target="taxppn-info" data-popover-placement="bottom" class="w-3 h-3 cursor-pointer ms-1" title="Pajak PBJT"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>    
+                                        <div data-popover id="taxppn-info" role="tooltip" class="absolute z-10 p-3 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72">
+                                                <h3 class="font-semibold text-gray-900 mb-2">Tentang PPN</h3>
+                                                <p>PPN ditetapkan sesuai dengan peraturan perpajakan yang berlaku di Indonesia.</p>
+                                                <div data-popper-arrow></div>
+                                            </div>
                                     </span>
                                     <span>+ Rp <?= number_format($tax_amount, 0, ',', '.') ?></span>
                                 </div>

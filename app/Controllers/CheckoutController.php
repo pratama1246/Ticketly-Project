@@ -564,7 +564,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $taxRate = 0.10;
+        $taxRate = 0.11;
         $platformFeePerTicket = 10000; 
         $adminFee = 2500; 
 
