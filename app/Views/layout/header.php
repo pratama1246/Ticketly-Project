@@ -48,7 +48,8 @@
 
             <?php else: ?>
                 <button type="button" onclick="window.location.href='<?= base_url('login') ?>'" class="text-black bg-yellow-accent-normal hover:bg-yellow-accent-strong box-border border border-transparent focus:ring-4 focus:ring-yellow-accent-medium shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none">
-                    Masuk atau Daftar
+                    <span class="inline md:hidden">Masuk</span>
+                    <span class="hidden md:inline">Masuk atau Daftar</span>
                 </button>
             <?php endif; ?>
 
