@@ -116,7 +116,7 @@ class ProfileController extends BaseController
 
         if ($fileFoto && $fileFoto->isValid()) {
             $fotoBaru = $fileFoto->getRandomName();
-            $fileFoto->move('uploads/profile', $fotoBaru);
+            $fileFoto->move(FCPATH . 'uploads/profile', $fotoBaru);
         }
 
         $data = [
