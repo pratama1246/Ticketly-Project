@@ -854,7 +854,6 @@ document.addEventListener('click', function(event) {
     dropdowns.forEach(function(item) {
         const button = document.getElementById(item.btn);
         const menu = document.getElementById(item.menu);
-i
         if (button && menu) {
             if (!button.contains(event.target) && !menu.contains(event.target)) {
                 menu.classList.add('hidden');
