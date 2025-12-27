@@ -447,14 +447,36 @@ class CheckoutController extends BaseController
             $dompdf->render();
             $pdfOutput = $dompdf->output();
 
-            $email = \Config\Services::email();
+                $email = \Config\Services::email();
+            // PENTING: Ganti ini dengan email yang SUDAH DIVERIFIKASI di Mailtrap Live
+            $email->setFrom('noreply@ticketly.mytamakikii.web.id', 'Ticketly Admin'); 
+            
             $email->setTo($order['email']);
             $email->setSubject('E-Tiket: ' . $event['name']);
-            $email->setMessage("$htmlContent<br><br>Terima kasih telah melakukan pemesanan tiket di sistem kami.");
-            $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
-            $email->send();
+            $email->setMessage("$htmlContent<br><br>Terima kasih...");
+            $email->attach($pdfOutput, 'attachment', 'E-Ticket.pdf', 'application/pdf');
+
+            // Cek status kirim
+            if ($email->send()) {
+                // Sukses
+            } else {
+                // INI PENTING: Biar kamu tau error aslinya apa!
+                log_message('error', 'Gagal kirim email: ' . print_r($email->printDebugger(['headers']), true));
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal kirim email. Cek logs.']);
+            }
+
         } catch (\Exception $e) {
+            log_message('error', 'Exception Email: ' . $e->getMessage());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
         }
+        //     $email = \Config\Services::email();
+        //     $email->setTo($order['email']);
+        //     $email->setSubject('E-Tiket: ' . $event['name']);
+        //     $email->setMessage("$htmlContent<br><br>Terima kasih telah melakukan pemesanan tiket di sistem kami.");
+        //     $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
+        //     $email->send();
+        // } catch (\Exception $e) {
+        // }
 
         session()->remove('checkout_process');
         session()->remove('checkout_expire');

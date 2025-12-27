@@ -116,7 +116,7 @@
     </div>
 
     <!-- JUDUL SECTION -->
-    <div class="max-w-9xl my-10 p-2 text-center reveal-on-scroll">
+    <div class="max-w-9xl my-10 px-4 text-center reveal-on-scroll">
         <h1 class="text-3xl md:text-5xl font-bold text-black mb-4 lg:mb-6">
             Temukan Pengalaman <span class="bg-blue-secondary-normal text-white p-2.5 inline-block">Seru</span> Berikutnya
         </h1>
