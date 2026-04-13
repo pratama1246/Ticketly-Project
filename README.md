@@ -8,7 +8,7 @@
 
 ## 🚀 Live Demo
 
-📐 [Figma Design Prototype](https://www.figma.com) *(see `Tautan Figma Website.docx` in repo)*
+📐 [Figma Design Prototype]([https://www.figma.com](https://www.figma.com/design/Qp1WQ8TJfXHBEBxZN0Idjd/DIP2-Kel8?node-id=293-108&t=W92Gwo6TxklsQbPn-1 ) *(see `Tautan Figma Website.docx` in repo)*
 
 ---
 
