@@ -129,8 +129,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Pratama** — D3 Teknik Informatika, Politeknik Negeri Cilacap
-
 | No | Name | NIM |
 |----|------|-----|
 | 1 | Dzakira Raihanna | 240202103 |
