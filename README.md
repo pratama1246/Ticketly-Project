@@ -129,6 +129,17 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Pratama** — D4 Teknik Informatika, Politeknik Negeri Cilacap
+**Pratama** — D3 Teknik Informatika, Politeknik Negeri Cilacap
+
+| No | Name | NIM |
+|----|------|-----|
+| 1 | Dzakira Raihanna | 240202103 |
+| 2 | Pratama Putra Purwanto | 240202115 |
+| 3 | Panji Parisya Akmal Hoetomo | 240302121 |
+
+**Class:** Teknik Informatika 2D  
+**Course:** Pemrograman Web 2
+**Institution:** Politeknik Negeri Cilacap
+
 
 [![GitHub](https://img.shields.io/badge/GitHub-pratama1246-black?logo=github)](https://github.com/pratama1246)
