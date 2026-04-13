@@ -136,8 +136,10 @@ This project is licensed under the [MIT License](LICENSE).
 | 3 | Shoffya Jihan Priyastri | 240302121 |
 
 **Class:** Teknik Informatika 2D  
-**Course:** Pemrograman Web 2
+**Course:** Pemrograman Web 2   
 **Institution:** Politeknik Negeri Cilacap
+
+---
 
 
 [![GitHub](https://img.shields.io/badge/GitHub-pratama1246-black?logo=github)](https://github.com/pratama1246)
