@@ -37,7 +37,6 @@
 | Database | MySQL |
 | Frontend | HTML, CSS, JavaScript |
 | UI Design | Figma |
-| Deployment | Vercel |
 | Dependency Manager | Composer |
 
 ---
