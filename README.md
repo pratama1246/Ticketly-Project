@@ -135,7 +135,7 @@ This project is licensed under the [MIT License](LICENSE).
 |----|------|-----|
 | 1 | Dzakira Raihanna | 240202103 |
 | 2 | Pratama Putra Purwanto | 240202115 |
-| 3 | Panji Parisya Akmal Hoetomo | 240302121 |
+| 3 | Shoffya Jihan Priyastri | 240302121 |
 
 **Class:** Teknik Informatika 2D  
 **Course:** Pemrograman Web 2
