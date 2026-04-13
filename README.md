@@ -1,68 +1,135 @@
-# CodeIgniter 4 Application Starter
+# 🎟️ Ticketly
 
-## What is CodeIgniter?
+**Ticketly** is a web-based event ticketing platform built with CodeIgniter 4. The system enables users to browse events, purchase tickets, and manage bookings — while administrators can manage events, ticket quotas, and transaction data through a dedicated dashboard.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+> Built and deployed as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+---
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 🚀 Live Demo
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+📐 [Figma Design Prototype](https://www.figma.com) *(see `Tautan Figma Website.docx` in repo)*
 
-## Installation & updates
+---
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## ✨ Features
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+### 👤 User
+- Browse and view available events
+- Purchase tickets with quantity selection
+- View booking history and ticket status
+- User authentication (register, login, logout)
 
-## Setup
+### 🛠️ Admin
+- Manage events (create, edit, delete)
+- Monitor ticket sales and quotas
+- View and manage transaction records
+- Dashboard overview with key statistics
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---
 
-## Important Change with index.php
+## 🧰 Tech Stack
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+| Layer | Technology |
+|-------|-----------|
+| Framework | CodeIgniter 4 |
+| Language | PHP 8.1+ |
+| Database | MySQL |
+| Frontend | HTML, CSS, JavaScript |
+| UI Design | Figma |
+| Deployment | Vercel |
+| Dependency Manager | Composer |
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+---
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## 📁 Project Structure
 
-## Repository Management
+```
+ticketly-project/
+├── app/
+│   ├── Config/         # App configuration & routes
+│   ├── Controllers/    # Request handlers
+│   ├── Models/         # Database models
+│   └── Views/          # HTML templates
+├── public/             # Public assets (CSS, JS, images)
+├── writable/           # Logs & cache
+├── ticketly.sql        # Database schema & seed
+├── composer.json       # PHP dependencies
+└── package.json        # JS dependencies
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+---
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+## ⚙️ Installation
 
-## Server Requirements
+### Prerequisites
+- PHP >= 8.1
+- Composer
+- MySQL
+- Web server (Apache/Nginx) or PHP built-in server
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+### Steps
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/pratama1246/ticketly-project.git
+   cd ticketly-project
+   ```
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+3. **Setup environment**
+   ```bash
+   cp env .env
+   ```
+   Edit `.env` and configure:
+   ```
+   app.baseURL = 'http://localhost:8080/'
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+   database.default.hostname = localhost
+   database.default.database = ticketly
+   database.default.username = root
+   database.default.password = 
+   database.default.DBDriver = MySQLi
+   ```
+
+4. **Import database**
+   ```bash
+   # Create database first, then import:
+   mysql -u root -p ticketly < ticketly.sql
+   ```
+
+5. **Run the application**
+   ```bash
+   php spark serve
+   ```
+   Open browser at `http://localhost:8080`
+
+---
+
+## 🗄️ Database
+
+The database schema is available in `ticketly.sql`. Import it directly to your MySQL server to get the full table structure along with sample data.
+
+---
+
+## 🎨 UI/UX Design
+
+The interface was designed in Figma before development, following a design-first workflow. The prototype covers user flows for browsing events, ticket purchasing, and the admin dashboard.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Author
+
+**Pratama** — D4 Teknik Informatika, Politeknik Negeri Cilacap
+
+[![GitHub](https://img.shields.io/badge/GitHub-pratama1246-black?logo=github)](https://github.com/pratama1246)
