@@ -6,12 +6,6 @@
 
 ---
 
-## 🚀 Live Demo
-
-📐 [Figma Design Prototype](https://www.figma.com) *(see `Tautan Figma Website.docx` in repo)*
-
----
-
 ## ✨ Features
 
 ### 👤 User
