@@ -359,10 +359,6 @@ class CheckoutController extends BaseController
 
     public function confirmPayment($orderId)
     {   
-        if (!auth()->loggedIn()) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized']);
-        }
-
         if (!$this->request->isAJAX()) { return redirect()->to('/'); }
 
         $orderModel = new OrderModel();
@@ -374,8 +370,13 @@ class CheckoutController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Order not found']);
         }
 
-        if ($order['user_id'] !== null && (int) $order['user_id'] !== (int) auth()->id()) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Forbidden']);
+        if ($order['user_id'] !== null) {
+            if (!auth()->loggedIn()) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized']);
+            }
+            if ((int) $order['user_id'] !== (int) auth()->id()) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Forbidden']);
+            }
         }
 
         if ($order['status'] != 'completed') {
