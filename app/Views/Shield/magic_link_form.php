@@ -25,21 +25,6 @@
           <!-- RIGHT PANEL (THE FORM) -->
         <div class="w-full md:w-1/2">
 
-                <?php if (session('error') !== null) : ?>
-                    <div class="flex items-start sm:items-center p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert"><?= esc(session('error')) ?></div>
-                <?php elseif (session('errors') !== null) : ?>
-                    <div class="flex items-start sm:items-center p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
-                        <?php if (is_array(session('errors'))) : ?>
-                            <?php foreach (session('errors') as $error) : ?>
-                                <?= esc($error) ?>
-                                <br>
-                            <?php endforeach ?>
-                        <?php else : ?>
-                            <?= esc(session('errors')) ?>
-                        <?php endif ?>
-                    </div>
-                <?php endif ?>
-
             <form action="<?= url_to('magic-link') ?>" method="post" class="md:mt-14 space-y-5">
                 <?= csrf_field() ?>
 

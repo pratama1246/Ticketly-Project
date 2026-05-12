@@ -10,14 +10,6 @@
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
     <link rel="icon" href="<?= base_url('assets/favicon.png') ?>" type="image/png">
     <script src="<?= base_url('js/app.js') ?>" defer></script>
-    <script>
-        var CI_FLASH_MESSAGES = {
-            success: <?= json_encode(session()->getFlashdata('success') ?? session()->getFlashdata('message')) ?>,
-            error:   <?= json_encode(session()->getFlashdata('error')) ?>,
-            warning: <?= json_encode(session()->getFlashdata('warning')) ?>,
-            errors:  <?= json_encode(session()->getFlashdata('errors')) ?>
-        };
-    </script>
 </head>
 
 <body class="min-h-screen bg-yellow-bright-light text-gray-800">
