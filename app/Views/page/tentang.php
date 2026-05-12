@@ -1,3 +1,6 @@
+<?= $this->extend('layout/app') ?>
+<?= $this->section('content') ?>
+
 <main class="w-full pt-20 grow bg-yellow-bright-light">
     
     <div class="relative py-20 bg-blue-900 overflow-hidden">
@@ -47,3 +50,5 @@
         </div>
     </div>
 </main>
+
+<?= $this->endSection() ?>

@@ -1,3 +1,6 @@
+<?= $this->extend('layout/app') ?>
+<?= $this->section('content') ?>
+
 <main class="w-full pt-16 grow bg-yellow-accent-light min-h-screen overflow-x-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
         
@@ -116,3 +119,5 @@
         </div>
     </div>
 </main>
+
+<?= $this->endSection() ?>

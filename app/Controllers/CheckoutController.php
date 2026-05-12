@@ -89,9 +89,7 @@ class CheckoutController extends BaseController
         $data['step'] = 1;
         $data['time_left'] = $timeLeft;
 
-        echo view('layout/header_checkout', $data);
-        echo view('checkout_personal_info', $data); 
-        echo view('layout/footer');
+        return view('checkout_personal_info', $data);
     }
 
 
@@ -161,9 +159,7 @@ class CheckoutController extends BaseController
             'others'   => array_filter($methods, fn($m) => $m['type'] == 'other')
         ];
 
-        echo view('layout/header_checkout', $data);
-        echo view('checkout_payment_method', $data);
-        echo view('layout/footer');
+        return view('checkout_payment_method', $data);
     }
 
 
@@ -222,9 +218,7 @@ class CheckoutController extends BaseController
         $data['step'] = 3;
         $data['time_left'] = $timeLeft;
 
-        echo view('layout/header_checkout', $data);
-        echo view('checkout_review_order', $data);
-        echo view('layout/footer');
+        return view('checkout_review_order', $data);
     }
 
 
@@ -358,16 +352,16 @@ class CheckoutController extends BaseController
             'enable_floating_timer' => false
         ];
 
-        echo view('layout/header_checkout', $data);
-        echo view('checkout_pay', $data);
-        echo view('layout/footer');
+        return view('checkout_pay', $data);
     }
 
     // KONFIRMASI PEMBAYARAN & KIRIM E-TICKET
 
     public function confirmPayment($orderId)
     {   
-        error_reporting(0);
+        if (!auth()->loggedIn()) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized']);
+        }
 
         if (!$this->request->isAJAX()) { return redirect()->to('/'); }
 
@@ -375,13 +369,17 @@ class CheckoutController extends BaseController
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();
         
-        $order = $orderModel->find($orderId);
+        $order = $orderModel->find((int) $orderId);
         if (!$order) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Order not found']);
         }
 
+        if ($order['user_id'] !== null && (int) $order['user_id'] !== (int) auth()->id()) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Forbidden']);
+        }
+
         if ($order['status'] != 'completed') {
-            $orderModel->update($orderId, ['status' => 'completed']);
+            $orderModel->update((int) $orderId, ['status' => 'completed']);
         }
 
         $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
@@ -406,9 +404,10 @@ class CheckoutController extends BaseController
                 $seatLabel = $item['seat_row'] . '-' . $item['seat_number'];
             }
 
-            // Generate QR Unik per Tiket
+            // Generate QR Unik per Tiket (SVG - tidak butuh imagick extension)
             $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
-            $qrBase64 = base64_encode($qrCode->format('png')->size(250)->generate($qrContent));
+            $qrSvg = $qrCode->format('svg')->size(250)->generate($qrContent);
+            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
             $ticketList[] = [
                 'type' => $item['ticket_name'],
@@ -447,10 +446,8 @@ class CheckoutController extends BaseController
             $dompdf->render();
             $pdfOutput = $dompdf->output();
 
-                $email = \Config\Services::email();
-            // PENTING: Ganti ini dengan email yang SUDAH DIVERIFIKASI di Mailtrap Live
+            $email = \Config\Services::email();
             $email->setFrom('noreply@ticketly.mytamakikii.web.id', 'Ticketly Admin'); 
-            
             $email->setTo($order['email']);
             $email->setSubject('E-Tiket: ' . $event['name']);
             $email->setMessage("$htmlContent<br><br>Terima kasih...");
@@ -460,7 +457,6 @@ class CheckoutController extends BaseController
             if ($email->send()) {
                 // Sukses
             } else {
-                // INI PENTING: Biar kamu tau error aslinya apa!
                 log_message('error', 'Gagal kirim email: ' . print_r($email->printDebugger(['headers']), true));
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal kirim email. Cek logs.']);
             }
@@ -469,14 +465,6 @@ class CheckoutController extends BaseController
             log_message('error', 'Exception Email: ' . $e->getMessage());
             return $this->response->setJSON(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
         }
-        //     $email = \Config\Services::email();
-        //     $email->setTo($order['email']);
-        //     $email->setSubject('E-Tiket: ' . $event['name']);
-        //     $email->setMessage("$htmlContent<br><br>Terima kasih telah melakukan pemesanan tiket di sistem kami.");
-        //     $email->attach($pdfOutput, 'attachment', 'E-Tickets-' . $order['trx_id'] . '.pdf', 'application/pdf');
-        //     $email->send();
-        // } catch (\Exception $e) {
-        // }
 
         session()->remove('checkout_process');
         session()->remove('checkout_expire');

@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ticketly | Masuk atau Daftar</title>
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
-    <link rel="icon" href="<?= base_url('assets/favicon.png') ?>" type="image/png">
+    <link rel="icon" href="<?= base_url('assets/icon/password-shield.svg') ?>" type="image/svg+xml">
     <script src="<?= base_url('js/app.js') ?>" defer></script>
 </head>
 

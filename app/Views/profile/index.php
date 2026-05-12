@@ -1,3 +1,6 @@
+<?= $this->extend('layout/app') ?>
+<?= $this->section('content') ?>
+
 <main class="min-h-screen bg-yellow-accent-light pt-32 pb-12 font-sans text-gray-900">
     
     <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -26,3 +29,5 @@
         </div>
     </div>
 </main>
+
+<?= $this->endSection() ?>

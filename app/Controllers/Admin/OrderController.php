@@ -121,7 +121,8 @@ class OrderController extends BaseController
             elseif (!empty($item['seat_row'])) $seatLabel = $item['seat_row'] . '-' . $item['seat_number'];
 
             $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
-            $qrBase64 = base64_encode($qrCode->format('png')->size(150)->generate($qrContent));
+            $qrSvg = $qrCode->format('svg')->size(150)->generate($qrContent);
+            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
             $ticketList[] = [
                 'type' => $item['ticket_name'],

@@ -87,7 +87,7 @@
 
                     <div class="qr-section">
                         <p style="margin:0 0 10px; font-size:12px; color:#888;">Scan di pintu masuk</p>
-                        <img src="data:image/png;base64,<?= $ticket['qr'] ?>" alt="QR Code">
+                        <img src="<?= $ticket['qr'] ?>" alt="QR Code">
                         <p class="ticket-code"><?= esc($ticket['code']) ?></p>
                     </div>
                 </div>

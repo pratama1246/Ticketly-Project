@@ -1,3 +1,6 @@
+<?= $this->extend('layout/app') ?>
+<?= $this->section('content') ?>
+
 <main class="w-full pt-20 grow">
 
     <!-- CAROUSEL -->
@@ -145,7 +148,6 @@
         <div class="mt-6 flex justify-center gap-2">
 
         </div>
-    </div>
     </div>
 
     <!-- EVENT SECTIONS -->
@@ -587,3 +589,5 @@
     </section>
 
 </main>
+
+<?= $this->endSection() ?>

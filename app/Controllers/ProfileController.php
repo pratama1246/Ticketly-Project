@@ -11,36 +11,38 @@ class ProfileController extends BaseController
 {
     protected $userModel;
     protected $orderModel;
+    protected $orderItemsModel;
+    protected $eventModel;
+
     public function __construct()
     {
-        $this->userModel = new UserModel();
-        $this->orderModel = new OrderModel();
+        $this->userModel       = new UserModel();
+        $this->orderModel      = new OrderModel();
         $this->orderItemsModel = new OrderItemsModel();
-        $this->eventModel = new EventModel();
+        $this->eventModel      = new EventModel();
     }
 
     // Halaman Profil Saya
     public function index()
     {
         $data = [
-            'Title' => 'Profil Saya',
-            'user' => auth()->user()
+            'title' => 'Profil Saya',
+            'user'  => auth()->user()
         ];
 
-        echo view('layout/header', $data);
-        echo view('profile/index', $data);
-        echo view('layout/footer');
+        return view('profile/index', $data);
     }
 
     // Halaman Riwayat Transaksi
     public function transactions()
     {
         $userId = auth()->id();
-        $user = $this->userModel->find($userId);
+        $user   = $this->userModel->find($userId);
 
-        $orders = $this->orderModel->where('user_id', $userId)
-                                   ->orderBy('created_at', 'DESC')
-                                   ->findAll();
+        $orders = $this->orderModel
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
 
         $data = [
             'title'  => 'Riwayat Transaksi',
@@ -48,17 +50,18 @@ class ProfileController extends BaseController
             'orders' => $orders
         ];
 
-        echo view('layout/header', $data);
-        echo view('profile/history', $data);
-        echo view('layout/footer');
+        return view('profile/history', $data);
     }
 
     // Halaman Detail Transaksi
     public function detail($orderId)
     {
         $userId = auth()->id();
-        
-        $order = $this->orderModel->where('user_id', $userId)->find($orderId);
+
+        $order = $this->orderModel
+            ->where('user_id', $userId)
+            ->where('id', (int) $orderId)
+            ->first();
 
         if (!$order) {
             return redirect()->to('/profile/history')->with('error', 'Transaksi tidak ditemukan.');
@@ -66,40 +69,37 @@ class ProfileController extends BaseController
 
         $user = $this->userModel->find($userId);
 
-        $items = $this->orderItemsModel->select('order_items.*, ticket_types.name as ticket_name, events.name as event_name, seats.label, seats.seat_row, seats.seat_number')
+        $items = $this->orderItemsModel
+            ->select('order_items.*, ticket_types.name as ticket_name, events.name as event_name, seats.label, seats.seat_row, seats.seat_number')
             ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
             ->join('events', 'events.id = ticket_types.event_id', 'left')
             ->join('seats', 'seats.id = order_items.seat_id', 'left')
-            ->where('order_id', $orderId)
+            ->where('order_id', (int) $orderId)
             ->findAll();
 
         $data = [
-            'title' => 'Detail Transaksi #' . $order['trx_id'],
+            'title' => 'Detail Transaksi #' . esc($order['trx_id']),
             'user'  => $user,
             'order' => $order,
             'items' => $items
         ];
 
-        echo view('layout/header', $data);
-        echo view('profile/detail', $data);
-        echo view('layout/footer');
+        return view('profile/detail', $data);
     }
 
     // Edit Profil
     public function edit()
     {
         $data = [
-            'Title' => 'Edit Profil',
-            'user' => auth()->user(),
+            'title'      => 'Edit Profil',
+            'user'       => auth()->user(),
             'validation' => \Config\Services::validation()
         ];
 
-        echo view('layout/header', $data);
-        echo view('profile/edit', $data);
-        echo view('layout/footer');
+        return view('profile/edit', $data);
     }
 
-    // Update Profil
+    // Update Profil 
     public function update()
     {
         $user = auth()->user();
@@ -107,14 +107,18 @@ class ProfileController extends BaseController
 
         $rules = [
             'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$id]",
-            'email'    => "required|valid_email|is_unique[users.email,id,$id]",
+            'email'    => "required|valid_email|max_length[255]|is_unique[users.email,id,$id]",
             'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]'
         ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
 
         $fotoBaru = $user->foto;
         $fileFoto = $this->request->getFile('foto');
 
-        if ($fileFoto && $fileFoto->isValid()) {
+        if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             $fotoBaru = $fileFoto->getRandomName();
             $fileFoto->move(FCPATH . 'uploads/profile', $fotoBaru);
         }

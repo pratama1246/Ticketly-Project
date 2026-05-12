@@ -82,8 +82,12 @@
 
         $resumeLink = '/checkout/personal_info';
         
+        // Whitelist valid resume links untuk mencegah open redirect / XSS
+        $validPrefixes = ['/checkout/pay/', '/checkout/personal_info', '/checkout/payment_method', '/checkout/review_order'];
+        
         if ($hasPendingOrder) {
-            $resumeLink = '/checkout/pay/' . session()->get('pending_order_id');
+            $pendingId = (int) session()->get('pending_order_id');
+            $resumeLink = '/checkout/pay/' . $pendingId;
             
         } elseif ($hasCheckoutSession) {
             if (!empty($checkoutSession['payment_method'])) {
@@ -117,7 +121,7 @@
                         
                         <!-- Tombol Lanjutkan dan Batalkan -->
                         <div class="flex flex-col gap-3">
-                            <a href="<?= $resumeLink ?>" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-3 text-center shadow-lg transition-all">
+                            <a href="<?= esc($resumeLink) ?>" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-3 text-center shadow-lg transition-all">
                                 <?= $hasPendingOrder ? 'Bayar Sekarang' : 'Lanjutkan Pesanan' ?>
                             </a>
                             <a href="/checkout/cancel" class="w-full text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all">

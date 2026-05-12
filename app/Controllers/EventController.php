@@ -10,9 +10,9 @@ class EventController extends BaseController
     // Detail Event SLUG
     public function detail($slug = null)
     {
-        $eventModel = new EventModel();
+        $eventModel  = new EventModel();
         $ticketModel = new TicketTypeModel();
-        
+
         $event = $eventModel->where('slug', $slug)->first();
 
         if (!$event) {
@@ -20,22 +20,22 @@ class EventController extends BaseController
         }
 
         $tickets = $ticketModel->where('event_id', $event['id'])->findAll();
-        
+
         $totalStock = 0;
-        $totalSold = 0;
+        $totalSold  = 0;
 
         foreach ($tickets as $t) {
             $totalStock += $t['quantity_total'];
-            $totalSold += $t['quantity_sold'];
+            $totalSold  += $t['quantity_sold'];
         }
 
-        $now = new \DateTime();
+        $now       = new \DateTime();
         $eventDate = new \DateTime($event['event_date']);
-        
-        $remaining = $totalStock - $totalSold;
+
+        $remaining     = $totalStock - $totalSold;
         $percentageLeft = ($totalStock > 0) ? ($remaining / $totalStock) * 100 : 0;
 
-        // Status Berlangsung
+        // Status default: Sedang Berlangsung
         $status = [
             'text'        => 'Sedang Berlangsung',
             'color'       => 'bg-green-500 text-white',
@@ -47,7 +47,7 @@ class EventController extends BaseController
         if ($now > $eventDate) {
             $status = [
                 'text'        => 'Telah Berakhir',
-                'color'       => 'bg-gray-500 text-white', 
+                'color'       => 'bg-gray-500 text-white',
                 'icon'        => '<svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
                 'purchasable' => false
             ];
@@ -77,21 +77,19 @@ class EventController extends BaseController
             'title'  => $event['name']
         ];
 
-        return view('layout/header', $data)
-             . view('event_detail', $data)
-             . view('layout/footer');
+        return view('event_detail', $data);
     }
 
     // Pemilihan Tiket SLUG
     public function select($slug = null)
     {
-        $eventModel = new EventModel();
+        $eventModel  = new EventModel();
         $ticketModel = new TicketTypeModel();
 
         $event = $eventModel->where('slug', $slug)->first();
 
         if (!$event) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Event tidak ditemukan untuk: $slug");
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Event tidak ditemukan untuk: " . esc($slug));
         }
 
         $ticketTypes = $ticketModel->where('event_id', $event['id'])->findAll();
@@ -102,8 +100,6 @@ class EventController extends BaseController
             'ticket_types' => $ticketTypes
         ];
 
-        echo view('layout/header', $data);
-        echo view('select_tickets', $data);
-        echo view('layout/footer');
+        return view('select_tickets', $data);
     }
 }
