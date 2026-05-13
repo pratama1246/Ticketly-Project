@@ -14,7 +14,7 @@
 <body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
 
 <!-- NAVBAR -->
-<nav class="bg-yellow-bright-light/80 backdrop-blur-md fixed w-full z-[60] top-0 start-0 border-b border-default">
+<nav class="bg-yellow-bright-light/80 backdrop-blur-md fixed w-full z-60 top-0 start-0 border-b border-default">
   <div class="flex flex-wrap items-center justify-between mx-auto p-6">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
          <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
@@ -28,7 +28,7 @@
                         <img class="w-10 h-10 rounded-full" src="<?= base_url($foto) ?>" alt="user photo">
             </button>
 
-            <div class="z-[70] hidden bg-neutral-primary-medium/90 backdrop-blur-lg border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
+            <div class="z-70 hidden bg-neutral-primary-medium/90 backdrop-blur-lg border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
                 <div class="px-4 py-3 text-sm border-b border-default">
                     <span class="block text-heading font-medium"><?= auth()->user()->username?></span>
                     <span class="block text-body truncate"><?= auth()->user()->email ?></span>

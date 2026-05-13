@@ -22,7 +22,7 @@
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
 <!-- Navbar dan Stepper Checkout-->
-<header class="bg-yellow-bright-light border-b border-yellow-bright-light fixed top-0 left-0 w-full z-[60] shadow-sm transition-all duration-300">
+<header class="bg-yellow-bright-light border-b border-yellow-bright-light fixed top-0 left-0 w-full z-60 shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col xl:flex-row justify-between items-center py-4 gap-6">
                 
@@ -163,7 +163,7 @@
 
 
     <!-- Modal Timeout Checkout -->
-    <div id="timeout-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-gray-900/60 backdrop-blur-sm">
+    <div id="timeout-modal" tabindex="-1" class="overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-gray-900/60 backdrop-blur-sm">
         <div class="relative p-4 w-full max-w-md">
             <div class="relative bg-white rounded-lg shadow-xl border border-gray-200">
                 <div class="p-4 md:p-5 text-center">
