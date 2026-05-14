@@ -82,15 +82,13 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             'cors',
-            // 'honeypot',
-            // 'csrf',
+            'csrf' => ['except' => ['api/*']], // ← pindah ke sini, exclude semua /api/*
         ],
         'after' => [
             'toolbar',
             'cors',
         ],
     ];
-
     /**
      * List of filter aliases that works on a
      * particular HTTP method (GET, POST, etc.).

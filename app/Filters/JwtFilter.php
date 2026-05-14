@@ -22,13 +22,15 @@ class JwtFilter implements FilterInterface
                 ]);
         }
 
-        $token = substr($authHeader, 7); // Ambil token setelah "Bearer "
+        $token = substr($authHeader, 7);
 
         try {
             $decoded = decodeJWT($token);
-            // Simpan data user ke request, biar bisa diakses di controller
-            $request->userId  = $decoded->userId;
-            $request->email   = $decoded->email;
+
+            // Cara yang benar di CI4 — simpan ke $_SERVER
+            $_SERVER['JWT_USER_ID'] = $decoded->userId;
+            $_SERVER['JWT_EMAIL']   = $decoded->email;
+
         } catch (\Exception $e) {
             return service('response')
                 ->setStatusCode(401)
@@ -42,6 +44,6 @@ class JwtFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Tidak perlu apa-apa setelah request
+        //
     }
 }
