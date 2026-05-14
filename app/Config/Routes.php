@@ -82,6 +82,7 @@ $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
     $routes->get('history', 'ProfileController::transactions');
 });
 
+// API Routes
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
 
     // Auth
