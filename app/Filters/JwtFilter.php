@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Filters;
+
+use CodeIgniter\Filters\FilterInterface;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+
+class JwtFilter implements FilterInterface
+{
+    public function before(RequestInterface $request, $arguments = null)
+    {
+        $authHeader = $request->getHeaderLine('Authorization');
+
+        if (empty($authHeader) || !str_starts_with($authHeader, 'Bearer ')) {
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Token tidak ditemukan. Silakan login terlebih dahulu.',
+                    'data'    => null
+                ]);
+        }
+
+        $token = substr($authHeader, 7); // Ambil token setelah "Bearer "
+
+        try {
+            $decoded = decodeJWT($token);
+            // Simpan data user ke request, biar bisa diakses di controller
+            $request->userId  = $decoded->userId;
+            $request->email   = $decoded->email;
+        } catch (\Exception $e) {
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Token tidak valid atau sudah kadaluarsa.',
+                    'data'    => null
+                ]);
+        }
+    }
+
+    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
+    {
+        // Tidak perlu apa-apa setelah request
+    }
+}

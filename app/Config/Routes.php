@@ -81,3 +81,35 @@ $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
     $routes->get('transactions/(:num)', 'ProfileController::detail/$1');
     $routes->get('history', 'ProfileController::transactions');
 });
+
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+
+    // Auth
+    $routes->post('auth/login', 'AuthController::login');
+    $routes->post('auth/register', 'AuthController::register');
+
+    // Events — featured HARUS di atas (:segment)
+    $routes->get('events/featured', 'EventController::featured');
+    $routes->get('events', 'EventController::index');
+    $routes->get('events/(:segment)', 'EventController::show/$1');
+    $routes->get('events/(:num)/tickets', 'TicketController::index/$1');
+
+    // Checkout public
+    $routes->get('checkout/payment-methods', 'CheckoutController::paymentMethods');
+    $routes->post('checkout/calculate', 'CheckoutController::calculate');
+
+    // Protected
+    $routes->group('', ['filter' => 'jwt'], function ($routes) {
+        $routes->post('auth/logout', 'AuthController::logout');
+
+        $routes->get('profile', 'ProfileController::index');
+        $routes->post('profile/update', 'ProfileController::update');
+
+        $routes->get('orders', 'OrderController::index');
+        $routes->get('orders/(:num)', 'OrderController::detail/$1');
+
+        $routes->post('checkout/start', 'CheckoutController::start');
+        $routes->post('checkout/confirm', 'CheckoutController::confirm');
+        $routes->post('checkout/cancel', 'CheckoutController::cancel');
+    });
+});

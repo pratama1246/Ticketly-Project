@@ -30,18 +30,19 @@ class Filters extends BaseFilters
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'cors'          => Cors::class,
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
 
-         'session'       => \CodeIgniter\Shield\Filters\SessionAuth::class,
+        'session'       => \CodeIgniter\Shield\Filters\SessionAuth::class,
         'token'         => \CodeIgniter\Shield\Filters\TokenAuth::class,
         'chain'         => \CodeIgniter\Shield\Filters\ChainAuth::class,
         'auth-rates'    => \CodeIgniter\Shield\Filters\AuthRates::class,
 
         'auth'          => \CodeIgniter\Shield\Filters\ChainAuth::class,
 
+        'jwt'           => \App\Filters\JwtFilter::class,
+        'cors'          => \App\Filters\CorsFilter::class,
     ];
 
     /**
@@ -80,13 +81,13 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'cors',
             // 'honeypot',
             // 'csrf',
-            // 'invalidchars',
         ],
         'after' => [
-            // 'honeypot',
-            // 'secureheaders',
+            'toolbar',
+            'cors',
         ],
     ];
 

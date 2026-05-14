@@ -133,7 +133,7 @@
     </div>
 
 <!-- Modal Sections -->
-<div id="payment-confirm-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-gray-900/50 backdrop-blur-sm">
+<div id="payment-confirm-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-gray-900/50 backdrop-blur-sm">
     <div class="relative p-4 w-full max-w-md">
         <div class="relative bg-white rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
             <div class="p-5 text-center">
@@ -160,7 +160,7 @@
     </div>
 </div>
 
-<div id="payment-success-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-green-900/80 backdrop-blur-md">
+<div id="payment-success-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-green-900/80 backdrop-blur-md">
     <div class="relative p-4 w-full max-w-md">
         <div class="relative bg-white rounded-xl shadow-2xl overflow-hidden animate-bounce-in text-center p-8">
             <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -181,7 +181,7 @@
     </div>
 </div>
 
-<div id="payment-error-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-red-900/80 backdrop-blur-md">
+<div id="payment-error-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-red-900/80 backdrop-blur-md">
     <div class="relative p-4 w-full max-w-md">
         <div class="relative bg-white rounded-xl shadow-2xl overflow-hidden animate-bounce-in text-center p-8">
             <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">

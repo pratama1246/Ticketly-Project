@@ -93,7 +93,7 @@
 
 <div id="toast-container" class="fixed top-24 right-5 z-50 flex flex-col gap-2"></div>
 <!-- Modal Pop Up Cancel Checkout -->
-    <div id="cancel-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300">
+    <div id="cancel-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300">
     <div class="relative w-full max-w-md p-4">
         <div class="relative bg-white rounded-xl shadow-2xl border-t-4 border-red-500 overflow-hidden animate-fade-in-up">
             
