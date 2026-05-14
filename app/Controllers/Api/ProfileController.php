@@ -17,7 +17,7 @@ class ProfileController extends BaseController
     // GET /api/profile
     public function index()
     {
-        $userId = $this->request->userId; // dari JwtFilter
+        $userId = $_SERVER['JWT_USER_ID'] ?? null;
 
         $user = $this->userModel->find($userId);
 
@@ -46,7 +46,7 @@ class ProfileController extends BaseController
     // POST /api/profile/update
     public function update()
     {
-        $userId = $this->request->userId;
+        $userId = $_SERVER['JWT_USER_ID'] ?? null;
 
         $rules = [
             'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$userId]",

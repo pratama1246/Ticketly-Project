@@ -22,7 +22,7 @@ class OrderController extends BaseController
     // GET /api/orders
     public function index()
     {
-        $userId = $this->request->userId; // dari JwtFilter
+        $userId = $_SERVER['JWT_USER_ID'] ?? null; // dari JwtFilter
 
         $orders = $this->orderModel
             ->where('user_id', $userId)
@@ -43,7 +43,7 @@ class OrderController extends BaseController
     // GET /api/orders/:id
     public function detail($orderId = null)
     {
-        $userId = $this->request->userId;
+        $userId = $_SERVER['JWT_USER_ID'] ?? null; 
 
         $order = $this->orderModel
             ->where('user_id', $userId)

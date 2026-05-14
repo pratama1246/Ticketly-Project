@@ -127,7 +127,7 @@ class CheckoutController extends BaseController
     // Buat order baru & simpan ke DB
     public function start()
     {
-        $userId = $this->request->userId;
+        $userId = $_SERVER['JWT_USER_ID'] ?? null;
 
         $rules = [
             'first_name'      => 'required|string|max_length[100]',
@@ -309,7 +309,7 @@ class CheckoutController extends BaseController
     // POST /api/checkout/confirm  (protected)
     public function confirm()
     {
-        $userId  = $this->request->userId;
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
         $orderId = (int) $this->request->getPost('order_id');
 
         $orderModel = new OrderModel();
@@ -351,7 +351,7 @@ class CheckoutController extends BaseController
     // POST /api/checkout/cancel  (protected)
     public function cancel()
     {
-        $userId  = $this->request->userId;
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
         $orderId = (int) $this->request->getPost('order_id');
 
         $orderModel      = new OrderModel();
