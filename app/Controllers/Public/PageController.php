@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Public;
+
+use App\Controllers\BaseController;
 
 use App\Models\EventModel;
 

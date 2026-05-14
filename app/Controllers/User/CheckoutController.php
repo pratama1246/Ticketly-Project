@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\User;
+
+use App\Controllers\BaseController;
 
 use App\Models\EventModel;
 use App\Models\TicketTypeModel;
@@ -89,7 +91,7 @@ class CheckoutController extends BaseController
         $data['step'] = 1;
         $data['time_left'] = $timeLeft;
 
-        return view('checkout_personal_info', $data);
+        return view('user/checkout/personal_info', $data);
     }
 
 
@@ -97,14 +99,6 @@ class CheckoutController extends BaseController
 
     public function processPersonalInfo()
     {
-        $rules = [
-            'first_name'      => 'required|string|max_length[100]',
-            'email'           => 'required|valid_email|max_length[255]',
-            'phone_number'    => 'required|string|max_length[50]',
-            'identity_number' => 'required|string|max_length[100]',
-            'last_name'       => 'permit_empty|string|max_length[100]',
-            'birth_date'      => 'required|string',
-        ];
 
         $rawDate = $this->request->getPost('birth_date');
         $fixedDate = null;
@@ -118,7 +112,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        if (!$this->validate($rules)) {
+        if (!$this->validate('checkoutInfo')) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
@@ -159,7 +153,7 @@ class CheckoutController extends BaseController
             'others'   => array_filter($methods, fn($m) => $m['type'] == 'other')
         ];
 
-        return view('checkout_payment_method', $data);
+        return view('user/checkout/payment_method', $data);
     }
 
 
@@ -167,6 +161,7 @@ class CheckoutController extends BaseController
 
     public function processPayment()
     {
+
         $rules = [
             'payment_method' => 'required|string'
         ];
@@ -218,7 +213,7 @@ class CheckoutController extends BaseController
         $data['step'] = 3;
         $data['time_left'] = $timeLeft;
 
-        return view('checkout_review_order', $data);
+        return view('user/checkout/review_order', $data);
     }
 
 
@@ -352,7 +347,7 @@ class CheckoutController extends BaseController
             'enable_floating_timer' => false
         ];
 
-        return view('checkout_pay', $data);
+        return view('user/checkout/pay', $data);
     }
 
     // KONFIRMASI PEMBAYARAN & KIRIM E-TICKET

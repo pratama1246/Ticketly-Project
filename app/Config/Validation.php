@@ -41,4 +41,19 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
     // Rules
     // --------------------------------------------------------------------
+
+    public array $updateProfile = [
+        'username' => 'required|min_length[3]|max_length[30]|is_unique[users.username,id,{id}]',
+        'email'    => 'required|valid_email|max_length[255]|is_unique[users.email,id,{id}]',
+        'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]'
+    ];
+
+    public array $checkoutInfo = [
+        'first_name'      => 'required|string|max_length[100]',
+        'email'           => 'required|valid_email|max_length[255]',
+        'phone_number'    => 'required|string|max_length[50]',
+        'identity_number' => 'required|string|max_length[100]',
+        'last_name'       => 'permit_empty|string|max_length[100]',
+        'birth_date'      => 'required|string',
+    ];
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Public;
+
+use App\Controllers\BaseController;
 
 use App\Models\EventModel;
 use App\Models\TicketTypeModel;
@@ -77,7 +79,7 @@ class EventController extends BaseController
             'title'  => $event['name']
         ];
 
-        return view('event_detail', $data);
+        return view('public/event_detail', $data);
     }
 
     // Pemilihan Tiket SLUG
@@ -100,6 +102,6 @@ class EventController extends BaseController
             'ticket_types' => $ticketTypes
         ];
 
-        return view('select_tickets', $data);
+        return view('public/select_tickets', $data);
     }
 }

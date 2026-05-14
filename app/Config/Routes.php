@@ -7,37 +7,38 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 
-$routes->get('/', 'Home::index');
+// ==============================================================================
+// 1. RUTE PUBLIK (Namespace App\Controllers\Public)
+// ==============================================================================
+$routes->group('', ['namespace' => 'App\Controllers\Public'], static function ($routes) {
+    $routes->get('/', 'Home::index');
+    $routes->get('/tentang', 'PageController::tentang');
+    $routes->get('/concerts', 'PageController::concerts');
+    $routes->get('/festivals', 'PageController::festivals');
+    $routes->get('/events', 'PageController::events');
 
-// Halaman Statis & Listing
-$routes->get('/tentang', 'PageController::tentang');
-$routes->get('/concerts', 'PageController::concerts');
-$routes->get('/festivals', 'PageController::festivals');
-$routes->get('/events', 'PageController::events');
-
-// 2. Rute Event
-$routes->get('/event/(:segment)', 'EventController::detail/$1');
-$routes->get('/event/(:segment)/select', 'EventController::select/$1');
-
-// 3. Rute Proses Checkout
-$routes->post('/checkout/start', 'CheckoutController::start');
-
-// Grup Checkout
-$routes->group('checkout', static function ($routes) {
-    $routes->get('personal_info', 'CheckoutController::personalInfo');
-    $routes->post('process_personal_info', 'CheckoutController::processPersonalInfo');
-
-    $routes->get('payment_method', 'CheckoutController::paymentMethod');
-    $routes->post('process_payment', 'CheckoutController::processPayment');
-
-    $routes->get('review_order', 'CheckoutController::reviewOrder');
-    $routes->post('create_order', 'CheckoutController::createOrder');
+    $routes->get('/event/(:segment)', 'EventController::detail/$1');
+    $routes->get('/event/(:segment)/select', 'EventController::select/$1');
 });
 
-// 4. Rute Status Pesanan
-$routes->get('/checkout/cancel', 'CheckoutController::cancel');
-$routes->get('/checkout/pay/(:num)', 'CheckoutController::pay/$1');
-$routes->post('/checkout/confirm/(:num)', 'CheckoutController::confirmPayment/$1');
+// ==============================================================================
+// 2. RUTE USER & CHECKOUT (Namespace App\Controllers\User)
+// ==============================================================================
+$routes->group('', ['namespace' => 'App\Controllers\User'], static function ($routes) {
+    $routes->post('/checkout/start', 'CheckoutController::start');
+
+    $routes->group('checkout', static function ($routes) {
+        $routes->get('personal_info', 'CheckoutController::personalInfo');
+        $routes->post('process_personal_info', 'CheckoutController::processPersonalInfo');
+        $routes->get('payment_method', 'CheckoutController::paymentMethod');
+        $routes->post('process_payment', 'CheckoutController::processPayment');
+        $routes->get('review_order', 'CheckoutController::reviewOrder');
+        $routes->post('create_order', 'CheckoutController::createOrder');
+        $routes->get('cancel', 'CheckoutController::cancel');
+        $routes->get('pay/(:num)', 'CheckoutController::pay/$1');
+        $routes->post('confirm/(:num)', 'CheckoutController::confirmPayment/$1');
+    });
+});
 
 // 5. Rute Admin
 $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
@@ -73,8 +74,8 @@ $routes->group('admin', ['filter' => 'group:admin'], static function ($routes) {
 // 6. Auth Routes
 service('auth')->routes($routes);
 
-// 7. Rute Profil Pengguna
-$routes->group('profile', ['filter' => 'auth'], static function ($routes) {
+// 7. Rute Profil Pengguna (Namespace App\Controllers\User)
+$routes->group('profile', ['namespace' => 'App\Controllers\User', 'filter' => 'session'], static function ($routes) {
     $routes->get('/', 'ProfileController::index');
     $routes->get('edit', 'ProfileController::edit');
     $routes->post('update', 'ProfileController::update');

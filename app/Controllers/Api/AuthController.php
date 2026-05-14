@@ -4,7 +4,6 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
-use CodeIgniter\Shield\Models\UserModel as ShieldUserModel;
 
 class AuthController extends BaseController
 {
@@ -27,15 +26,16 @@ class AuthController extends BaseController
         $email    = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        // Pakai Shield untuk autentikasi
-        $authenticator = auth()->getAuthenticator();
+        // Cari user di auth_identities langsung
+        // Bypass Shield session biar gak bentrok
+        $db       = \Config\Database::connect();
+        $identity = $db->table('auth_identities')
+            ->where('type', 'email_password')
+            ->where('secret', $email)
+            ->get()
+            ->getRowArray();
 
-        $result = $authenticator->attempt([
-            'email'    => $email,
-            'password' => $password
-        ]);
-
-        if (!$result->isOK()) {
+        if (!$identity) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status'  => 'error',
                 'message' => 'Email atau password salah.',
@@ -43,17 +43,32 @@ class AuthController extends BaseController
             ]);
         }
 
-        $shieldUser = auth()->user();
+        // Verifikasi password pakai password_verify
+        // Shield pakai bcrypt standar, kompatibel
+        if (!password_verify($password, $identity['secret2'])) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Email atau password salah.',
+                'data'    => null
+            ]);
+        }
 
-        // Ambil data tambahan dari tabel users kita sendiri
-        $userModel   = new UserModel();
-        $userProfile = $userModel->find($shieldUser->id);
+        $userId = $identity['user_id'];
 
-        // Generate JWT token
-        $token = createJWT($shieldUser->id, $shieldUser->email);
+        // Ambil data user dari tabel users
+        $userModel = new UserModel();
+        $user      = $userModel->find($userId);
 
-        // Logout dari session Shield (karena kita pakai JWT, bukan session)
-        auth()->logout();
+        if (!$user) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'status'  => 'error',
+                'message' => 'User tidak ditemukan.',
+                'data'    => null
+            ]);
+        }
+
+        // Generate JWT
+        $token = createJWT($userId, $email);
 
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
@@ -61,10 +76,12 @@ class AuthController extends BaseController
             'data'    => [
                 'token' => $token,
                 'user'  => [
-                    'id'       => $shieldUser->id,
-                    'username' => $userProfile['username'] ?? $shieldUser->username,
-                    'email'    => $shieldUser->email,
-                    'foto'     => $userProfile['foto'] ?? null,
+                    'id'       => $user['id'],
+                    'username' => $user['username'],
+                    'email'    => $user['email'],
+                    'foto'     => $user['foto']
+                        ? base_url('uploads/profile/' . $user['foto'])
+                        : null,
                 ]
             ]
         ]);
@@ -87,7 +104,8 @@ class AuthController extends BaseController
             ]);
         }
 
-        $shieldUsers = new ShieldUserModel();
+        // Pakai ShieldUserModel tapi tanpa attempt/session
+        $shieldUsers = new \CodeIgniter\Shield\Models\UserModel();
 
         $user = new \CodeIgniter\Shield\Entities\User([
             'username' => $this->request->getPost('username'),
@@ -101,6 +119,7 @@ class AuthController extends BaseController
                 'email' => $this->request->getPost('email')
             ]);
             $newUser->addGroup('user');
+
         } catch (\Exception $e) {
             return $this->response->setStatusCode(500)->setJSON([
                 'status'  => 'error',
@@ -116,12 +135,10 @@ class AuthController extends BaseController
         ]);
     }
 
-    // POST /api/auth/logout  (protected)
+    // POST /api/auth/logout
     public function logout()
     {
-        // JWT stateless, jadi logout cukup dari sisi Flutter
-        // (hapus token dari local storage)
-        // Endpoint ini tetap disediakan untuk good practice
+        // JWT stateless — Flutter tinggal hapus token dari storage
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
             'message' => 'Logout berhasil.',

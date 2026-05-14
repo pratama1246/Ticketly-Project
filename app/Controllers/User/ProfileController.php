@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\User;
+
+use App\Controllers\BaseController;
 
 use App\Models\UserModel;
 use App\Models\OrderModel;
@@ -30,7 +32,7 @@ class ProfileController extends BaseController
             'user'  => auth()->user()
         ];
 
-        return view('profile/index', $data);
+        return view('user/profile/index', $data);
     }
 
     // Halaman Riwayat Transaksi
@@ -50,7 +52,7 @@ class ProfileController extends BaseController
             'orders' => $orders
         ];
 
-        return view('profile/history', $data);
+        return view('user/profile/history', $data);
     }
 
     // Halaman Detail Transaksi
@@ -84,7 +86,7 @@ class ProfileController extends BaseController
             'items' => $items
         ];
 
-        return view('profile/detail', $data);
+        return view('user/profile/detail', $data);
     }
 
     // Edit Profil
@@ -96,7 +98,7 @@ class ProfileController extends BaseController
             'validation' => \Config\Services::validation()
         ];
 
-        return view('profile/edit', $data);
+        return view('user/profile/edit', $data);
     }
 
     // Update Profil 
@@ -105,13 +107,8 @@ class ProfileController extends BaseController
         $user = auth()->user();
         $id   = $user->id;
 
-        $rules = [
-            'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$id]",
-            'email'    => "required|valid_email|max_length[255]|is_unique[users.email,id,$id]",
-            'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]'
-        ];
 
-        if (!$this->validate($rules)) {
+        if (!$this->validateData(array_merge($this->request->getPost(), ['id' => $id]), 'updateProfile')) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
