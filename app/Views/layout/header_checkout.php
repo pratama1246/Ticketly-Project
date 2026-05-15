@@ -163,7 +163,7 @@
 
 
     <!-- Modal Timeout Checkout -->
-    <div id="timeout-modal" tabindex="-1" class="overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-gray-900/60 backdrop-blur-sm">
+    <div id="timeout-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-gray-900/60 backdrop-blur-sm">
         <div class="relative p-4 w-full max-w-md">
             <div class="relative bg-white rounded-lg shadow-xl border border-gray-200">
                 <div class="p-4 md:p-5 text-center">

@@ -356,6 +356,8 @@ class CheckoutController extends BaseController
     {   
         if (!$this->request->isAJAX()) { return redirect()->to('/'); }
 
+        $this->response->setHeader('Content-Type', 'application/json');
+
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
         $eventModel = new EventModel();

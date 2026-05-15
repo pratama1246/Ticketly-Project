@@ -54,7 +54,7 @@ class Cookie extends BaseConfig
      *
      * Cookie will only be set if a secure HTTPS connection exists.
      */
-    public bool $secure = true;
+    public bool $secure = false;
 
     /**
      * --------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class Cookie extends BaseConfig
      *
      * @var ''|'Lax'|'None'|'Strict'
      */
-    public string $samesite = 'None';
+    public string $samesite = 'Lax';
 
     /**
      * --------------------------------------------------------------------------

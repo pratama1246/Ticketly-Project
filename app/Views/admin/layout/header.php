@@ -6,6 +6,7 @@
     <title><?= esc($title ?? 'Admin Panel') ?> - Ticketly</title>
     <link rel="icon" href="<?= base_url('assets/icon/password-shield.svg') ?>" type="image/svg+xml">
     <?= csrf_meta() ?>
+    <meta name="X-CSRF-TOKEN" content="<?= csrf_hash() ?>">
     <link href="<?= base_url('output.css') ?>" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/o9x8q1gyscpyjvhjh1e6iurf4bdsr8lip0piuc59rsr5e85v/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <script src="<?= base_url('flowbite.min.js') ?>"></script>

@@ -448,9 +448,26 @@ function toggleAdminModal(show, title = '', message = '', onConfirm = null) {
     }
 }
 
+function getAdminCsrfToken() {
+    // Coba dari hidden input dulu (checkout pages)
+    const hidden = document.getElementById('csrf_security');
+    if (hidden) return hidden.value;
+    
+    // Fallback dari meta tag (admin pages)
+    const meta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    return meta ? meta.content : '';
+}
+
+// === UPDATE deleteEvent ===
 window.deleteEvent = function(id) {
     toggleAdminModal(true, 'Hapus Event Ini?', 'Data yang dihapus tidak bisa dikembalikan.', () => {
-        fetch('/admin/events/' + id, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+        fetch('/admin/events/' + id, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getAdminCsrfToken()  // ← TAMBAH INI
+            }
+        })
         .then(r => r.json()).then(d => {
             if (d.status === 'success') {
                 const row = document.getElementById(`row-event-${id}`);
@@ -461,9 +478,16 @@ window.deleteEvent = function(id) {
     });
 };
 
+// === UPDATE deleteTicket ===
 window.deleteTicket = function(eventId, ticketId) {
     toggleAdminModal(true, 'Hapus Tiket Ini?', 'Data penjualan terkait mungkin terpengaruh.', () => {
-        fetch(`/admin/events/${eventId}/tickets/${ticketId}`, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+        fetch(`/admin/events/${eventId}/tickets/${ticketId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getAdminCsrfToken()  // ← TAMBAH INI
+            }
+        })
         .then(r => r.json()).then(d => {
             if(d.status === 'success') {
                 const row = document.getElementById(`row-ticket-${ticketId}`);
@@ -715,6 +739,10 @@ window.processPaymentAjax = function(orderId) {
         body: JSON.stringify(postData)
     })
     .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server error (kemungkinan CSRF expired). Silakan coba lagi.');
+        }
         if (!response.ok) {
             throw new Error('Server menolak request (Status: ' + response.status + ')');
         }
@@ -766,6 +794,18 @@ window.processPaymentAjax = function(orderId) {
         }
         if(btnText) btnText.textContent = 'Ya, Sudah Bayar';
         if(btnSpinner) btnSpinner.classList.add('hidden');
+
+        fetch('/checkout/pay/<?= $order["id"] ?>', { method: 'GET', credentials: 'include' })
+        .then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newCsrf = doc.getElementById('csrf_security');
+            const currentCsrf = document.getElementById('csrf_security');
+            if (newCsrf && currentCsrf) {
+                currentCsrf.value = newCsrf.value;
+            }
+        }).catch(() => {}); // silent fail ok
     }
 }
 
