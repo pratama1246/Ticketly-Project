@@ -26,17 +26,33 @@ class JwtFilter implements FilterInterface
 
         try {
             $decoded = decodeJWT($token);
-
-            // Cara yang benar di CI4 — simpan ke $_SERVER
             $_SERVER['JWT_USER_ID'] = $decoded->userId;
             $_SERVER['JWT_EMAIL']   = $decoded->email;
+
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Token sudah kadaluarsa. Silakan login ulang.',
+                    'data'    => null
+                ]);
+
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Token tidak valid.',
+                    'data'    => null
+                ]);
 
         } catch (\Exception $e) {
             return service('response')
                 ->setStatusCode(401)
                 ->setJSON([
                     'status'  => 'error',
-                    'message' => 'Token tidak valid atau sudah kadaluarsa.',
+                    'message' => 'Autentikasi gagal. Silakan login ulang.',
                     'data'    => null
                 ]);
         }

@@ -23,8 +23,8 @@ class AuthController extends BaseController
             ]);
         }
 
-        $email    = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+        $email    = $this->request->getVar('email');
+        $password = $this->request->getVar('password');
 
         // Cari user di auth_identities langsung
         // Bypass Shield session biar gak bentrok
@@ -108,9 +108,9 @@ class AuthController extends BaseController
         $shieldUsers = new \CodeIgniter\Shield\Models\UserModel();
 
         $user = new \CodeIgniter\Shield\Entities\User([
-            'username' => $this->request->getPost('username'),
-            'email'    => $this->request->getPost('email'),
-            'password' => $this->request->getPost('password'),
+            'username' => $this->request->getVar('username'),
+            'email'    => $this->request->getVar('email'),
+            'password' => $this->request->getVar('password'),
         ]);
 
         try {
@@ -119,6 +119,16 @@ class AuthController extends BaseController
                 'email' => $this->request->getPost('email')
             ]);
             $newUser->addGroup('user');
+        
+        if (!$newUser) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status'  => 'error',
+                'message' => 'Gagal membuat akun. Silakan coba lagi.',
+                'data'    => null
+            ]);
+        }
+
+        $newUser->addGroup('user');
 
         } catch (\Exception $e) {
             return $this->response->setStatusCode(500)->setJSON([

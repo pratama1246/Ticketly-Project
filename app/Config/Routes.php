@@ -91,10 +91,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->post('auth/register', 'AuthController::register');
 
     // Events — featured HARUS di atas (:segment)
-    $routes->get('events/featured', 'EventController::featured');
+    $routes->get('events/featured', 'EventController::featured');        // paling atas
+    $routes->get('events/(:num)/tickets', 'TicketController::index/$1'); // ← naik ke sini
     $routes->get('events', 'EventController::index');
     $routes->get('events/(:segment)', 'EventController::show/$1');
-    $routes->get('events/(:num)/tickets', 'TicketController::index/$1');
 
     // Checkout public
     $routes->get('checkout/payment-methods', 'CheckoutController::paymentMethods');

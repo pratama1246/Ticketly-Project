@@ -129,6 +129,14 @@ class CheckoutController extends BaseController
     {
         $userId = $_SERVER['JWT_USER_ID'] ?? null;
 
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
+
         $rules = [
             'first_name'      => 'required|string|max_length[100]',
             'email'           => 'required|valid_email',
@@ -146,7 +154,7 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        $ticketsRaw = $this->request->getPost('tickets');
+        $ticketsRaw = $this->request->getVar('tickets');
 
         // Flutter kirim sebagai JSON string — decode dulu
         if (is_string($ticketsRaw)) {
@@ -224,13 +232,13 @@ class CheckoutController extends BaseController
         $orderModel->insert([
             'user_id'         => $userId,
             'trx_id'          => $trxId,
-            'first_name'      => $this->request->getPost('first_name'),
-            'last_name'       => $this->request->getPost('last_name') ?? '',
-            'email'           => $this->request->getPost('email'),
-            'phone_number'    => $this->request->getPost('phone_number'),
-            'identity_number' => $this->request->getPost('identity_number'),
-            'birth_date'      => $this->request->getPost('birth_date') ?? null,
-            'payment_method'  => $this->request->getPost('payment_method'),
+            'first_name'      => $this->request->getVar('first_name'),
+            'last_name'       => $this->request->getVar('last_name') ?? '',
+            'email'           => $this->request->getVar('email'),
+            'phone_number'    => $this->request->getVar('phone_number'),
+            'identity_number' => $this->request->getVar('identity_number'),
+            'birth_date'      => $this->request->getVar('birth_date') ?? null,
+            'payment_method'  => $this->request->getVar('payment_method'),
             'order_total'     => $grandTotal,
             'status'          => 'Pending',
         ]);
@@ -310,7 +318,16 @@ class CheckoutController extends BaseController
     public function confirm()
     {
         $userId  = $_SERVER['JWT_USER_ID'] ?? null;
-        $orderId = (int) $this->request->getPost('order_id');
+
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
+
+        $orderId = (int) $this->request->getVar('order_id');
 
         $orderModel = new OrderModel();
         $order      = $orderModel->where('user_id', $userId)
@@ -352,7 +369,16 @@ class CheckoutController extends BaseController
     public function cancel()
     {
         $userId  = $_SERVER['JWT_USER_ID'] ?? null;
-        $orderId = (int) $this->request->getPost('order_id');
+        
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
+
+        $orderId = (int) $this->request->getVar('order_id');
 
         $orderModel      = new OrderModel();
         $orderItemsModel = new OrderItemsModel();

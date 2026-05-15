@@ -17,7 +17,15 @@ class ProfileController extends BaseController
     // GET /api/profile
     public function index()
     {
-        $userId = $_SERVER['JWT_USER_ID'] ?? null;
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
+        
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
 
         $user = $this->userModel->find($userId);
 
@@ -46,7 +54,15 @@ class ProfileController extends BaseController
     // POST /api/profile/update
     public function update()
     {
-        $userId = $_SERVER['JWT_USER_ID'] ?? null;
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
+        
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
 
         $rules = [
             'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$userId]",
@@ -79,8 +95,8 @@ class ProfileController extends BaseController
         }
 
         $this->userModel->update($userId, [
-            'username' => $this->request->getPost('username'),
-            'email'    => $this->request->getPost('email'),
+            'username' => $this->request->getVar('username'),
+            'email'    => $this->request->getVar('email'),
             'foto'     => $fotoName,
         ]);
 

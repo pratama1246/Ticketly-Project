@@ -22,7 +22,15 @@ class OrderController extends BaseController
     // GET /api/orders
     public function index()
     {
-        $userId = $_SERVER['JWT_USER_ID'] ?? null; // dari JwtFilter
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
+        
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
 
         $orders = $this->orderModel
             ->where('user_id', $userId)
@@ -43,7 +51,15 @@ class OrderController extends BaseController
     // GET /api/orders/:id
     public function detail($orderId = null)
     {
-        $userId = $_SERVER['JWT_USER_ID'] ?? null; 
+        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
+        
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unauthorized. Silakan login terlebih dahulu.',
+                'data'    => null
+            ]);
+        }
 
         $order = $this->orderModel
             ->where('user_id', $userId)
