@@ -101,7 +101,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->post('checkout/calculate', 'CheckoutController::calculate');
 
     // Protected
-    $routes->group('', ['filter' => 'jwt'], function ($routes) {
+    $routes->group('', ['filter' => 'api_jwt'], function ($routes) {
         $routes->post('auth/logout', 'AuthController::logout');
 
         $routes->get('profile', 'ProfileController::index');

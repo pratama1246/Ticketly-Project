@@ -26,12 +26,10 @@ class AuthController extends BaseController
         $email    = $this->request->getVar('email');
         $password = $this->request->getVar('password');
 
-        // Cari user di auth_identities langsung
-        // Bypass Shield session biar gak bentrok
         $db       = \Config\Database::connect();
         $identity = $db->table('auth_identities')
             ->where('type', 'email_password')
-            ->where('secret', $email)
+            ->where('secret', $email, true)
             ->get()
             ->getRowArray();
 
@@ -43,8 +41,6 @@ class AuthController extends BaseController
             ]);
         }
 
-        // Verifikasi password pakai password_verify
-        // Shield pakai bcrypt standar, kompatibel
         if (!password_verify($password, $identity['secret2'])) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status'  => 'error',
@@ -55,7 +51,6 @@ class AuthController extends BaseController
 
         $userId = $identity['user_id'];
 
-        // Ambil data user dari tabel users
         $userModel = new UserModel();
         $user      = $userModel->find($userId);
 
@@ -67,7 +62,6 @@ class AuthController extends BaseController
             ]);
         }
 
-        // Generate JWT
         $token = createJWT($userId, $email);
 
         return $this->response->setStatusCode(200)->setJSON([
@@ -78,7 +72,7 @@ class AuthController extends BaseController
                 'user'  => [
                     'id'       => $user['id'],
                     'username' => $user['username'],
-                    'email'    => $user['email'],
+                    'email'    => $email,
                     'foto'     => $user['foto']
                         ? base_url('uploads/profile/' . $user['foto'])
                         : null,
@@ -104,7 +98,6 @@ class AuthController extends BaseController
             ]);
         }
 
-        // Pakai ShieldUserModel tapi tanpa attempt/session
         $shieldUsers = new \CodeIgniter\Shield\Models\UserModel();
 
         $user = new \CodeIgniter\Shield\Entities\User([
@@ -115,20 +108,32 @@ class AuthController extends BaseController
 
         try {
             $shieldUsers->save($user);
-            $newUser = $shieldUsers->findByCredentials([
-                'email' => $this->request->getPost('email')
-            ]);
-            $newUser->addGroup('user');
-        
-        if (!$newUser) {
-            return $this->response->setStatusCode(500)->setJSON([
-                'status'  => 'error',
-                'message' => 'Gagal membuat akun. Silakan coba lagi.',
-                'data'    => null
-            ]);
-        }
 
-        $newUser->addGroup('user');
+            // $newUser = $shieldUsers->findByCredentials([
+            // 'email' => $this->request->getPost('email')
+            // ]);
+
+            $userId = $shieldUsers->getInsertID();
+            $newUser = $shieldUsers->find($userId);
+
+            if (!$newUser) {
+                return $this->response->setStatusCode(500)->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Gagal membuat akun. Silakan coba lagi.',
+                    'data'    => null
+                ]);
+            }
+
+            // Force-activate supaya user langsung bisa login tanpa email verification.
+            // Diperlukan karena EmailActivator dinonaktifkan di Auth.php.
+            // Tanpa activate(), user inactive dan tidak bisa login via Shield session
+            // maupun findByCredentials() pada call berikutnya.
+            // Saat production: hapus baris activate() ini
+            $newUser->activate();
+            $shieldUsers->save($newUser);
+
+            // addGroup satu kali saja setelah activate
+            $newUser->addGroup('user');
 
         } catch (\Exception $e) {
             return $this->response->setStatusCode(500)->setJSON([
@@ -148,7 +153,8 @@ class AuthController extends BaseController
     // POST /api/auth/logout
     public function logout()
     {
-        // JWT stateless — Flutter tinggal hapus token dari storage
+        // JWT stateless — invalidasi token dilakukan di sisi Flutter (hapus dari storage)
+        // Tidak call Shield logout karena Shield session tidak dipakai untuk API
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
             'message' => 'Logout berhasil.',

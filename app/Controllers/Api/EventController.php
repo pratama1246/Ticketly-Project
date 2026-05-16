@@ -16,10 +16,18 @@ class EventController extends BaseController
     }
 
     // GET /api/events
+    // Query params: ?category=concert&q=keyword&page=1&limit=10
     public function index()
     {
         $category = $this->request->getGet('category');
         $keyword  = $this->request->getGet('q');
+        $page     = (int) ($this->request->getGet('page') ?? 1);
+        $limit    = (int) ($this->request->getGet('limit') ?? 10);
+
+        // Clamp supaya tidak abuse
+        $limit  = max(1, min($limit, 50));
+        $page   = max(1, $page);
+        $offset = ($page - 1) * $limit;
 
         $builder = $this->eventModel->where('status', 'published');
 
@@ -34,9 +42,13 @@ class EventController extends BaseController
                 ->groupEnd();
         }
 
-        $events = $builder->orderBy('event_date', 'ASC')->findAll();
+        // Hitung total sebelum limit/offset — false agar query tidak direset
+        $total  = $builder->countAllResults(false);
 
-        // Format data biar rapi di Flutter
+        $events = $builder->orderBy('event_date', 'ASC')
+                          ->limit($limit, $offset)
+                          ->findAll();
+
         $formatted = array_map(function ($event) {
             return $this->formatEvent($event);
         }, $events);
@@ -44,7 +56,13 @@ class EventController extends BaseController
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
             'message' => 'Data event berhasil diambil.',
-            'data'    => $formatted
+            'data'    => $formatted,   // tetap flat array, konsisten dengan endpoint list lain
+            'meta'    => [             // sidecar — hanya muncul di endpoint paginatable
+                'total'        => $total,
+                'per_page'     => $limit,
+                'current_page' => $page,
+                'last_page'    => (int) ceil($total / $limit),
+            ]
         ]);
     }
 
@@ -64,11 +82,9 @@ class EventController extends BaseController
             ]);
         }
 
-        // Ambil tiket sekalian
         $ticketModel = new TicketTypeModel();
         $tickets     = $ticketModel->where('event_id', $event['id'])->findAll();
 
-        // Hitung status event
         $totalStock = 0;
         $totalSold  = 0;
         foreach ($tickets as $t) {
@@ -93,16 +109,16 @@ class EventController extends BaseController
 
         $formattedTickets = array_map(function ($t) {
             return [
-                'id'             => $t['id'],
-                'name'           => $t['name'],
-                'ticket_date'    => $t['ticket_date'],
-                'ticket_category'=> $t['ticket_category'],
-                'price'          => (int) $t['price'],
-                'ui_color'       => $t['ui_color'],
-                'description'    => $t['description'],
-                'quantity_total' => (int) $t['quantity_total'],
-                'quantity_sold'  => (int) $t['quantity_sold'],
-                'quantity_left'  => (int) $t['quantity_total'] - (int) $t['quantity_sold'],
+                'id'              => $t['id'],
+                'name'            => $t['name'],
+                'ticket_date'     => $t['ticket_date'],
+                'ticket_category' => $t['ticket_category'],
+                'price'           => (int) $t['price'],
+                'ui_color'        => $t['ui_color'],
+                'description'     => $t['description'],
+                'quantity_total'  => (int) $t['quantity_total'],
+                'quantity_sold'   => (int) $t['quantity_sold'],
+                'quantity_left'   => (int) $t['quantity_total'] - (int) $t['quantity_sold'],
             ];
         }, $tickets);
 
@@ -111,14 +127,14 @@ class EventController extends BaseController
             'message' => 'Detail event berhasil diambil.',
             'data'    => [
                 ...$this->formatEvent($event),
-                'description' => $event['description'],
+                'description'   => $event['description'],
                 'seatmap_image' => $event['seatmap_image']
                     ? base_url($event['seatmap_image'])
                     : null,
-                'event_status' => $eventStatus,
-                'total_stock'  => $totalStock,
-                'total_sold'   => $totalSold,
-                'tickets'      => $formattedTickets,
+                'event_status'  => $eventStatus,
+                'total_stock'   => $totalStock,
+                'total_sold'    => $totalSold,
+                'tickets'       => $formattedTickets,
             ]
         ]);
     }
@@ -142,19 +158,19 @@ class EventController extends BaseController
         ]);
     }
 
-    // Helper — format event ringkas buat list
+    // Helper — format event ringkas untuk list
     private function formatEvent(array $event): array
     {
         return [
-            'id'           => $event['id'],
-            'name'         => $event['name'],
-            'slug'         => $event['slug'],
-            'category'     => $event['category'],
-            'venue'        => $event['venue'],
-            'event_date'   => $event['event_date'],
+            'id'             => $event['id'],
+            'name'           => $event['name'],
+            'slug'           => $event['slug'],
+            'category'       => $event['category'],
+            'venue'          => $event['venue'],
+            'event_date'     => $event['event_date'],
             'event_end_date' => $event['event_end_date'] ?? null,
-            'is_featured'  => (bool) $event['is_featured'],
-            'poster_image' => $event['poster_image']
+            'is_featured'    => (bool) $event['is_featured'],
+            'poster_image'   => $event['poster_image']
                 ? base_url($event['poster_image'])
                 : null,
         ];

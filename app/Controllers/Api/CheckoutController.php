@@ -12,7 +12,6 @@ use App\Models\PaymentMethodModel;
 class CheckoutController extends BaseController
 {
     // GET /api/checkout/payment-methods
-    // Public — Flutter butuh ini sebelum checkout
     public function paymentMethods()
     {
         $paymentModel = new PaymentMethodModel();
@@ -52,11 +51,9 @@ class CheckoutController extends BaseController
     }
 
     // POST /api/checkout/calculate
-    // Hitung total sebelum order dibuat — Flutter butuh preview harga
     public function calculate()
     {
         $tickets = $this->request->getPost('tickets');
-        // Format: [{"ticket_type_id": 12, "quantity": 2}, ...]
 
         if (empty($tickets) || !is_array($tickets)) {
             return $this->response->setStatusCode(422)->setJSON([
@@ -90,8 +87,8 @@ class CheckoutController extends BaseController
                 'subtotal'        => $lineTotal,
             ];
 
-            $subTotal  += $lineTotal;
-            $totalQty  += $qty;
+            $subTotal += $lineTotal;
+            $totalQty += $qty;
         }
 
         if (empty($items)) {
@@ -102,12 +99,12 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        $taxRate            = 0.11;
+        $taxRate              = 0.11;
         $platformFeePerTicket = 10000;
-        $adminFee           = 2500;
-        $taxAmount          = $subTotal * $taxRate;
-        $platformFee        = $platformFeePerTicket * $totalQty;
-        $grandTotal         = $subTotal + $taxAmount + $platformFee + $adminFee;
+        $adminFee             = 2500;
+        $taxAmount            = $subTotal * $taxRate;
+        $platformFee          = $platformFeePerTicket * $totalQty;
+        $grandTotal           = $subTotal + $taxAmount + $platformFee + $adminFee;
 
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
@@ -123,8 +120,7 @@ class CheckoutController extends BaseController
         ]);
     }
 
-    // POST /api/checkout/start  (protected)
-    // Buat order baru & simpan ke DB
+    // POST /api/checkout/start (protected)
     public function start()
     {
         $userId = $_SERVER['JWT_USER_ID'] ?? null;
@@ -154,9 +150,9 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        $ticketsRaw = $this->request->getVar('tickets');
+        $body       = $this->request->getJSON(true);
+        $ticketsRaw = $body['tickets'] ?? null;
 
-        // Flutter kirim sebagai JSON string — decode dulu
         if (is_string($ticketsRaw)) {
             $ticketsRaw = json_decode($ticketsRaw, true);
         }
@@ -173,8 +169,8 @@ class CheckoutController extends BaseController
         $orderModel      = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
 
-        // Validasi stok dulu sebelum transaksi
         foreach ($ticketsRaw as $t) {
+            
             $ticketDb = $ticketModel->find((int) $t['ticket_type_id']);
             if (!$ticketDb) {
                 return $this->response->setStatusCode(404)->setJSON([
@@ -194,17 +190,16 @@ class CheckoutController extends BaseController
             }
         }
 
-        // Hitung total
-        $items     = [];
-        $subTotal  = 0;
-        $totalQty  = 0;
+        $items    = [];
+        $subTotal = 0;
+        $totalQty = 0;
 
         foreach ($ticketsRaw as $t) {
             $ticket    = $ticketModel->find((int) $t['ticket_type_id']);
             $qty       = (int) $t['quantity'];
             $lineTotal = (int) $ticket['price'] * $qty;
 
-            $items[]  = [
+            $items[] = [
                 'id'              => $ticket['id'],
                 'name'            => $ticket['name'],
                 'ticket_category' => $ticket['ticket_category'],
@@ -222,7 +217,6 @@ class CheckoutController extends BaseController
         $adminFee    = 2500;
         $grandTotal  = $subTotal + $taxAmount + $platformFee + $adminFee;
 
-        // Mulai transaksi DB
         $db = \Config\Database::connect();
         $db->transStart();
 
@@ -240,7 +234,7 @@ class CheckoutController extends BaseController
             'birth_date'      => $this->request->getVar('birth_date') ?? null,
             'payment_method'  => $this->request->getVar('payment_method'),
             'order_total'     => $grandTotal,
-            'status'          => 'Pending',
+            'status'          => 'pending', // fix: was 'Pending'
         ]);
 
         $newOrderId = $orderModel->getInsertID();
@@ -268,8 +262,8 @@ class CheckoutController extends BaseController
             }
 
             for ($i = 0; $i < $item['quantity']; $i++) {
-                $randTicket     = strtoupper(bin2hex(random_bytes(3)));
-                $ticketCode     = sprintf(
+                $randTicket = strtoupper(bin2hex(random_bytes(3)));
+                $ticketCode = sprintf(
                     'TKT-E%02d-%d-%s',
                     $ticketDb['event_id'],
                     $newOrderId,
@@ -308,16 +302,16 @@ class CheckoutController extends BaseController
                 'order_id'    => $newOrderId,
                 'trx_id'      => $trxId,
                 'grand_total' => (int) $grandTotal,
-                'status'      => 'Pending',
+                'status'      => 'pending', // fix: was 'Pending'
                 'expires_at'  => date('Y-m-d H:i:s', strtotime('+15 minutes')),
             ]
         ]);
     }
 
-    // POST /api/checkout/confirm  (protected)
+    // POST /api/checkout/confirm (protected)
     public function confirm()
     {
-        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
+        $userId = $_SERVER['JWT_USER_ID'] ?? null;
 
         if (!$userId) {
             return $this->response->setStatusCode(401)->setJSON([
@@ -342,7 +336,8 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        if ($order['status'] === 'Expired') {
+        // fix: was 'Expired'
+        if ($order['status'] === 'expired') {
             return $this->response->setStatusCode(410)->setJSON([
                 'status'  => 'error',
                 'message' => 'Order sudah kadaluarsa.',
@@ -365,11 +360,11 @@ class CheckoutController extends BaseController
         ]);
     }
 
-    // POST /api/checkout/cancel  (protected)
+    // POST /api/checkout/cancel (protected)
     public function cancel()
     {
-        $userId  = $_SERVER['JWT_USER_ID'] ?? null;
-        
+        $userId = $_SERVER['JWT_USER_ID'] ?? null;
+
         if (!$userId) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status'  => 'error',
@@ -396,15 +391,15 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        if ($order['status'] !== 'Pending') {
+        // fix: was 'Pending'
+        if ($order['status'] !== 'pending') {
             return $this->response->setStatusCode(409)->setJSON([
                 'status'  => 'error',
-                'message' => 'Hanya order dengan status Pending yang bisa dibatalkan.',
+                'message' => 'Hanya order dengan status pending yang bisa dibatalkan.',
                 'data'    => null
             ]);
         }
 
-        // Kembalikan stok
         $items = $orderItemsModel->where('order_id', $orderId)->findAll();
         foreach ($items as $item) {
             $ticketModel->where('id', $item['ticket_type_id'])
@@ -412,7 +407,8 @@ class CheckoutController extends BaseController
                 ->update();
         }
 
-        $orderModel->update($orderId, ['status' => 'Cancelled']);
+        // fix: was 'Cancelled'
+        $orderModel->update($orderId, ['status' => 'cancelled']);
 
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
@@ -421,7 +417,7 @@ class CheckoutController extends BaseController
         ]);
     }
 
-    // Private helper — sama persis kayak CheckoutController web
+    // Private helper — seat assignment
     private function assignSeats($eventId, $ticketTypeId, $quantity)
     {
         $db = \Config\Database::connect();
@@ -429,7 +425,7 @@ class CheckoutController extends BaseController
         $takenSeatsSql = $db->table('order_items')
             ->select('seat_id')
             ->join('orders', 'orders.id = order_items.order_id')
-            ->whereIn('orders.status', ['Pending', 'completed'])
+            ->whereIn('orders.status', ['pending', 'completed']) // fix: was ['Pending', 'completed']
             ->where('seat_id IS NOT NULL')
             ->getCompiledSelect();
 

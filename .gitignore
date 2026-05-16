@@ -127,3 +127,7 @@ _modules/*
 /phpunit*.xml
 /vendor
 public/output.css
+
+# AI Guidlines
+AGENTS.md
+AI_RULES.md
