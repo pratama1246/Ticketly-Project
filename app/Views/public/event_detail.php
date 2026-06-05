@@ -93,10 +93,10 @@
             </div>
 
             <!-- Poster Image (Mobile Only) -->
-            <div class="mt-4 -mx-5 lg:hidden">
+            <div class="mt-4 lg:hidden">
                 <img src="<?= base_url(esc($event['poster_image'])) ?>" 
                      alt="<?= esc($event['name']) ?>" 
-                     class="w-full h-auto object-cover">
+                     class="w-full h-auto object-cover rounded-xl border border-slate-100">
             </div>
 
             <!-- Buy Ticket Button -->
