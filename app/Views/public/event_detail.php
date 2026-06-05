@@ -9,6 +9,103 @@
             <h1 class="text-xs md:text-sm font-bold text-gray-900 m-0">Kembali</h1>
         </a>
 
+        <!-- Mobile Title & Detail Card (Only visible on mobile) -->
+        <div class="card-flat mt-6 lg:hidden">
+            <!-- Category & Status Tag -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="badge-flat uppercase font-bold text-xs py-1 px-3 bg-blue-50">
+                    <?= esc($event['category']) ?>
+                </span>
+                <span class="<?= $status['color'] ?> text-xs font-bold px-3 py-1 rounded-full border border-current shadow-xs flex items-center gap-1.5">
+                    <?= $status['icon'] ?>
+                    <?= $status['text'] ?>
+                </span>
+            </div>
+
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
+                <?= esc($event['name']) ?>
+            </h1>
+
+            <!-- Event Metadata -->
+            <div class="border-t border-dashed border-slate-150 mt-4 pt-4 space-y-3.5 text-slate-600 font-medium text-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Tanggal</p>
+                        <p class="text-sm text-slate-800 font-semibold">
+                            <?php 
+                                $start = \CodeIgniter\I18n\Time::parse($event['event_date']);
+                                if (!empty($event['event_end_date'])) {
+                                    $end = \CodeIgniter\I18n\Time::parse($event['event_end_date']);
+                                    if ($start->format('Y-m-d') === $end->format('Y-m-d')) {
+                                        echo $start->toLocalizedString('d MMMM yyyy');
+                                    } else {
+                                        if ($start->getMonth() == $end->getMonth() && $start->getYear() == $end->getYear()) {
+                                            echo $start->format('d') . ' - ' . $end->toLocalizedString('d MMMM yyyy');
+                                        } else {
+                                            echo $start->toLocalizedString('d MMM') . ' - ' . $end->toLocalizedString('d MMM yyyy');
+                                        }
+                                    }
+                                } else {
+                                    echo $start->toLocalizedString('d MMMM yyyy');
+                                }
+                            ?>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Waktu</p>
+                        <p class="text-sm text-slate-800 font-semibold">
+                            <?php 
+                                $startTime = $start->format('H:i');
+                                if (!empty($event['event_end_date'])) {
+                                    $endTime = \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('H:i');
+                                    $isSameDay = ($start->format('Y-m-d') === \CodeIgniter\I18n\Time::parse($event['event_end_date'])->format('Y-m-d'));
+                                    if ($isSameDay) {
+                                        echo $startTime . ' - ' . $endTime . ' WIB';
+                                    } else {
+                                        echo 'Mulai ' . $startTime . ' WIB';
+                                    }
+                                } else {
+                                    echo $startTime . ' WIB';
+                                }
+                            ?>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Lokasi</p>
+                        <p class="text-sm text-slate-800 font-semibold"><?= esc($event['venue']) ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buy Ticket Button -->
+            <div class="mt-6 pt-4 border-t border-slate-150">
+                <?php if ($status['purchasable']): ?>
+                    <a href="/event/<?= $event['slug'] ?>/select" class="btn-flat-blue w-full py-3 text-center justify-center text-base font-bold">
+                        Beli Tiket Sekarang
+                    </a>
+                <?php else: ?>
+                    <button disabled class="w-full inline-flex items-center justify-center font-bold px-5 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed text-base">
+                        <?= $status['text'] === 'Telah Berakhir' ? 'Event Telah Berakhir' : 'Tiket Habis Terjual' ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
             <!-- Kiri (Poster & Seatmap) -->
             <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24 h-fit">
@@ -30,7 +127,7 @@
 
             <!-- Kanan (Informasi Event) -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="card-flat">
+                <div class="card-flat hidden lg:block">
                     <!-- Category & Status Tag -->
                     <div class="flex flex-wrap items-center gap-2 mb-4">
                         <span class="badge-flat uppercase font-bold text-xs py-1 px-3 bg-blue-50">
