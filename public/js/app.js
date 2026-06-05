@@ -220,6 +220,222 @@ document.addEventListener('DOMContentLoaded', () => {
 
     toggleCategoryMode();
     
+    // +/- quantity buttons for tickets
+    document.querySelectorAll('.qty-btn-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const input = document.getElementById(targetId);
+            if (input) {
+                let qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    input.value = qty - 1;
+                    input.dispatchEvent(new Event('input'));
+                    input.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.qty-btn-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const input = document.getElementById(targetId);
+            if (input) {
+                let qty = parseInt(input.value) || 0;
+                let max = parseInt(input.dataset.max) || 4;
+                if (qty < max) {
+                    input.value = qty + 1;
+                    input.dispatchEvent(new Event('input'));
+                    input.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    });
+
+    // Intercept checkout forms for AJAX
+    const ticketForm = document.getElementById('ticketForm');
+    if (ticketForm) {
+        ticketForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(ticketForm);
+            const btn = ticketForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...</span>`;
+            }
+            
+            fetch(ticketForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = data.data.redirect;
+                } else {
+                    showToast('error', data.message || 'Terjadi kesalahan.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalBtnHtml;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('error', 'Koneksi gagal.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+        });
+    }
+
+    const personalInfoForm = document.getElementById('personalInfoForm');
+    if (personalInfoForm) {
+        personalInfoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            personalInfoForm.querySelectorAll('.validation-error').forEach(el => el.remove());
+            personalInfoForm.querySelectorAll('input').forEach(el => el.classList.remove('border-red-500', 'bg-red-50'));
+            
+            const formData = new FormData(personalInfoForm);
+            const btn = personalInfoForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...</span>`;
+            }
+            
+            fetch(personalInfoForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = data.data.redirect;
+                } else {
+                    showToast('error', data.message || 'Validasi gagal.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalBtnHtml;
+                    }
+                    if (data.data) {
+                        Object.keys(data.data).forEach(field => {
+                            const input = document.getElementById(field);
+                            if (input) {
+                                input.classList.add('border-red-500', 'bg-red-50');
+                                const errorText = document.createElement('p');
+                                errorText.className = 'validation-error mt-1 text-sm text-red-600 font-medium';
+                                errorText.innerText = data.data[field];
+                                input.parentNode.appendChild(errorText);
+                            }
+                        });
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('error', 'Koneksi gagal.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+        });
+    }
+
+    const paymentMethodForm = document.getElementById('paymentMethodForm');
+    if (paymentMethodForm) {
+        paymentMethodForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(paymentMethodForm);
+            const btn = paymentMethodForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...</span>`;
+            }
+            
+            fetch(paymentMethodForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = data.data.redirect;
+                } else {
+                    showToast('error', data.message || 'Terjadi kesalahan.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalBtnHtml;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('error', 'Koneksi gagal.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+        });
+    }
+
+    const reviewOrderForm = document.getElementById('reviewOrderForm');
+    if (reviewOrderForm) {
+        reviewOrderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(reviewOrderForm);
+            const btn = reviewOrderForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...</span>`;
+            }
+            
+            fetch(reviewOrderForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = data.data.redirect;
+                } else {
+                    showToast('error', data.message || 'Gagal memproses pesanan.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalBtnHtml;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('error', 'Koneksi gagal.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+        });
+    }
 });
 
 

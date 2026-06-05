@@ -22,16 +22,16 @@
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
 <!-- Navbar dan Stepper Checkout-->
-<header class="bg-yellow-bright-light border-b border-yellow-bright-light fixed top-0 left-0 w-full z-50 shadow-sm transition-all duration-300">
+<header class="bg-yellow-bright-light border-b border-slate-200 fixed top-0 left-0 w-full z-50 shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col xl:flex-row justify-between items-center py-4 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-center py-3 md:py-4 gap-3 md:gap-6">
                 
-                <a href="<?= base_url('/') ?>" class="flex items-center space-x-3 rtl:space-x-reverse">
-                    <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
+                <a href="<?= base_url('/') ?>" class="flex items-center shrink-0">
+                    <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-10 md:h-12" alt="ticketly Logo">
                 </a>
                 
-                <div class="w-full xl:w-auto overflow-x-auto [&::-webkit-scrollbar]:hidden pb-2 xl:pb-0">
-                    <ol class="flex items-center w-full min-w-[800px] xl:min-w-0 gap-4">
+                <div class="w-full md:w-auto">
+                    <ol class="flex items-center justify-between w-full md:justify-end gap-2 md:gap-4">
                         <?php 
                             $isPayPage = ($step == 4);
                         ?>
@@ -39,26 +39,25 @@
                         <?php 
                             $s1_done   = (isset($step) && $step > 1);
                             $s1_active = (isset($step) && $step == 1);
-                            $s1_text   = $s1_active ? 'text-blue-600' : ($s1_done ? 'text-green-600' : 'text-gray-500');
-                            $s1_bg     = $s1_active ? 'bg-blue-100 ring-4 ring-blue-50' : ($s1_done ? 'bg-green-100' : 'bg-gray-100');
-                            $s1_bar    = $s1_done ? 'after:border-green-200' : 'after:border-gray-100';
+                            $s1_text   = $s1_active ? 'text-blue-600 font-bold' : ($s1_done ? 'text-green-600 font-bold' : 'text-gray-400');
+                            $s1_bg     = $s1_active ? 'bg-blue-100 border-2 border-blue-600 shadow-sm' : ($s1_done ? 'bg-green-100 border-2 border-green-600' : 'bg-gray-50 border-2 border-gray-200');
+                            $s1_bar    = $s1_done ? 'after:border-green-500' : 'after:border-gray-200';
 
                             $s1_link   = ($step > 1 && !$isPayPage) ? '/checkout/personal_info' : '#';
                             $s1_cursor = ($step > 1 && !$isPayPage) ? 'cursor-pointer hover:opacity-80' : 'cursor-default';
                         ?>
                         
-                        <li class="flex w-full items-center <?= $s1_text ?> after:content-[''] after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:mx-4 <?= $s1_bar ?>">
+                        <li class="flex items-center w-full md:w-auto <?= $s1_text ?> after:content-[''] after:w-full md:after:w-8 lg:after:w-16 after:h-0.5 after:border-b-2 after:inline-block after:mx-2 <?= $s1_bar ?>">
                             <a href="<?= $s1_link ?>" class="flex items-center whitespace-nowrap <?= $s1_cursor ?>">
-                                <span class="flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0 <?= $s1_bg ?>">
+                                <span class="flex items-center justify-center w-8 h-8 rounded-full md:w-10 md:h-10 shrink-0 <?= $s1_bg ?>">
                                     <?php if($s1_done): ?>
-                                        <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                     <?php else: ?>
-                                        <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <?php endif; ?>
                                 </span>
-                                <span class="ms-3">
-                                    <h3 class="font-medium leading-tight text-sm md:text-base">Data Diri</h3>
-                                    <p class="text-xs hidden md:block">Info pemesan</p>
+                                <span class="ms-2 hidden sm:block text-left">
+                                    <h3 class="text-xs md:text-sm font-bold tracking-tight leading-tight">Data Diri</h3>
                                 </span>
                             </a>
                         </li>
@@ -66,25 +65,24 @@
                         <?php 
                             $s2_done   = ($step > 2);
                             $s2_active = ($step == 2);
-                            $s2_text   = $s2_active ? 'text-blue-600' : ($s2_done ? 'text-green-600' : 'text-gray-500');
-                            $s2_bg     = $s2_active ? 'bg-blue-100 ring-4 ring-blue-50' : ($s2_done ? 'bg-green-100' : 'bg-gray-100');
-                            $s2_bar    = $s2_done ? 'after:border-green-200' : 'after:border-gray-100';
+                            $s2_text   = $s2_active ? 'text-blue-600 font-bold' : ($s2_done ? 'text-green-600 font-bold' : 'text-gray-400');
+                            $s2_bg     = $s2_active ? 'bg-blue-100 border-2 border-blue-600 shadow-sm' : ($s2_done ? 'bg-green-100 border-2 border-green-600' : 'bg-gray-50 border-2 border-gray-200');
+                            $s2_bar    = $s2_done ? 'after:border-green-500' : 'after:border-gray-200';
 
                             $s2_link   = ($step > 2 && !$isPayPage) ? '/checkout/payment_method' : '#';
                             $s2_cursor = ($step > 2 && !$isPayPage) ? 'cursor-pointer hover:opacity-80' : 'cursor-default';
                         ?>
-                        <li class="flex w-full items-center <?= $s2_text ?> after:content-[''] after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:mx-4 <?= $s2_bar ?>">
+                        <li class="flex items-center w-full md:w-auto <?= $s2_text ?> after:content-[''] after:w-full md:after:w-8 lg:after:w-16 after:h-0.5 after:border-b-2 after:inline-block after:mx-2 <?= $s2_bar ?>">
                             <a href="<?= $s2_link ?>" class="flex items-center whitespace-nowrap <?= $s2_cursor ?>">
-                                <span class="flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0 <?= $s2_bg ?>">
+                                <span class="flex items-center justify-center w-8 h-8 rounded-full md:w-10 md:h-10 shrink-0 <?= $s2_bg ?>">
                                     <?php if($s2_done): ?>
-                                        <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                     <?php else: ?>
-                                        <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                     <?php endif; ?>
                                 </span>
-                                <span class="ms-3">
-                                    <h3 class="font-medium leading-tight text-sm md:text-base">Pembayaran</h3>
-                                    <p class="text-xs hidden md:block">Metode bayar</p>
+                                <span class="ms-2 hidden sm:block text-left">
+                                    <h3 class="text-xs md:text-sm font-bold tracking-tight leading-tight">Pembayaran</h3>
                                 </span>
                             </a>
                         </li>
@@ -92,39 +90,40 @@
                         <?php 
                             $s3_done   = ($step > 3);
                             $s3_active = ($step == 3);
-                            $s3_text   = $s3_active ? 'text-blue-600' : ($s3_done ? 'text-green-600' : 'text-gray-500');
-                            $s3_bg     = $s3_active ? 'bg-blue-100 ring-4 ring-blue-50' : ($s3_done ? 'bg-green-100' : 'bg-gray-100');
-                            $s3_bar    = $s3_done ? 'after:border-green-200' : 'after:border-gray-100';
-
+                            $s3_text   = $s3_active ? 'text-blue-600 font-bold' : ($s3_done ? 'text-green-600 font-bold' : 'text-gray-400');
+                            $s3_bg     = $s3_active ? 'bg-blue-100 border-2 border-blue-600 shadow-sm' : ($s3_done ? 'bg-green-100 border-2 border-green-600' : 'bg-gray-50 border-2 border-gray-200');
+                            $s3_bar    = $s3_done ? 'after:border-green-500' : 'after:border-gray-200';
 
                             $s3_link   = '#'; 
                             $s3_cursor = 'cursor-default';
                         ?>
-                        <li class="flex w-full items-center <?= $s3_text ?> after:content-[''] after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:mx-4 <?= $s3_bar ?>">
+                        <li class="flex items-center w-full md:w-auto <?= $s3_text ?> after:content-[''] after:w-full md:after:w-8 lg:after:w-16 after:h-0.5 after:border-b-2 after:inline-block after:mx-2 <?= $s3_bar ?>">
                             <a href="<?= $s3_link ?>" class="flex items-center whitespace-nowrap <?= $s3_cursor ?>">
-                                <span class="flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0 <?= $s3_bg ?>">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                <span class="flex items-center justify-center w-8 h-8 rounded-full md:w-10 md:h-10 shrink-0 <?= $s3_bg ?>">
+                                    <?php if($s3_done): ?>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    <?php else: ?>
+                                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                    <?php endif; ?>
                                 </span>
-                                <span class="ms-3">
-                                    <h3 class="font-medium leading-tight text-sm md:text-base">Konfirmasi</h3>
-                                    <p class="text-xs hidden md:block">Cek pesanan</p>
+                                <span class="ms-2 hidden sm:block text-left">
+                                    <h3 class="text-xs md:text-sm font-bold tracking-tight leading-tight">Konfirmasi</h3>
                                 </span>
                             </a>
                         </li>
 
                         <?php 
                             $s4_active = ($step == 4);
-                            $s4_text   = $s4_active ? 'text-blue-600' : 'text-gray-500';
-                            $s4_bg     = $s4_active ? 'bg-blue-100 ring-4 ring-blue-50' : 'bg-gray-100';
+                            $s4_text   = $s4_active ? 'text-blue-600 font-bold' : 'text-gray-400';
+                            $s4_bg     = $s4_active ? 'bg-blue-100 border-2 border-blue-600 shadow-sm' : 'bg-gray-50 border-2 border-gray-200';
                         ?>
                         <li class="flex items-center <?= $s4_text ?>">
                             <div class="flex items-center whitespace-nowrap">
-                                <span class="flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0 <?= $s4_bg ?>">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                <span class="flex items-center justify-center w-8 h-8 rounded-full md:w-10 md:h-10 shrink-0 <?= $s4_bg ?>">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 </span>
-                                <span class="ms-3">
-                                    <h3 class="font-medium leading-tight text-sm md:text-base">Bayar</h3>
-                                    <p class="text-xs hidden md:block">Selesaikan</p>
+                                <span class="ms-2 hidden sm:block text-left">
+                                    <h3 class="text-xs md:text-sm font-bold tracking-tight leading-tight">Bayar</h3>
                                 </span>
                             </div>
                         </li>

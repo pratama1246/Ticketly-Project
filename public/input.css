@@ -111,4 +111,42 @@
     .reveal-on-scroll.is-visible {
         @apply opacity-100 translate-y-0;
     }
+
+    /* --- Modern Clean Design Utilities (Soft Shadows & Borders) --- */
+    .border-flat {
+        border: 1px solid #e2e8f0;
+    }
+    .border-flat-thick {
+        border: 1.5px solid #cbd5e1;
+    }
+    .shadow-flat-sm {
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    .shadow-flat-md {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+    }
+    .shadow-flat-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    }
+    .card-flat {
+        @apply bg-white border border-slate-100 shadow-md rounded-2xl p-6 transition-all duration-200;
+    }
+    .btn-flat, .btn-flat-yellow, .btn-flat-blue, .btn-flat-gray {
+        @apply inline-flex items-center justify-center font-bold px-5 py-2.5 rounded-xl transition-all duration-150 active:scale-95 shadow-sm;
+    }
+    .btn-flat-yellow {
+        @apply bg-yellow-accent-normal text-slate-900 hover:bg-yellow-accent-normal-hover;
+    }
+    .btn-flat-blue {
+        @apply bg-blue-primary-normal text-white hover:bg-blue-primary-normal-hover;
+    }
+    .btn-flat-gray {
+        @apply bg-white text-slate-700 border border-slate-200 hover:bg-slate-50;
+    }
+    .input-flat {
+        @apply w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all;
+    }
+    .badge-flat {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-800;
+    }
   }

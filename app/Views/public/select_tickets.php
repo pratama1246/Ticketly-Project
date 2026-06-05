@@ -1,7 +1,7 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 
-<main class="w-full pt-24 mb-20 grow">
+<main class="w-full pt-24 pb-20 lg:pb-0 mb-20 grow">
     <div class="max-w-7xl mx-auto p-4">
 
             <a href="/event/<?= esc($event['slug']) ?>"
@@ -192,35 +192,35 @@
                                     $headerBg = $isSoldOut ? '#f3f4f6' : $baseColor;
                                     ?>
 
-                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-lg group">
+                                    <div class="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden transition-all duration-300 group">
 
-                                        <div class="p-4 text-center relative" style="background-color: <?= $headerBg ?>;">
+                                        <div class="p-4 text-center relative border-b border-slate-100" style="background-color: <?= $headerBg ?>;">
 
-                                            <h3 class="text-xl font-bold tracking-wide uppercase text-gray-900">
+                                            <h3 class="text-xl font-extrabold tracking-wide uppercase text-slate-900">
                                                 <?= esc($ticket['name']) ?>
                                             </h3>
 
                                             <?php if (!empty($ticket['ticket_category'])): ?>
-                                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-2xs font-bold px-2 py-0.5 rounded border bg-white text-gray-900 border-gray-300 shadow-sm">
+                                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-2xs font-bold px-2 py-0.5 rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xs">
                                                     <?= esc($ticket['ticket_category']) ?>
                                                 </span>
                                             <?php endif; ?>
 
                                             <?php if (!$showTabs && !empty($ticket['ticket_date'])): ?>
-                                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-2xs bg-white/80 px-2 py-0.5 rounded border border-gray-300">
+                                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-2xs bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-xs">
                                                     <?= date('d M', strtotime($ticket['ticket_date'])) ?>
                                                 </span>
                                             <?php endif; ?>
                                         </div>
 
                                         <div class="p-6">
-                                            <div class="mb-4 text-sm text-gray-600">
+                                            <div class="mb-4 text-sm text-slate-600 font-semibold">
                                                 <?php if (!empty($ticket['description'])): ?>
-                                                    <div class="prose prose-sm max-w-none">
+                                                    <div class="prose prose-sm max-w-none text-slate-500 font-medium">
                                                         <?= $ticket['description'] ?>
                                                     </div>
                                                 <?php else: ?>
-                                                    <ul class="list-disc list-inside ml-2 space-y-2 text-gray-500">
+                                                    <ul class="list-disc list-inside ml-2 space-y-2 text-slate-400 font-medium">
                                                         <li>Harga belum termasuk pajak</li>
                                                     </ul>
                                                 <?php endif; ?>
@@ -230,36 +230,42 @@
                                             $eventTime = \CodeIgniter\I18n\Time::parse($event['event_date']);
                                             ?>
 
-                                            <div class="p-2 flex items-start gap-1">
-                                                <svg class="w-4 h-4 text-gray-500 shrink-0 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            <div class="p-2 flex items-start gap-1 text-slate-400">
+                                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                <div class="text-xs text-gray-500">
+                                                <div class="text-xs">
                                                     <span class="block font-medium">Batas Waktu Pemesanan:
                                                         <?= $eventTime->toLocalizedString('d MMMM yyyy, HH:mm') ?> WIB
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <hr class="my-4 border-gray-100">
+                                            <hr class="my-4 border-slate-100">
 
                                             <div class="flex justify-between items-center">
-                                                <p class="text-2xl font-bold <?= $isSoldOut ? 'text-gray-400' : 'text-gray-900' ?>">
+                                                <p class="text-2xl font-black <?= $isSoldOut ? 'text-slate-300' : 'text-slate-900' ?>">
                                                     Rp <?= number_format($ticket['price'], 0, ',', '.') ?>
                                                 </p>
 
-                                                <div class="w-32 text-right">
+                                                <div class="w-auto text-right">
                                                     <?php if ($isSoldOut): ?>
-                                                        <span class="inline-block w-full py-2 bg-gray-100 text-gray-400 font-bold text-sm rounded border border-gray-200 text-center cursor-not-allowed">HABIS</span>
+                                                        <span class="inline-block px-4 py-2 bg-slate-100 text-slate-400 font-extrabold text-sm rounded-xl border border-slate-200 text-center cursor-not-allowed">HABIS</span>
                                                     <?php else: ?>
-                                                        <label for="ticket_<?= $ticket['id'] ?>" class="block text-xs font-medium text-gray-500 mb-1 text-right">Jumlah</label>
-                                                        <input type="number"
-                                                            name="quantity[<?= $ticket['id'] ?>]"
-                                                            id="ticket_<?= $ticket['id'] ?>"
-                                                            class="ticket-input w-full border-gray-300 rounded-md shadow-sm text-center focus:ring-blue-500 focus:border-blue-500 font-bold text-gray-900"
-                                                            value="0" min="0" max="4"
-                                                            data-name="<?= esc($ticket['name']) ?>"
-                                                            data-price="<?= $ticket['price'] ?>">
+                                                        <div class="flex items-center justify-end">
+                                                            <div class="inline-flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                                                <button type="button" class="qty-btn-minus w-11 h-11 text-lg font-black text-slate-800 hover:bg-slate-200 transition-colors flex items-center justify-center" data-target="ticket_<?= $ticket['id'] ?>">-</button>
+                                                                <input type="text"
+                                                                    name="quantity[<?= $ticket['id'] ?>]"
+                                                                    id="ticket_<?= $ticket['id'] ?>"
+                                                                    class="ticket-input w-12 h-11 text-center bg-white border-x border-slate-200 focus:outline-none font-bold text-slate-900"
+                                                                    value="0" readonly
+                                                                    data-name="<?= esc($ticket['name']) ?>"
+                                                                    data-price="<?= $ticket['price'] ?>"
+                                                                    data-max="4">
+                                                                <button type="button" class="qty-btn-plus w-11 h-11 text-lg font-black text-slate-800 hover:bg-slate-200 transition-colors flex items-center justify-center" data-target="ticket_<?= $ticket['id'] ?>">+</button>
+                                                            </div>
+                                                        </div>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
@@ -289,29 +295,32 @@
                 </div>
 
                 <div class="lg:col-span-1">
-                    <div class="bg-gray-50 p-6 rounded-xl shadow-lg border border-gray-100 sticky top-24 z-20">
-                        <h3 class="font-bold text-gray-900 text-lg mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
+                    <div class="bg-white p-6 border border-slate-100 rounded-2xl shadow-lg sticky top-24 z-20">
+                        <h3 class="font-extrabold text-slate-900 text-lg mb-4 border-b-2 border-dashed border-slate-200 pb-3 flex items-center justify-between">
                             Ringkasan Pesanan
                         </h3>
 
-                        <div id="cartItems" class="space-y-3 text-sm text-gray-600 mb-6 min-h-[60px]">
-                            <div class="flex flex-col items-center justify-center h-full py-4 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                                <p class="text-xs">Belum ada tiket dipilih</p>
+                        <div id="cartItems" class="space-y-3 text-sm text-slate-600 mb-6 min-h-[60px]">
+                            <div class="flex flex-col items-center justify-center h-full py-6 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <svg class="w-6 h-6 text-slate-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                                <p class="text-xs font-semibold">Belum ada tiket dipilih</p>
                             </div>
                         </div>
 
-                        <div class="border-t border-gray-100 pt-4 bg-gray-50 -mx-6 px-6 -mb-6 rounded-b-xl pb-6">
-                            <div class="flex justify-between items-end mb-4">
-                                <span class="text-gray-600 font-medium text-sm">Total Estimasi</span>
-                                <span class="text-2xl font-bold text-blue-600" id="totalPrice">Rp 0</span>
-                            </div>
+                        <div class="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-200 p-4 shadow-sm lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-auto lg:shadow-none lg:border-t-2 lg:border-dashed lg:border-slate-200 lg:pt-4 lg:bg-slate-50 lg:-mx-6 lg:px-6 lg:-mb-6 lg:rounded-b-2xl lg:pb-6">
+                            <div class="flex items-center justify-between gap-4 lg:block">
+                                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-0 lg:mb-4">
+                                    <span class="text-slate-600 font-bold text-xs lg:text-sm">Total Estimasi</span>
+                                    <span class="text-lg lg:text-2xl font-black text-blue-primary-normal" id="totalPrice">Rp 0</span>
+                                </div>
 
-                            <button type="submit" id="btnCheckout" disabled class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed transition-all shadow-sm hover:shadow text-center flex justify-center items-center gap-2">
-                                Pesan Sekarang
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
+                                <button type="submit" id="btnCheckout" disabled class="w-auto flex-grow max-w-[180px] lg:w-full lg:max-w-none bg-slate-100 text-slate-400 font-extrabold py-3 lg:py-3.5 px-4 rounded-xl border border-slate-200 cursor-not-allowed transition-all text-center flex justify-center items-center gap-2 text-sm lg:text-base">
+                                    Pesan Sekarang
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

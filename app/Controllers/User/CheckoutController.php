@@ -22,6 +22,13 @@ class CheckoutController extends BaseController
     {
         if (session()->has('checkout_process')) {
             if (session()->has('checkout_expire') && session()->get('checkout_expire') > time()) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'status' => 'success',
+                        'message' => 'Harap selesaikan atau batalkan pesanan Anda sebelumnya.',
+                        'data' => ['redirect' => '/checkout/review_order']
+                    ]);
+                }
                 return redirect()->to('/checkout/review_order')
                     ->with('warning', 'Harap selesaikan atau batalkan pesanan Anda sebelumnya.');
             } else {
@@ -34,6 +41,12 @@ class CheckoutController extends BaseController
         $eventId = $this->request->getPost('eventId');
 
         if (empty($quantities) || empty($eventId)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Silakan pilih tiket terlebih dahulu.'
+                ]);
+            }
             return redirect()->back()->with('error', 'Silakan pilih tiket terlebih dahulu.');
         }
 
@@ -42,6 +55,12 @@ class CheckoutController extends BaseController
         });
 
         if (empty($selectedTickets)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Silakan pilih minimal 1 tiket.'
+                ]);
+            }
             return redirect()->back()->with('error', 'Silakan pilih minimal 1 tiket.');
         }
 
@@ -63,6 +82,13 @@ class CheckoutController extends BaseController
         session()->set('checkout_process', $checkoutData);
         session()->set('checkout_expire', time() + 300);
 
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Sesi checkout berhasil dimulai.',
+                'data' => ['redirect' => '/checkout/personal_info']
+            ]);
+        }
         return redirect()->to('/checkout/personal_info');
     }
 
@@ -113,6 +139,13 @@ class CheckoutController extends BaseController
         }
 
         if (!$this->validate('checkoutInfo')) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Validasi data diri gagal.',
+                    'data' => $this->validator->getErrors()
+                ]);
+            }
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
@@ -127,6 +160,14 @@ class CheckoutController extends BaseController
         ];
         
         session()->set('checkout_process', $sessionData);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data personal berhasil disimpan.',
+                'data' => ['redirect' => '/checkout/payment_method']
+            ]);
+        }
         return redirect()->to('/checkout/payment_method');
     }
 
@@ -167,6 +208,12 @@ class CheckoutController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Silakan pilih satu metode pembayaran.'
+                ]);
+            }
             return redirect()->back()->with('error', 'Silakan pilih satu metode pembayaran.');
         }
 
@@ -174,6 +221,13 @@ class CheckoutController extends BaseController
         $sessionData['payment_method'] = $this->request->getPost('payment_method');
         session()->set('checkout_process', $sessionData);
 
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Metode pembayaran berhasil disimpan.',
+                'data' => ['redirect' => '/checkout/review_order']
+            ]);
+        }
         return redirect()->to('/checkout/review_order');
     }
 
@@ -223,7 +277,15 @@ class CheckoutController extends BaseController
     {
         $session = session();
         $checkoutData = $session->get('checkout_process');
-        if (empty($checkoutData)) { return redirect()->to('/'); }
+        if (empty($checkoutData)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Sesi checkout tidak ditemukan.'
+                ]);
+            }
+            return redirect()->to('/');
+        }
 
         $orderModel = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
@@ -234,6 +296,12 @@ class CheckoutController extends BaseController
         foreach ($calculation['items'] as $item) {
             $ticketDb = $ticketTypeModel->find($item['id']);
             if ($ticketDb['quantity_sold'] + $item['quantity'] > $ticketDb['quantity_total']) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'status' => 'error',
+                        'message' => 'Stok tiket ' . $ticketDb['name'] . ' tidak mencukupi.'
+                    ]);
+                }
                 return redirect()->back()->with('error', 'Stok tiket ' . $ticketDb['name'] . ' tidak mencukupi.');
             }
         }
@@ -256,7 +324,7 @@ class CheckoutController extends BaseController
             'birth_date'      => $personalData['birth_date'],
             'payment_method'  => $checkoutData['payment_method'],
             'order_total'     => $calculation['grand_total'],
-            'status'          => 'Pending'
+            'status'          => 'pending'
         ];
         
         $orderModel->insert($orderData);
@@ -274,6 +342,12 @@ class CheckoutController extends BaseController
 
                 if ($assignedSeatId === false) {
                     $db->transRollback();
+                    if ($this->request->isAJAX()) {
+                        return $this->response->setJSON([
+                            'status' => 'error',
+                            'message' => 'Mohon maaf, kursi untuk tiket ' . $ticketInfo['name'] . ' baru saja habis. Silakan coba lagi.'
+                        ]);
+                    }
                     return redirect()->to('/checkout/review_order')
                      ->with('error', 'Mohon maaf, kursi untuk tiket ' . $ticketInfo['name'] . ' baru saja habis. Silakan coba lagi.');
                 }        
@@ -301,6 +375,12 @@ class CheckoutController extends BaseController
         $db->transComplete();
 
         if ($db->transStatus() === false) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal membuat pesanan. Silakan coba lagi.'
+                ]);
+            }
             return redirect()->to('/checkout/review_order')->with('error', 'Gagal membuat pesanan. Silakan coba lagi.');
         }
 
@@ -308,6 +388,13 @@ class CheckoutController extends BaseController
         $session->remove('checkout_expire');
         $session->set('pending_order_id', $newOrderId);
 
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Pesanan berhasil dibuat.',
+                'data' => ['redirect' => '/checkout/pay/' . $newOrderId]
+            ]);
+        }
         return redirect()->to('/checkout/pay/' . $newOrderId);
     }
 

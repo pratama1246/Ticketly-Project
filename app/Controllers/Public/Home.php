@@ -45,6 +45,6 @@ class Home extends BaseController
             'events'    => $otherEvents,
         ];
 
-        return view('layout/main', $data);
+        return view('public/home', $data);
     }
 }

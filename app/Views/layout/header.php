@@ -14,58 +14,58 @@
 <body class="font-default bg-yellow-bright-light text-heading flex flex-col min-h-screen">
 
 <!-- NAVBAR -->
-<nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-default">
-  <div class="flex flex-wrap items-center justify-between mx-auto p-6">
+<nav class="bg-yellow-bright-light fixed w-full z-50 top-0 start-0 border-b border-slate-200">
+  <div class="flex flex-wrap items-center justify-between mx-auto p-4 md:py-3 md:px-8">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-         <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-14" alt="ticketly Logo">
+         <img src="<?= base_url('assets/ticketly-logo.png') ?>" class="h-10 md:h-12" alt="ticketly Logo">
     </a>
     <div class="flex md:order-2 space-x-3 md:space-x-3 rtl:space-x-reverse">
 
-        <?php if (auth()->loggedIn()): ?>
-            <button type="button" class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+         <?php if (auth()->loggedIn()): ?>
+            <button type="button" class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-slate-100 border border-slate-200" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Buka menu pengguna</span>
                 <?php $foto = auth()->user()->foto ? 'uploads/profile/' . auth()->user()->foto : 'assets/profile_default.png'; ?>
-                        <img class="w-10 h-10 rounded-full" src="<?= base_url($foto) ?>" alt="user photo">
+                        <img class="w-10 h-10 rounded-full object-cover" src="<?= base_url($foto) ?>" alt="user photo">
             </button>
 
-            <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
-                <div class="px-4 py-3 text-sm border-b border-default">
-                    <span class="block text-heading font-medium"><?= auth()->user()->username?></span>
-                    <span class="block text-body truncate"><?= auth()->user()->email ?></span>
+            <div class="z-50 hidden bg-white border border-slate-100 rounded-xl shadow-lg w-48 overflow-hidden" id="user-dropdown">
+                <div class="px-4 py-3 text-sm border-b border-slate-200 bg-slate-50">
+                    <span class="block text-slate-900 font-bold"><?= auth()->user()->username?></span>
+                    <span class="block text-slate-500 text-xs truncate font-medium"><?= auth()->user()->email ?></span>
                 </div>
-                <ul class="p-2 text-sm text-body font-medium" aria-labelledby="user-menu-button">
+                <ul class="p-2 text-sm text-slate-700 font-semibold" aria-labelledby="user-menu-button">
                     <?php if (auth()->user()->inGroup('admin')) : ?>
                         <li>
-                            <a href="/admin/dashboard" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Dashboard Admin</a>
+                            <a href="/admin/dashboard" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-slate-900 rounded-lg">Dashboard Admin</a>
                         </li>
                     <?php endif; ?>
-                    <li><a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Profile Saya</a></li>
-                    <li><a href="/profile/edit" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit Profile</a></li>
-                    <li><a href="/profile/history" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Riwayat Transaksi</a></li>
-                    <li><a href="<?= base_url('logout') ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a></li>
+                    <li><a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-slate-900 rounded-lg">Profile Saya</a></li>
+                    <li><a href="/profile/edit" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-slate-900 rounded-lg">Edit Profile</a></li>
+                    <li><a href="/profile/history" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-slate-900 rounded-lg">Riwayat Transaksi</a></li>
+                    <li><a href="<?= base_url('logout') ?>" class="inline-flex items-center w-full p-2 hover:bg-red-50 hover:text-red-600 rounded-lg border-t border-slate-100 mt-1 pt-2">Sign out</a></li>
                 </ul>
             </div>
 
             <?php else: ?>
-                <button type="button" onclick="window.location.href='<?= base_url('login') ?>'" class="text-black bg-yellow-accent-normal hover:bg-yellow-accent-strong box-border border border-transparent focus:ring-4 focus:ring-yellow-accent-medium shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none">
+                <button type="button" onclick="window.location.href='<?= base_url('login') ?>'" class="text-slate-900 bg-yellow-accent-normal hover:bg-yellow-accent-normal-hover font-bold rounded-xl text-sm px-4 py-2 focus:outline-none transition-all active:scale-95 shadow-sm">
                     <span class="inline md:hidden">Masuk</span>
                     <span class="hidden md:inline">Masuk atau Daftar</span>
                 </button>
             <?php endif; ?>
 
-            <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary" aria-controls="navbar-sticky" aria-expanded="false">
+            <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-slate-500 rounded-xl md:hidden hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-100 border border-slate-200" aria-controls="navbar-sticky" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                     <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg>
             </button>
         </div>
 
         <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-default bg-white md:bg-transparent rounded-base md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
-                <li><a href="/" class="block py-2 px-3 text-white bg-brand rounded-sm md:text-heading md:bg-transparent md:p-0 " aria-current="page">Home</a></li>
-                <li><a href="/tentang" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Tentang</a></li>
-                <li><a href="/concerts" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Konser</a></li>
-                <li><a href="/events" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Event</a></li>
-                <li><a href="/festivals" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:text-black md:hover:bg-transparent md:border-0 md:hover:text-yellow-bright-normal-hover md:p-0 md:dark:hover:bg-transparent">Festival</a></li>
+            <ul class="flex flex-col p-4 md:p-0 mt-4 font-semibold border border-slate-100 bg-white md:bg-transparent rounded-xl md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 text-slate-800 shadow-sm md:shadow-none">
+                <li><a href="/" class="block py-2 px-3 text-blue-600 rounded-lg md:bg-transparent md:p-0" aria-current="page">Home</a></li>
+                <li><a href="/tentang" class="block py-2 px-3 hover:bg-slate-100 md:hover:bg-transparent md:hover:text-blue-600 md:p-0 transition-colors">Tentang</a></li>
+                <li><a href="/concerts" class="block py-2 px-3 hover:bg-slate-100 md:hover:bg-transparent md:hover:text-blue-600 md:p-0 transition-colors">Konser</a></li>
+                <li><a href="/events" class="block py-2 px-3 hover:bg-slate-100 md:hover:bg-transparent md:hover:text-blue-600 md:p-0 transition-colors">Event</a></li>
+                <li><a href="/festivals" class="block py-2 px-3 hover:bg-slate-100 md:hover:bg-transparent md:hover:text-blue-600 md:p-0 transition-colors">Festival</a></li>
             </ul>
         </div>
   </div>
