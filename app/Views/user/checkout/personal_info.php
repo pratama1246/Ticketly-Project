@@ -1,7 +1,7 @@
 <?= $this->extend('layout/checkout') ?>
 <?= $this->section('content') ?>
 
-<main class="w-full pt-[136px] md:pt-[108px] mb-20 grow transition-all duration-300">
+<main class="w-full pt-[152px] md:pt-[120px] mb-20 grow transition-all duration-300">
 <?php
     $sessionData = session()->get('checkout_process');
     $p = $sessionData['personal_data'] ?? [];
@@ -93,21 +93,16 @@
                     <div>
                         <label for="birth_date" class="block mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">Tanggal Lahir <span class="text-red-500">*</span></label>
                         
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-slate-400">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/></svg>
-                            </div>
-                            <?php 
-                                $birthVal = old('birth_date', $p['birth_date'] ?? '');
-                                if ($birthVal && strpos($birthVal, '-') !== false) {
-                                    $birthVal = date('d/m/Y', strtotime($birthVal));
-                                }
-                            ?>
-                           <input id="birth_date" name="birth_date" type="text" 
-                                   value="<?= $birthVal ?>" 
-                                   class="input-flat pl-10 text-sm [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden <?= isset($errors['birth_date']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
-                                   placeholder="DD/MM/YYYY" required>
-                        </div>
+                        <?php 
+                            $birthVal = old('birth_date', $p['birth_date'] ?? '');
+                            if ($birthVal && strpos($birthVal, '-') !== false) {
+                                $birthVal = date('d/m/Y', strtotime($birthVal));
+                            }
+                        ?>
+                        <input id="birth_date" name="birth_date" type="text" 
+                               value="<?= $birthVal ?>" 
+                               class="input-flat text-sm <?= isset($errors['birth_date']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
+                               placeholder="DD/MM/YYYY" required>
                         <?php if(isset($errors['birth_date'])): ?>
                             <p class="mt-1 text-sm text-red-600 font-medium"><?= esc($errors['birth_date']) ?></p>
                         <?php endif; ?>
