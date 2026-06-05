@@ -92,6 +92,13 @@
                 </div>
             </div>
 
+            <!-- Poster Image (Mobile Only) -->
+            <div class="mt-4 -mx-5 lg:hidden">
+                <img src="<?= base_url(esc($event['poster_image'])) ?>" 
+                     alt="<?= esc($event['name']) ?>" 
+                     class="w-full h-auto object-cover">
+            </div>
+
             <!-- Buy Ticket Button -->
             <div class="mt-6 pt-4 border-t border-slate-150">
                 <?php if ($status['purchasable']): ?>
@@ -108,11 +115,11 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
             <!-- Kiri (Poster & Seatmap) -->
-            <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24 h-fit">
-                <div class="card-flat overflow-hidden p-2">
+            <div class="hidden lg:block lg:col-span-5 space-y-6 lg:sticky lg:top-24 h-fit">
+                <div class="card-flat overflow-hidden p-0">
                     <img src="<?= base_url(esc($event['poster_image'])) ?>" 
                          alt="<?= esc($event['name']) ?>" 
-                         class="w-full h-auto object-cover rounded-xl border border-slate-100">
+                         class="w-full h-auto object-cover rounded-2xl">
                 </div>
 
                 <?php if (!empty($event['seatmap_image'])): ?>
