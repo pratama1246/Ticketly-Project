@@ -150,3 +150,11 @@
         @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-800;
     }
   }
+
+/* Hide native browser calendar/date picker icon on text inputs with custom icons */
+#birth_date::-webkit-calendar-picker-indicator,
+#birth_date::-webkit-inner-spin-button,
+#birth_date::-webkit-clear-button {
+    display: none !important;
+    -webkit-appearance: none;
+}

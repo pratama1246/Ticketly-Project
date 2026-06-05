@@ -134,12 +134,12 @@
         </div>
 
         <?php if (!isset($enable_floating_timer) || $enable_floating_timer === true): ?>
-        <div id="checkout-timer-alert" class="w-full flex items-center justify-center gap-3 px-4 py-2 bg-blue-50 border-t border-blue-200 transition-all duration-300">
-            <div class="flex items-center justify-center w-5 h-5 bg-white text-blue-600 rounded-full shadow-sm shrink-0">
-                <svg class="w-3 h-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+        <div id="checkout-timer-alert" class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 bg-blue-50 border-t border-blue-200 transition-colors duration-500">
+            <div id="timer-icon-wrap" class="flex items-center justify-center w-6 h-6 bg-white text-blue-600 rounded-full shadow-sm shrink-0 transition-colors duration-500">
+                <svg class="w-3.5 h-3.5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
             </div>
-            <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-700 opacity-80">Sisa Waktu</span>
-            <span id="timer-countdown" class="font-black text-sm tabular-nums text-blue-900 leading-none">00:00</span>
+            <span id="timer-label" class="text-xs font-extrabold uppercase tracking-widest text-blue-700 transition-colors duration-500">Sisa Waktu</span>
+            <span id="timer-countdown" class="font-black text-lg tabular-nums text-blue-900 leading-none tracking-tight transition-colors duration-500">00:00</span>
         </div>
         <?php endif; ?>
     </header>

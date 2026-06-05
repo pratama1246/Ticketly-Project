@@ -513,12 +513,14 @@ function startFloatingTimer(duration) {
 
         if (timer < 120) {
             if (timerAlert) {
-                const alertBox = timerAlert.querySelector('div');
-                if(alertBox) {
-                    alertBox.classList.remove('text-blue-800', 'bg-blue-50', 'border-blue-200');
-                    alertBox.classList.add('text-red-800', 'bg-red-50', 'border-red-200');
-                }
+                timerAlert.classList.remove('bg-blue-50', 'border-blue-200');
+                timerAlert.classList.add('bg-red-50', 'border-red-200');
             }
+            const label = document.getElementById('timer-label');
+            const iconWrap = document.getElementById('timer-icon-wrap');
+            if (label) { label.classList.remove('text-blue-700'); label.classList.add('text-red-700'); }
+            if (headerText) { headerText.classList.remove('text-blue-900'); headerText.classList.add('text-red-700', 'animate-pulse'); }
+            if (iconWrap) { iconWrap.classList.remove('text-blue-600'); iconWrap.classList.add('text-red-600'); }
             if (bodyText) bodyText.classList.add('text-red-600', 'animate-pulse');
         }
 
