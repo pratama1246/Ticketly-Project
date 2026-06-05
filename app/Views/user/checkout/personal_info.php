@@ -1,7 +1,7 @@
 <?= $this->extend('layout/checkout') ?>
 <?= $this->section('content') ?>
 
-<main class="w-full pt-32 mb-20 grow transition-all duration-300">
+<main class="w-full pt-[136px] md:pt-[108px] mb-20 grow transition-all duration-300">
 <?php
     $sessionData = session()->get('checkout_process');
     $p = $sessionData['personal_data'] ?? [];
@@ -105,7 +105,7 @@
                             ?>
                            <input id="birth_date" name="birth_date" type="text" 
                                    value="<?= $birthVal ?>" 
-                                   class="input-flat ps-10 text-sm <?= isset($errors['birth_date']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
+                                   class="input-flat pl-10 text-sm [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden <?= isset($errors['birth_date']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
                                    placeholder="DD/MM/YYYY" required>
                         </div>
                         <?php if(isset($errors['birth_date'])): ?>

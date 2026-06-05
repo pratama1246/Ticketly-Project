@@ -1,7 +1,7 @@
 <?= $this->extend('layout/checkout') ?>
 <?= $this->section('content') ?>
 
-<main class="w-full pt-32 mb-20 grow transition-all duration-300">
+<main class="w-full pt-[136px] md:pt-[108px] mb-20 grow transition-all duration-300">
     <input type="hidden" id="csrf_security" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
     <div class="max-w-3xl mx-auto w-full space-y-6 px-4 animate-fade-in">

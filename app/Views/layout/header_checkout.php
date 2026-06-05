@@ -132,6 +132,16 @@
 
             </div>
         </div>
+
+        <?php if (!isset($enable_floating_timer) || $enable_floating_timer === true): ?>
+        <div id="checkout-timer-alert" class="w-full flex items-center justify-center gap-3 px-4 py-2 bg-blue-50 border-t border-blue-200 transition-all duration-300">
+            <div class="flex items-center justify-center w-5 h-5 bg-white text-blue-600 rounded-full shadow-sm shrink-0">
+                <svg class="w-3 h-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-700 opacity-80">Sisa Waktu</span>
+            <span id="timer-countdown" class="font-black text-sm tabular-nums text-blue-900 leading-none">00:00</span>
+        </div>
+        <?php endif; ?>
     </header>
 
     <!-- Popup Salin -->
@@ -145,37 +155,7 @@
     </div>
 
 
-    <!-- Pop Up Timer Checkout -->
-    <?php if (!isset($enable_floating_timer) || $enable_floating_timer === true): ?>
-    <div id="checkout-timer-alert" class="fixed top-44 ta:top-24 left-0 w-full z-9999 flex justify-center pointer-events-none transition-all duration-300 opacity-0">
-            <div class="pointer-events-auto flex items-center gap-3.5 px-6 py-3 bg-blue-50 text-blue-800 border border-blue-200 rounded-full shadow-2xl shadow-blue-900/20 transition-colors duration-300">  
-                <div class="flex items-center justify-center w-8 h-8 bg-white text-blue-600 rounded-full shadow-sm shrink-0">
-                    <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-[11px] font-extrabold uppercase tracking-widest opacity-60 pt-px">Sisa Waktu</span>
-                    <span id="timer-countdown" class="font-sans font-black text-xl tabular-nums leading-none pb-0.5">00:00</span>
-                </div>
-            </div>
-        </div>
-    <script>
-        (function() {
-            var timer = document.getElementById('checkout-timer-alert');
-            if (!timer) return;
-            var threshold = 80;
-            function onScroll() {
-                if (window.scrollY > threshold) {
-                    timer.classList.remove('opacity-0');
-                    timer.classList.add('opacity-100', 'animate-fade-in-down');
-                } else {
-                    timer.classList.add('opacity-0');
-                    timer.classList.remove('opacity-100', 'animate-fade-in-down');
-                }
-            }
-            window.addEventListener('scroll', onScroll, { passive: true });
-        })();
-    </script>
-    <?php endif; ?>
+    <!-- Timer dipindah ke dalam <header> di atas -->
 
 
     <!-- Modal Timeout Checkout -->
