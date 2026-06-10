@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $uri      = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $filePath = __DIR__ . $uri;
 
-if (is_file($filePath)) {
+if (is_file($filePath) && pathinfo($filePath, PATHINFO_EXTENSION) !== 'php') {
     // Gunakan MIME type map berbasis ekstensi (lebih reliable dari mime_content_type)
     $ext       = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
     $mimeTypes = [
