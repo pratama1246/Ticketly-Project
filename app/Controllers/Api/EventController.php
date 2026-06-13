@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\TicketTypeModel;
+use App\Models\OrderModel;
 
 class EventController extends BaseController
 {
@@ -19,6 +20,8 @@ class EventController extends BaseController
     // Query params: ?category=concert&q=keyword&page=1&limit=10
     public function index()
     {
+        (new OrderModel())->autoExpireOrders();
+
         $category = $this->request->getGet('category');
         $keyword  = $this->request->getGet('q');
         $page     = (int) ($this->request->getGet('page') ?? 1);
@@ -69,6 +72,8 @@ class EventController extends BaseController
     // GET /api/events/:slug
     public function show($slug = null)
     {
+        (new OrderModel())->autoExpireOrders();
+
         $event = $this->eventModel
             ->where('slug', $slug)
             ->where('status', 'published')
@@ -155,6 +160,46 @@ class EventController extends BaseController
             'status'  => 'success',
             'message' => 'Featured events berhasil diambil.',
             'data'    => $formatted
+        ]);
+    }
+
+    // GET /api/events/landing
+    public function landing()
+    {
+        $featuredEvents = $this->eventModel
+            ->where('is_featured', 1)
+            ->where('status', 'published')
+            ->orderBy("CASE WHEN sort_order = 0 THEN 9999 ELSE sort_order END", "ASC", false)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        $concerts = $this->eventModel
+            ->where('category', 'concert')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        $festivals = $this->eventModel
+            ->where('category', 'festival')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        $otherEvents = $this->eventModel
+            ->where('category', 'event')
+            ->where('status', 'published')
+            ->orderBy('event_date', 'ASC')
+            ->findAll(4);
+
+        return $this->response->setStatusCode(200)->setJSON([
+            'status'  => 'success',
+            'message' => 'Data landing page berhasil diambil.',
+            'data'    => [
+                'featured'  => array_map(fn($e) => $this->formatEvent($e), $featuredEvents),
+                'concerts'  => array_map(fn($e) => $this->formatEvent($e), $concerts),
+                'festivals' => array_map(fn($e) => $this->formatEvent($e), $festivals),
+                'events'    => array_map(fn($e) => $this->formatEvent($e), $otherEvents),
+            ]
         ]);
     }
 

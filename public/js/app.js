@@ -1119,3 +1119,133 @@ document.addEventListener('click', function(event) {
         }
     });
 });
+
+// === IMAGE COMPRESSOR INTEGRATION ===
+
+// Compress single image file
+function compressImageFile(file, maxWidth = 1920, maxHeight = 1080, quality = 0.8) {
+    return new Promise((resolve) => {
+        if (!file.type.startsWith('image/')) {
+            resolve(file);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const newName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                        const compressedFile = new File([blob], newName, {
+                            type: 'image/webp',
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    } else {
+                        resolve(file);
+                    }
+                }, 'image/webp', quality);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
+// Global form submit interceptor for client-side image compression
+document.addEventListener('submit', async function(e) {
+    const form = e.target;
+
+    // Skip if already compressed
+    if (form.dataset.imageCompressed === 'true') {
+        return;
+    }
+
+    const fileInputs = Array.from(form.querySelectorAll('input[type="file"]'));
+    if (fileInputs.length === 0) return;
+
+    // Filter file inputs that have image files
+    const inputsWithImages = fileInputs.filter(input => {
+        return Array.from(input.files).some(file => file.type.startsWith('image/'));
+    });
+
+    if (inputsWithImages.length === 0) return;
+
+    // Prevent submission to perform async compression
+    e.preventDefault();
+
+    // Configuration of target dimensions by input name
+    const configMap = {
+        'foto': { maxWidth: 500, maxHeight: 500, quality: 0.8 },
+        'poster_image': { maxWidth: 1200, maxHeight: 1200, quality: 0.8 },
+        'seatmap_image': { maxWidth: 1920, maxHeight: 1920, quality: 0.85 }
+    };
+
+    const defaultCfg = { maxWidth: 1200, maxHeight: 1200, quality: 0.8 };
+
+    // Find submit buttons and show loading state
+    const submitBtns = form.querySelectorAll('button[type="submit"]');
+    const originalBtnHtmls = [];
+    submitBtns.forEach(btn => {
+        originalBtnHtmls.push({ btn, html: btn.innerHTML });
+        btn.disabled = true;
+        btn.innerHTML = `<span class="inline-flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Kompresi Gambar...</span>`;
+    });
+
+    try {
+        for (const input of inputsWithImages) {
+            const name = input.name;
+            const cfg = configMap[name] || defaultCfg;
+            const dataTransfer = new DataTransfer();
+
+            for (const file of input.files) {
+                if (file.type.startsWith('image/')) {
+                    const compressed = await compressImageFile(file, cfg.maxWidth, cfg.maxHeight, cfg.quality);
+                    dataTransfer.items.add(compressed);
+                } else {
+                    dataTransfer.items.add(file);
+                }
+            }
+
+            input.files = dataTransfer.files;
+        }
+
+        // Set compression flag
+        form.dataset.imageCompressed = 'true';
+
+        // Submit form
+        if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+        } else {
+            form.submit();
+        }
+    } catch (err) {
+        console.error('Image compression failed, submitting original files:', err);
+        // Fallback
+        submitBtns.forEach((btn, idx) => {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnHtmls[idx].html;
+        });
+        form.dataset.imageCompressed = 'true';
+        form.submit();
+    }
+});

@@ -85,7 +85,7 @@ class AuthController extends BaseController
     public function register()
     {
         $rules = [
-            'username' => 'required|min_length[3]|max_length[30]|is_unique[users.username]',
+            'username' => 'required|min_length[3]|max_length[30]|alpha_numeric_space|is_unique[users.username]',
             'email'    => 'required|valid_email|is_unique[auth_identities.secret]',
             'password' => 'required|min_length[8]',
         ];

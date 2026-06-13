@@ -35,6 +35,7 @@
                         <input type="text" id="first_name" name="first_name" 
                                value="<?= old('first_name', $p['first_name'] ?? '') ?>" 
                                class="input-flat text-sm <?= isset($errors['first_name']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
+                               maxlength="100"
                                required>
                         <?php if(isset($errors['first_name'])): ?>
                             <p class="mt-1 text-sm text-red-600 font-medium">
@@ -47,7 +48,8 @@
                         <label for="last_name" class="block mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">Nama Belakang</label>
                         <input type="text" id="last_name" name="last_name" 
                                value="<?= old('last_name', $p['last_name'] ?? '') ?>" 
-                               class="input-flat text-sm <?= isset($errors['last_name']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>">
+                               class="input-flat text-sm <?= isset($errors['last_name']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>"
+                               maxlength="100">
                         <?php if(isset($errors['last_name'])): ?>
                             <p class="mt-1 text-sm text-red-600 font-medium"><?= esc($errors['last_name']) ?></p>
                         <?php endif; ?>
@@ -71,6 +73,8 @@
                         <input type="tel" id="phone_number" name="phone_number" 
                                value="<?= old('phone_number', $p['phone_number'] ?? '') ?>" 
                                class="input-flat text-sm <?= isset($errors['phone_number']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
+                               maxlength="20"
+                               pattern="[0-9+\-\s()]+"
                                required>
                         <?php if(isset($errors['phone_number'])): ?>
                             <p class="mt-1 text-sm text-red-600 font-medium"><?= esc($errors['phone_number']) ?></p>
@@ -84,6 +88,8 @@
                         <input type="text" id="identity_number" name="identity_number" 
                                value="<?= old('identity_number', $p['identity_number'] ?? '') ?>" 
                                class="input-flat text-sm <?= isset($errors['identity_number']) ? 'border-red-500 bg-red-50 focus:ring-red-500' : '' ?>" 
+                               maxlength="20"
+                               pattern="[a-zA-Z0-9]+"
                                required>
                         <?php if(isset($errors['identity_number'])): ?>
                             <p class="mt-1 text-sm text-red-600 font-medium"><?= esc($errors['identity_number']) ?></p>

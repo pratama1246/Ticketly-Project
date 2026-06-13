@@ -135,11 +135,14 @@ class CheckoutController extends BaseController
             ]);
         }
 
+        // Pemicu pembersihan order expired agar stok kembali sebelum pengecekan sisa stok tiket
+        (new OrderModel())->autoExpireOrders();
+
         $rules = [
-            'first_name'      => 'required|string|max_length[100]',
+            'first_name'      => 'required|max_length[100]',
             'email'           => 'required|valid_email',
-            'phone_number'    => 'required|string|max_length[50]',
-            'identity_number' => 'required|string|max_length[100]',
+            'phone_number'    => 'required|max_length[20]|regex_match[/^[0-9+\-\s()]+$/]',
+            'identity_number' => 'required|alpha_numeric|max_length[20]',
             'payment_method'  => 'required|string',
             'tickets'         => 'required',
         ];

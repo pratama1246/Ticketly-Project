@@ -43,17 +43,18 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
 
     public array $updateProfile = [
-        'username' => 'required|min_length[3]|max_length[30]|is_unique[users.username,id,{id}]',
+        'id'       => 'permit_empty|is_natural_no_zero',
+        'username' => 'required|min_length[3]|max_length[30]|alpha_numeric_space|is_unique[users.username,id,{id}]',
         'email'    => 'required|valid_email|max_length[255]|is_unique[users.email,id,{id}]',
-        'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]'
+        'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png,image/webp]|max_size[foto,2048]'
     ];
 
     public array $checkoutInfo = [
-        'first_name'      => 'required|string|max_length[100]',
+        'first_name'      => 'required|max_length[100]',
         'email'           => 'required|valid_email|max_length[255]',
-        'phone_number'    => 'required|string|max_length[50]',
-        'identity_number' => 'required|string|max_length[100]',
-        'last_name'       => 'permit_empty|string|max_length[100]',
+        'phone_number'    => 'required|max_length[20]|regex_match[/^[0-9+\-\s()]+$/]',
+        'identity_number' => 'required|alpha_numeric|max_length[20]',
+        'last_name'       => 'permit_empty|max_length[100]',
         'birth_date'      => 'required|string',
     ];
 }

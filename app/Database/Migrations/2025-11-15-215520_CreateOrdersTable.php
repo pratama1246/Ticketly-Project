@@ -14,6 +14,11 @@ class CreateOrdersTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
+            'trx_id' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '50',
+                'null'       => false,
+            ],
             'user_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,
@@ -44,6 +49,12 @@ class CreateOrdersTable extends Migration
             'birth_date' => [
                 'type' => 'DATE',
                 'null' => true,
+            ],
+            'payment_method' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '50',
+                'null'       => true,
+                'default'    => null,
             ],
             'order_total' => [
                 'type'       => 'DECIMAL',

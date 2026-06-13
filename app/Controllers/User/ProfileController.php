@@ -116,6 +116,13 @@ class ProfileController extends BaseController
         $fileFoto = $this->request->getFile('foto');
 
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
+            // Hapus foto lama jika ada agar tidak menumpuk
+            if (!empty($user->foto)) {
+                $oldPath = FCPATH . 'uploads/profile/' . $user->foto;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
             $fotoBaru = $fileFoto->getRandomName();
             $fileFoto->move(FCPATH . 'uploads/profile', $fotoBaru);
         }

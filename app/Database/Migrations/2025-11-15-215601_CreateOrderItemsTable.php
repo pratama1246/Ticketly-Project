@@ -19,6 +19,11 @@ class CreateOrderItemsTable extends Migration
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
+            'ticket_code' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '50',
+                'null'       => false,
+            ],
             'ticket_type_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,

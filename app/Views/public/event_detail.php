@@ -255,4 +255,181 @@
     <?php endif; ?>
 </main>
 
+<!-- Modal Zoom Gambar -->
+<div id="image-zoom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 transition-opacity duration-300 opacity-0" role="dialog" aria-modal="true">
+    <!-- Close Button -->
+    <button type="button" id="close-zoom-btn" class="absolute top-6 right-6 text-white hover:text-gray-300 focus:outline-none z-10 transition-transform hover:scale-110">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+    
+    <!-- Image Wrapper for Zoom & Pan -->
+    <div id="zoom-container" class="relative w-full h-full overflow-hidden flex items-center justify-center p-4 select-none cursor-zoom-in">
+        <img id="zoomed-image" src="" alt="Zoomed view" class="max-w-full max-h-[90vh] object-contain transition-transform duration-200 ease-out origin-center">
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('image-zoom-modal');
+    const zoomedImg = document.getElementById('zoomed-image');
+    const closeBtn = document.getElementById('close-zoom-btn');
+    const zoomContainer = document.getElementById('zoom-container');
+
+    // Menargetkan gambar poster (mobile/desktop) dan gambar seatmap
+    const zoomableImages = document.querySelectorAll('.lg\\:block .card-flat img, .lg\\:hidden img.object-cover, .bg-slate-900 img');
+
+    let scale = 1;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+
+    zoomableImages.forEach(img => {
+        img.classList.add('cursor-pointer', 'transition-all', 'duration-300', 'hover:opacity-95');
+        
+        img.addEventListener('click', function() {
+            zoomedImg.src = this.src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+            
+            // Reset zoom state
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateImageTransform();
+        });
+    });
+
+    function updateImageTransform() {
+        zoomedImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        if (scale > 1) {
+            zoomContainer.classList.remove('cursor-zoom-in');
+            zoomContainer.classList.add('cursor-grab');
+        } else {
+            zoomContainer.classList.remove('cursor-grab', 'cursor-grabbing');
+            zoomContainer.classList.add('cursor-zoom-in');
+        }
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            zoomedImg.src = '';
+        }, 300);
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal || e.target === zoomContainer) {
+            closeModal();
+        }
+    });
+
+    // Zoom on wheel
+    zoomContainer.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const zoomIntensity = 0.1;
+        if (e.deltaY < 0) {
+            scale = Math.min(scale + zoomIntensity, 4);
+        } else {
+            scale = Math.max(scale - zoomIntensity, 1);
+            if (scale === 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+        }
+        updateImageTransform();
+    }, { passive: false });
+
+    // Double click to toggle zoom
+    zoomContainer.addEventListener('dblclick', function() {
+        if (scale > 1) {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+        } else {
+            scale = 2;
+            translateX = 0;
+            translateY = 0;
+        }
+        updateImageTransform();
+    });
+
+    // Pan (drag) functionality
+    zoomContainer.addEventListener('mousedown', function(e) {
+        if (scale > 1) {
+            isDragging = true;
+            zoomContainer.classList.remove('cursor-grab');
+            zoomContainer.classList.add('cursor-grabbing');
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+        }
+    });
+
+    window.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateImageTransform();
+        }
+    });
+
+    window.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            zoomContainer.classList.remove('cursor-grabbing');
+            zoomContainer.classList.add('cursor-grab');
+        }
+    });
+
+    // Touch events for mobile zooming
+    let touchStartDist = 0;
+    let initialScale = 1;
+
+    zoomContainer.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 1 && scale > 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        } else if (e.touches.length === 2) {
+            isDragging = false;
+            touchStartDist = getTouchDistance(e.touches);
+            initialScale = scale;
+        }
+    });
+
+    zoomContainer.addEventListener('touchmove', function(e) {
+        if (isDragging && e.touches.length === 1) {
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            updateImageTransform();
+        } else if (e.touches.length === 2) {
+            const dist = getTouchDistance(e.touches);
+            const factor = dist / touchStartDist;
+            scale = Math.min(Math.max(initialScale * factor, 1), 4);
+            updateImageTransform();
+        }
+    }, { passive: true });
+
+    zoomContainer.addEventListener('touchend', function() {
+        isDragging = false;
+    });
+
+    function getTouchDistance(touches) {
+        return Math.hypot(
+            touches[0].clientX - touches[1].clientX,
+            touches[0].clientY - touches[1].clientY
+        );
+    }
+});
+</script>
+
 <?= $this->endSection() ?>

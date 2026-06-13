@@ -65,9 +65,9 @@ class ProfileController extends BaseController
         }
 
         $rules = [
-            'username' => "required|min_length[3]|max_length[30]|is_unique[users.username,id,$userId]",
+            'username' => "required|min_length[3]|max_length[30]|alpha_numeric_space|is_unique[users.username,id,$userId]",
             'email'    => "required|valid_email|is_unique[users.email,id,$userId]",
-            'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]',
+            'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png,image/webp]|max_size[foto,2048]',
         ];
 
         if (!$this->validate($rules)) {

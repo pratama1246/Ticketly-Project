@@ -2,8 +2,8 @@
     "name": "RIIZE: RIIZING DAY in Jakarta",
     "event_date": "2026-02-15 15:00:00",
     "venue": "ICE BSD Hall 5",
-    "poster_image": "banner/riizing-loud.png",
-    "seatmap_image": "seatmap/riize-seatmap.png",
+    "poster_image": "uploads/banners/riizing-loud.webp",
+    "seatmap_image": "uploads/seatmaps/riize-seatmap.webp",
     "description_file": "description.html",
 
     "ticket_types": [
