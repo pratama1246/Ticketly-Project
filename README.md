@@ -123,11 +123,11 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👥 Team
 
-| No | Name | NIM |
-|----|------|-----|
-| 1 | Dzakira Raihanna | 240202103 |
-| 2 | Pratama Putra Purwanto | 240202115 |
-| 3 | Shoffya Jihan Priyastri | 240302121 |
+| No | Name |
+|----|------|
+| 1 | Hana |
+| 2 | Tama|
+| 3 | Jihan |
 
 **Class:** Teknik Informatika 2D  
 **Course:** Pemrograman Web 2   
