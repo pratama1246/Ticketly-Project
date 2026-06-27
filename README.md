@@ -152,11 +152,11 @@ JWT_SECRET_KEY=your_secret_key_here
 
 ```env
 email.fromName='Ticketly System'
-email.fromEmail='noreply@ticketly.mytamakikii.web.id'
+email.fromEmail='noreply@yourdomain.com'
 email.protocol='smtp'
 email.SMTPHost='live.smtp.mailtrap.io'
-email.SMTPUser='api'
-email.SMTPPass='c23f6d13c308dccbd61a0d6fb1e5cd72'
+email.SMTPUser='your_mailtrap_user'
+email.SMTPPass='your_mailtrap_password'
 email.SMTPPort=2525
 email.SMTPCrypto='tls'
 email.mailType='html'
