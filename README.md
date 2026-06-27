@@ -1,80 +1,191 @@
-# 🎟️ Ticketly
+# 🎟️ Ticketly (PNC)
 
-**Ticketly** is an event ticketing platform built with CodeIgniter 4. It provides a web application (for administrators and users) and a RESTful API backend to support integration with the Ticketly Flutter mobile application.
+**Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform, designed for internal use at **Politeknik Negeri Cilacap**.
 
-> Built and deployed as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
+It supports 3 main roles / integration paths:
 
----
+- **User (Web)**: browse and view available events, purchase tickets with quantity selection, view booking history and ticket status, and manage profile.
+- **Admin (Web Dashboard)**: manage events (create, edit, delete), monitor ticket sales and quotas, view/manage transaction records, and monitor dashboard statistics.
+- **Mobile API (Flutter Integration)**: custom JWT-based authentication, retrieve events/tickets, calculate cart checkout in real-time, and manage booking status.
 
-## ✨ Features
-
-### 👤 User (Web)
-- Browse and view available events
-- Purchase tickets with quantity selection
-- View booking history and ticket status
-- User authentication (register, login, logout)
-
-### 🛠️ Admin (Web Dashboard)
-- Manage events (create, edit, delete)
-- Monitor ticket sales and quotas
-- View and manage transaction records
-- Dashboard overview with key statistics
-
-### 📱 Mobile API (Flutter Integration)
-- JWT-based custom authentication (Login, Register, Logout)
-- Retrieve featured events & landing page banners
-- View event details, ticket categories, and available quotas
-- Real-time cart calculation and checkout flow
-- Booking management (Start transaction, confirm payment, cancel booking)
-- User profile management & transaction history tracking
+> The application exposes a custom JWT RESTful API endpoint to receive requests from the mobile Flutter client.
+> Built as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
 
 ---
 
-## 🧰 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | CodeIgniter 4 |
-| Language | PHP 8.1+ |
-| Database | MySQL |
-| Auth System | Shield (Web Session) & Custom JWT (Mobile API) |
-| API Auth | Firebase PHP-JWT |
-| Frontend | HTML, CSS, JavaScript, Tailwind CSS, Flowbite |
-| UI Design | Figma |
-| Dependency Manager | Composer |
+[![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4-EE4326?style=for-the-badge&logo=codeigniter&logoColor=white)](https://codeigniter.com)
+[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-v3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Flowbite](https://img.shields.io/badge/Flowbite-v1.6-3F83F8?style=for-the-badge&logo=flowbite&logoColor=white)](https://flowbite.com)
+[![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://figma.com)
 
 ---
 
-## 📁 Project Structure
+## Table of Contents
 
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Local Setup](#local-setup)
+- [Environment Configuration (.env)](#environment-configuration-env)
+- [Database Structure](#database-structure)
+- [REST API Endpoints](#rest-api-endpoints)
+- [Run the App](#run-the-app)
+- [UI/UX Design](#uiux-design)
+- [Team](#team)
+- [License](#license)
+- [Disclaimer](#disclaimer)
+
+---
+
+## Key Features
+
+### Authentication & Profile
+
+- Register kustom untuk user & admin
+- Login & logout
+- Edit profil user & update data kustom
+- Autentikasi berbasis session untuk Web (Shield) & token JWT kustom untuk Mobile API
+
+### User (Web)
+
+- Halaman jelajah event konser/pertunjukan yang tersedia
+- Pembelian tiket dengan seleksi jumlah tiket kustom
+- Riwayat pemesanan & detail transaksi kustom
+- Status pemesanan otomatis
+
+### Admin (Web Dashboard)
+
+- Dashboard statistik penjualan tiket
+- Event management (CRUD)
+- Monitor penjualan tiket & kuota secara real-time
+- Kelola dan lihat data transaksi tiket masuk
+
+### Mobile API (Flutter Integration)
+
+- Registrasi & login (memperoleh JWT kustom)
+- Home banner/landing event & featured events
+- Informasi detail event, kategori tiket, & sisa kuota tiket
+- Kalkulasi keranjang belanja (cart) real-time
+- Transaksi pemesanan (start checkout, upload bukti bayar/confirm, cancel booking)
+
+---
+
+## Tech Stack
+
+**Backend**
+
+- PHP `^8.1`
+- CodeIgniter Framework `^4.0`
+- CodeIgniter Shield: `codeigniter4/shield`
+- JWT Auth: `firebase/php-jwt`
+- PDF Generator: `dompdf/dompdf`
+- QR Code Generator: `simplesoftwareio/simple-qrcode`
+
+**Frontend**
+
+- HTML & Vanilla JavaScript
+- Tailwind CSS & Flowbite
+- Blade-style CodeIgniter views (layouts & sections)
+- Figma (UI/UX design prototype)
+
+---
+
+## Requirements
+
+- PHP **8.1+**
+- Composer
+- Web server (Apache/Nginx) atau built-in PHP development server
+- MySQL
+
+---
+
+## Local Setup
+
+```bash
+# 1) Clone repository
+git clone https://github.com/pratama1246/ticketly-project.git
+cd ticketly-project
+
+# 2) Install dependencies
+composer install
+
+# 3) Setup environment file
+cp env .env
+
+# 4) Configure your .env (DB, Base URL, JWT_SECRET_KEY, dll.)
+
+# 5) Import database
+# Buat database MySQL dengan nama 'ticketly' terlebih dahulu, kemudian jalankan:
+mysql -u root -p ticketly < ticketly.sql
 ```
-ticketly-project/
-├── app/
-│   ├── Config/         # App configuration & routes (including Shield & JWT filters)
-│   ├── Controllers/    # Request handlers
-│   │   ├── Admin/      # Web controller for admin dashboard
-│   │   ├── Api/        # REST API controller for Flutter
-│   │   ├── Public/     # Web controller for public pages
-│   │   └── User/       # Web controller for user checkout
-│   ├── Filters/        # Middlewares (e.g. JwtFilter for API security)
-│   ├── Helpers/        # Custom helpers (e.g. jwt_helper.php)
-│   ├── Models/         # Database models
-│   └── Views/          # HTML templates (Blade-style + Flowbite)
-├── public/             # Public assets (CSS, JS, images)
-├── writable/           # Logs & cache
-├── ticketly.sql        # Database schema & seed
-├── composer.json       # PHP dependencies
-└── package.json        # JS dependencies
+
+---
+
+## Environment Configuration (.env)
+
+### Application
+
+```env
+CI_ENVIRONMENT=development
+app.baseURL='http://localhost:8080/'
+```
+
+### Database
+
+```env
+database.default.hostname=localhost
+database.default.database=ticketly
+database.default.username=root
+database.default.password=
+database.default.DBDriver=MySQLi
+```
+
+### Encryption & API Authentication
+
+```env
+JWT_SECRET_KEY=your_secret_key_here
+```
+
+### Email Settings
+
+```env
+email.fromName='Ticketly System'
+email.fromEmail='noreply@ticketly.mytamakikii.web.id'
+email.protocol='smtp'
+email.SMTPHost='live.smtp.mailtrap.io'
+email.SMTPUser='api'
+email.SMTPPass='c23f6d13c308dccbd61a0d6fb1e5cd72'
+email.SMTPPort=2525
+email.SMTPCrypto='tls'
+email.mailType='html'
 ```
 
 ---
 
-## 🔌 REST API Endpoints
+## Database Structure
 
-All API endpoints are prefixed with `/api`. Protected routes require a valid JWT token sent in the `Authorization: Bearer <token>` header.
+Struktur database lengkap beserta data seed awal tersedia di file `ticketly.sql`. Impor langsung ke server MySQL Anda untuk memperoleh database yang siap digunakan.
+
+Proyek ini menggunakan tabel-tabel utama seperti:
+
+- `users` & `auth_groups_users` (manajemen user & role admin/user)
+- `events` (data event)
+- `tickets` (tipe dan kuota tiket per event)
+- `orders` (riwayat transaksi dan status pemesanan kustom)
+- `order_items` (kategori tiket yang dipesan)
+
+---
+
+## REST API Endpoints
+
+Seluruh API endpoint menggunakan prefiks `/api`. Endpoint yang dilindungi oleh filter `api_jwt` membutuhkan autentikasi berupa Bearer token JWT di header `Authorization: Bearer <token>`.
 
 ### Response Format
-All responses return a consistent JSON structure:
+
+Respon yang dikembalikan memiliki struktur JSON konsisten:
+
 ```json
 {
   "status": "success" | "error",
@@ -83,7 +194,8 @@ All responses return a consistent JSON structure:
 }
 ```
 
-For paginated lists, a sidecar `meta` object is included:
+Untuk list data terpaginasi, respon menyertakan sidecar `meta`:
+
 ```json
 {
   "status": "success",
@@ -98,88 +210,43 @@ For paginated lists, a sidecar `meta` object is included:
 }
 ```
 
-### Endpoints List
+### Endpoint List
 
 | Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
+|---|---|---|---|
 | **Auth** | | | |
-| `POST` | `/api/auth/register` | Public | Register a new user |
-| `POST` | `/api/auth/login` | Public | Login & receive JWT token |
-| `POST` | `/api/auth/logout` | JWT | Logout and invalidate session |
-| **Events** | | | |
-| `GET` | `/api/events` | Public | Get list of events (paginated) |
-| `GET` | `/api/events/featured` | Public | Get featured events |
-| `GET` | `/api/events/landing` | Public | Get landing page events |
-| `GET` | `/api/events/{slug}` | Public | Get event detail by slug |
-| `GET` | `/api/events/{id}/tickets` | Public | Get ticket types & quotas for an event |
+| `POST` | `/api/auth/register` | Public | Registrasi akun baru |
+| `POST` | `/api/auth/login` | Public | Login & dapatkan token JWT kustom |
+| `POST` | `/api/auth/logout` | JWT | Logout & matikan sesi autentikasi |
+| **Events & Tickets** | | | |
+| `GET` | `/api/events` | Public | Dapatkan daftar event terpaginasi |
+| `GET` | `/api/events/featured` | Public | Dapatkan daftar event pilihan (featured) |
+| `GET` | `/api/events/landing` | Public | Dapatkan daftar event untuk halaman utama |
+| `GET` | `/api/events/{slug}` | Public | Detail event berdasarkan slug |
+| `GET` | `/api/events/{id}/tickets` | Public | Daftar kategori tiket & kuota per event |
 | **Checkout** | | | |
-| `GET` | `/api/checkout/payment-methods` | Public | Get list of available payment methods |
-| `POST` | `/api/checkout/calculate` | Public | Calculate subtotal, fees, and grand total |
-| `POST` | `/api/checkout/start` | JWT | Initialize checkout & lock ticket quota |
-| `POST` | `/api/checkout/confirm` | JWT | Upload proof of payment / confirm transaction |
-| `POST` | `/api/checkout/cancel` | JWT | Cancel a pending transaction |
+| `GET` | `/api/checkout/payment-methods` | Public | Daftar metode pembayaran yang tersedia |
+| `POST` | `/api/checkout/calculate` | Public | Kalkulasi keranjang, subtotal, admin fee, & total |
+| `POST` | `/api/checkout/start` | JWT | Mulai checkout & mengunci sisa kuota tiket |
+| `POST` | `/api/checkout/confirm` | JWT | Upload bukti bayar / konfirmasi transaksi |
+| `POST` | `/api/checkout/cancel` | JWT | Membatalkan transaksi pemesanan |
 | **Profile & Orders** | | | |
-| `GET` | `/api/profile` | JWT | Get current user's profile info |
-| `POST` | `/api/profile/update` | JWT | Update user's profile info |
-| `GET` | `/api/orders` | JWT | Get user's order history |
-| `GET` | `/api/orders/{id}` | JWT | Get detailed transaction information |
+| `GET` | `/api/profile` | JWT | Dapatkan data profil user saat ini |
+| `POST` | `/api/profile/update` | JWT | Perbarui profil user saat ini |
+| `GET` | `/api/orders` | JWT | Riwayat pemesanan user |
+| `GET` | `/api/orders/{id}` | JWT | Detail transaksi pemesanan spesifik |
 
 ---
 
-## ⚙️ Installation
+## Run the App
 
-### Prerequisites
-- PHP >= 8.1
-- Composer
-- MySQL
-- Web server (Apache/Nginx) or PHP built-in server
+Jalankan server lokal pengembangan CodeIgniter 4 menggunakan spark serve:
 
-### Steps
+```bash
+php spark serve
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/pratama1246/ticketly-project.git
-   cd ticketly-project
-   ```
-
-2. **Install PHP dependencies**
-   ```bash
-   composer install
-   ```
-
-3. **Setup environment**
-   ```bash
-   cp env .env
-   ```
-   Edit `.env` and configure your database and JWT secret key:
-   ```env
-   app.baseURL = 'http://localhost:8080/'
-   JWT_SECRET_KEY = your_jwt_secret_key_here
-
-   database.default.hostname = localhost
-   database.default.database = ticketly
-   database.default.username = root
-   database.default.password = 
-   database.default.DBDriver = MySQLi
-   ```
-
-4. **Import database**
-   ```bash
-   # Create database first, then import:
-   mysql -u root -p ticketly < ticketly.sql
-   ```
-
-5. **Run the application**
-   ```bash
-   php spark serve
-   ```
-   Open browser at `http://localhost:8080`
-
----
-
-## 🗄️ Database
-
-The database schema is available in `ticketly.sql`. Import it directly to your MySQL server to get the full table structure along with sample data.
+Aplikasi akan berjalan di `http://localhost:8080`
 
 ---
 
@@ -189,23 +256,23 @@ The interface was designed in Figma before development, following a design-first
 
 ---
 
-## 📄 License
+## 👥 Team
 
-This project is licensed under the [MIT License](LICENSE).
+- **Hana**
+- **Tama**
+- **Jihan**
+
+Built as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
+
+**Class:** Teknik Informatika 2D  
+**Course:** Pemrograman Web 2  
+**Institution:** Politeknik Negeri Cilacap
 
 ---
 
-## 👥 Team
+## License
 
-| No | Name |
-|----|------|
-| 1 | Hana |
-| 2 | Tama|
-| 3 | Jihan |
-
-**Class:** Teknik Informatika 2D  
-**Course:** Pemrograman Web 2   
-**Institution:** Politeknik Negeri Cilacap
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
