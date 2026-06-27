@@ -43,32 +43,32 @@ It supports 3 main roles / integration paths:
 
 ### Authentication & Profile
 
-- Register kustom untuk user & admin
+- Custom registration for user & admin
 - Login & logout
-- Edit profil user & update data kustom
-- Autentikasi berbasis session untuk Web (Shield) & token JWT kustom untuk Mobile API
+- Edit user profile & update custom data
+- Session-based authentication for Web (Shield) & custom JWT token for Mobile API
 
 ### User (Web)
 
-- Halaman jelajah event konser/pertunjukan yang tersedia
-- Pembelian tiket dengan seleksi jumlah tiket kustom
-- Riwayat pemesanan & detail transaksi kustom
-- Status pemesanan otomatis
+- Browse available concert/show events
+- Ticket purchase with custom quantity selection
+- Order history & custom transaction details
+- Automatic order status updates
 
 ### Admin (Web Dashboard)
 
-- Dashboard statistik penjualan tiket
+- Ticket sales statistics dashboard
 - Event management (CRUD)
-- Monitor penjualan tiket & kuota secara real-time
-- Kelola dan lihat data transaksi tiket masuk
+- Real-time ticket sales & quota monitoring
+- Manage and view incoming ticket transaction data
 
 ### Mobile API (Flutter Integration)
 
-- Registrasi & login (memperoleh JWT kustom)
-- Home banner/landing event & featured events
-- Informasi detail event, kategori tiket, & sisa kuota tiket
-- Kalkulasi keranjang belanja (cart) real-time
-- Transaksi pemesanan (start checkout, upload bukti bayar/confirm, cancel booking)
+- Registration & login (obtaining custom JWT)
+- Home banner/landing events & featured events
+- Detailed event information, ticket categories, & remaining ticket quota
+- Real-time shopping cart (cart) calculation
+- Booking transactions (start checkout, upload proof of payment/confirm, cancel booking)
 
 ---
 
@@ -96,7 +96,7 @@ It supports 3 main roles / integration paths:
 
 - PHP **8.1+**
 - Composer
-- Web server (Apache/Nginx) atau built-in PHP development server
+- Web server (Apache/Nginx) or built-in PHP development server
 - MySQL
 
 ---
@@ -114,10 +114,10 @@ composer install
 # 3) Setup environment file
 cp env .env
 
-# 4) Configure your .env (DB, Base URL, JWT_SECRET_KEY, dll.)
+# 4) Configure your .env (DB, Base URL, JWT_SECRET_KEY, etc.)
 
 # 5) Import database
-# Buat database MySQL dengan nama 'ticketly' terlebih dahulu, kemudian jalankan:
+# Create a MySQL database named 'ticketly' first, then run:
 mysql -u root -p ticketly < ticketly.sql
 ```
 
@@ -166,25 +166,25 @@ email.mailType='html'
 
 ## Database Structure
 
-Struktur database lengkap beserta data seed awal tersedia di file `ticketly.sql`. Impor langsung ke server MySQL Anda untuk memperoleh database yang siap digunakan.
+The complete database structure along with initial seed data is available in the `ticketly.sql` file. Import it directly to your MySQL server to get a database that is ready to use.
 
-Proyek ini menggunakan tabel-tabel utama seperti:
+This project uses the following main tables:
 
-- `users` & `auth_groups_users` (manajemen user & role admin/user)
-- `events` (data event)
-- `tickets` (tipe dan kuota tiket per event)
-- `orders` (riwayat transaksi dan status pemesanan kustom)
-- `order_items` (kategori tiket yang dipesan)
+- `users` & `auth_groups_users` (user management & admin/user role mapping)
+- `events` (event data)
+- `tickets` (ticket types and quotas per event)
+- `orders` (transaction history and custom booking status)
+- `order_items` (ordered ticket categories)
 
 ---
 
 ## REST API Endpoints
 
-Seluruh API endpoint menggunakan prefiks `/api`. Endpoint yang dilindungi oleh filter `api_jwt` membutuhkan autentikasi berupa Bearer token JWT di header `Authorization: Bearer <token>`.
+All API endpoints are prefixed with `/api`. Endpoints protected by the `api_jwt` filter require a valid JWT Bearer token in the `Authorization: Bearer <token>` header.
 
 ### Response Format
 
-Respon yang dikembalikan memiliki struktur JSON konsisten:
+Returned responses have a consistent JSON structure:
 
 ```json
 {
@@ -194,7 +194,7 @@ Respon yang dikembalikan memiliki struktur JSON konsisten:
 }
 ```
 
-Untuk list data terpaginasi, respon menyertakan sidecar `meta`:
+For paginated list data, the response includes a sidecar `meta` object:
 
 ```json
 {
@@ -215,38 +215,38 @@ Untuk list data terpaginasi, respon menyertakan sidecar `meta`:
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
 | **Auth** | | | |
-| `POST` | `/api/auth/register` | Public | Registrasi akun baru |
-| `POST` | `/api/auth/login` | Public | Login & dapatkan token JWT kustom |
-| `POST` | `/api/auth/logout` | JWT | Logout & matikan sesi autentikasi |
+| `POST` | `/api/auth/register` | Public | Register a new account |
+| `POST` | `/api/auth/login` | Public | Login & receive custom JWT token |
+| `POST` | `/api/auth/logout` | JWT | Logout & terminate authentication session |
 | **Events & Tickets** | | | |
-| `GET` | `/api/events` | Public | Dapatkan daftar event terpaginasi |
-| `GET` | `/api/events/featured` | Public | Dapatkan daftar event pilihan (featured) |
-| `GET` | `/api/events/landing` | Public | Dapatkan daftar event untuk halaman utama |
-| `GET` | `/api/events/{slug}` | Public | Detail event berdasarkan slug |
-| `GET` | `/api/events/{id}/tickets` | Public | Daftar kategori tiket & kuota per event |
+| `GET` | `/api/events` | Public | Get paginated list of events |
+| `GET` | `/api/events/featured` | Public | Get featured events list |
+| `GET` | `/api/events/landing` | Public | Get events list for the main/landing page |
+| `GET` | `/api/events/{slug}` | Public | Event details by slug |
+| `GET` | `/api/events/{id}/tickets` | Public | List of ticket categories & quotas per event |
 | **Checkout** | | | |
-| `GET` | `/api/checkout/payment-methods` | Public | Daftar metode pembayaran yang tersedia |
-| `POST` | `/api/checkout/calculate` | Public | Kalkulasi keranjang, subtotal, admin fee, & total |
-| `POST` | `/api/checkout/start` | JWT | Mulai checkout & mengunci sisa kuota tiket |
-| `POST` | `/api/checkout/confirm` | JWT | Upload bukti bayar / konfirmasi transaksi |
-| `POST` | `/api/checkout/cancel` | JWT | Membatalkan transaksi pemesanan |
+| `GET` | `/api/checkout/payment-methods` | Public | List of available payment methods |
+| `POST` | `/api/checkout/calculate` | Public | Calculate cart, subtotal, admin fee, & total |
+| `POST` | `/api/checkout/start` | JWT | Start checkout & lock remaining ticket quota |
+| `POST` | `/api/checkout/confirm` | JWT | Upload proof of payment / confirm transaction |
+| `POST` | `/api/checkout/cancel` | JWT | Cancel booking transaction |
 | **Profile & Orders** | | | |
-| `GET` | `/api/profile` | JWT | Dapatkan data profil user saat ini |
-| `POST` | `/api/profile/update` | JWT | Perbarui profil user saat ini |
-| `GET` | `/api/orders` | JWT | Riwayat pemesanan user |
-| `GET` | `/api/orders/{id}` | JWT | Detail transaksi pemesanan spesifik |
+| `GET` | `/api/profile` | JWT | Get current user's profile details |
+| `POST` | `/api/profile/update` | JWT | Update current user's profile details |
+| `GET` | `/api/orders` | JWT | User order history |
+| `GET` | `/api/orders/{id}` | JWT | Specific order transaction details |
 
 ---
 
 ## Run the App
 
-Jalankan server lokal pengembangan CodeIgniter 4 menggunakan spark serve:
+Run the CodeIgniter 4 local development server using spark serve:
 
 ```bash
 php spark serve
 ```
 
-Aplikasi akan berjalan di `http://localhost:8080`
+The application will run at `http://localhost:8080`
 
 ---
 
