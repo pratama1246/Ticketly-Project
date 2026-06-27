@@ -86,6 +86,9 @@ $routes->group('profile', ['namespace' => 'App\Controllers\User', 'filter' => 's
 // API Routes
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
 
+    // Docs
+    $routes->get('docs', 'DocsController::index');
+
     // Auth
     $routes->post('auth/login', 'AuthController::login');
     $routes->post('auth/register', 'AuthController::register');

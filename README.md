@@ -182,6 +182,15 @@ This project uses the following main tables:
 
 All API endpoints are prefixed with `/api`. Endpoints protected by the `api_jwt` filter require a valid JWT Bearer token in the `Authorization: Bearer <token>` header.
 
+### 📖 Interactive API Docs (Scalar)
+
+We provide interactive API documentation powered by **Scalar**. You can browse all endpoints, view detailed request/response schemas, generate integration code (e.g., for Flutter/Dart, JavaScript, curl), and test requests directly from your browser.
+
+* **Documentation URL:** [http://localhost:8080/api/docs](http://localhost:8080/api/docs)
+* **OpenAPI File Spec:** [`public/openapi.json`](public/openapi.json)
+
+> **Note:** Make sure your local server is running (`php spark serve`) to access the URL above.
+
 ### Response Format
 
 Returned responses have a consistent JSON structure:
