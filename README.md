@@ -1,6 +1,6 @@
 # 🎟️ Ticketly (PNC)
 
-**Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform, designed for internal use at **Politeknik Negeri Cilacap**.
+**Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform built as a college project at **Politeknik Negeri Cilacap**.
 
 It supports 3 main roles / integration paths:
 
