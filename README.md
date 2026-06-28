@@ -45,6 +45,7 @@ It supports 3 main roles / integration paths:
 
 - Custom registration for user & admin
 - Login & logout
+- Forgot password request (OTP via email) & secure password reset
 - Edit user profile & update custom data
 - Session-based authentication for Web (Shield) & custom JWT token for Mobile API
 
@@ -227,6 +228,9 @@ For paginated list data, the response includes a sidecar `meta` object:
 | `POST` | `/api/auth/register` | Public | Register a new account |
 | `POST` | `/api/auth/login` | Public | Login & receive custom JWT token |
 | `POST` | `/api/auth/logout` | JWT | Logout & terminate authentication session |
+| `POST` | `/api/auth/forgot-password` | Public | Request password reset verification code (OTP) |
+| `POST` | `/api/auth/verify-code` | Public | Validate OTP verification code |
+| `POST` | `/api/auth/reset-password` | Public | Update user password with new credentials |
 | **Events & Tickets** | | | |
 | `GET` | `/api/events` | Public | Get paginated list of events |
 | `GET` | `/api/events/featured` | Public | Get featured events list |
