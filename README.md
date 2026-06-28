@@ -26,6 +26,7 @@ It supports 3 main roles / integration paths:
 
 - [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
+- [Directory Structure](#directory-structure)
 - [Requirements](#requirements)
 - [Local Setup](#local-setup)
 - [Environment Configuration (.env)](#environment-configuration-env)
@@ -90,6 +91,45 @@ It supports 3 main roles / integration paths:
 - Tailwind CSS & Flowbite
 - Blade-style CodeIgniter views (layouts & sections)
 - Figma (UI/UX design prototype)
+
+---
+
+## Directory Structure
+
+Berikut adalah struktur folder utama dari proyek **Ticketly**:
+
+```
+ticketly-project/
+├── app/                        # Direktori aplikasi utama
+│   ├── Config/                 # Konfigurasi aplikasi (Routes, Filters, Auth, dll.)
+│   ├── Controllers/            # Controller untuk logika bisnis
+│   │   ├── Admin/              # Controller untuk area admin (Web)
+│   │   ├── Api/                # Controller REST API untuk Mobile (Flutter)
+│   │   ├── Public/             # Controller untuk halaman publik (Web)
+│   │   └── User/               # Controller untuk user & checkout (Web)
+│   ├── Database/               # Database migrations dan seeds
+│   │   ├── Migrations/         # File migrasi skema database
+│   │   └── Seeds/              # File seeder untuk data awal/dummy
+│   ├── Filters/                # Filter request (JwtFilter, CorsFilter, dll.)
+│   ├── Helpers/                # Helper custom (jwt_helper.php untuk JWT)
+│   ├── Models/                 # Model CodeIgniter 4 (Interaksi database)
+│   └── Views/                  # View template (layouts & sections)
+│       ├── admin/              # Tampilan dashboard admin
+│       ├── layout/             # Template layout utama (header, footer, sidebar)
+│       ├── public/             # Tampilan halaman publik (landing page, detail event)
+│       └── user/               # Tampilan halaman user (transaksi, riwayat order)
+├── public/                     # Folder publik (accessible via web browser)
+│   ├── assets/                 # Aset statis seperti gambar, logo, ikon
+│   ├── js/                     # File JavaScript client-side
+│   ├── openapi.json            # Spesifikasi OpenAPI untuk dokumentasi REST API
+│   ├── output.css              # File CSS hasil compile Tailwind CSS
+│   └── uploads/                # Tempat penyimpanan file upload (bukti pembayaran, dll.)
+├── tests/                      # Unit testing dan integration testing
+├── writable/                   # Folder writable untuk logs, cache, session, dll.
+├── .env                        # Konfigurasi environment (DB, JWT secret, dll.)
+├── README.md                   # Dokumentasi proyek
+└── spark                       # Script CLI CodeIgniter 4
+```
 
 ---
 
