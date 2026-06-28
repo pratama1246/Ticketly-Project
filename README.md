@@ -120,7 +120,26 @@ cp env .env
 # 5) Import database
 # Create a MySQL database named 'ticketly' first, then run:
 mysql -u root -p ticketly < ticketly.sql
+
+# 6) Run seeders to populate mock users and admin (Optional)
+php spark db:seed AdminUserSeeder
+php spark db:seed FakeUserSeeder
 ```
+
+### 🔑 Default Testing Credentials
+
+After running the seeders, you can use the following credentials for testing:
+
+#### Administrator
+- **Email:** `admin@ticketly.com`
+- **Username:** `admin`
+- **Password:** `admin123`
+
+#### Mock Users
+- `budi@example.com` / `password123` (username: `budi_santoso`)
+- `ani@example.com` / `password123` (username: `ani_wijaya`)
+- `dewi@example.com` / `password123` (username: `dewi_sari`)
+- `rudi@example.com` / `password123` (username: `rudi_hermawan`)
 
 ---
 
