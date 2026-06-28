@@ -92,6 +92,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     // Auth
     $routes->post('auth/login', 'AuthController::login');
     $routes->post('auth/register', 'AuthController::register');
+    $routes->post('auth/forgot-password', 'AuthController::forgotPassword');
+    $routes->post('auth/verify-code', 'AuthController::verifyCode');
+    $routes->post('auth/reset-password', 'AuthController::resetPassword');
 
     // Events — featured HARUS di atas (:segment)
     $routes->get('events/featured', 'EventController::featured');        // paling atas

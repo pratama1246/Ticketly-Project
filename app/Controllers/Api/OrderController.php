@@ -78,6 +78,7 @@ class OrderController extends BaseController
             ->select('order_items.*, ticket_types.name as ticket_name,
                       ticket_types.ticket_category, events.name as event_name,
                       events.slug as event_slug, events.event_date,
+                      events.poster_image,
                       seats.label as seat_label')
             ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
             ->join('events', 'events.id = ticket_types.event_id', 'left')
@@ -95,6 +96,9 @@ class OrderController extends BaseController
                 'event_date'      => $item['event_date'],
                 'seat_label'      => $item['seat_label'] ?? 'Free Seating',
                 'price_per_ticket'=> (int) $item['price_per_ticket'],
+                'event_poster'    => $item['poster_image']
+                    ? base_url($item['poster_image'])
+                    : null,
             ];
         }, $items);
 
