@@ -10,27 +10,31 @@ class AdminUserSeeder extends Seeder
 {
     public function run()
     {
-        // 1. Dapatkan Model User
         $users = new UserModel();
-        // 2. Buat data user baru
+
+        // Cek apakah user admin sudah ada
+        $existing = $users->findByCredentials(['email' => 'admin@ticketly.com']);
+        if ($existing) {
+            $existing->password = 'admin123';
+            $users->save($existing);
+            echo "User admin sudah ada. Kata sandi diperbarui menjadi: admin123\n";
+            return;
+        }
+
         $user = new User([
             'username'   => 'admin',
-            'email'      => 'admin@ticketly.com', // Ganti dengan emailmu
-            'password'   => 'AdminKUYangGantengTicketly654!@',      // Ganti dengan password kuat
+            'email'      => 'admin@ticketly.com',
+            'password'   => 'admin123',
             'first_name' => 'Admin',
             'last_name'  => 'Ticketly'
         ]);
 
-        // 3. Simpan user ke database
-        // (forceActivate() akan otomatis mengaktifkan user)
         $users->save($user);
 
-        // 4. Ambil user yang baru saja dibuat (untuk mendapatkan ID-nya)
+        // Ambil kembali untuk add group
         $user = $users->findByCredentials(['email' => 'admin@ticketly.com']);
-
-        // 5. Tambahkan user ke grup 'admin'
         $user->addGroup('admin');
 
-        echo "User admin berhasil dibuat dengan email: admin@ticketly.com";
+        echo "User admin berhasil dibuat dengan email: admin@ticketly.com dan kata sandi: admin123\n";
     }
 }
