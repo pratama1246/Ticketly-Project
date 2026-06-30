@@ -1,4 +1,4 @@
-# 🎟️ Ticketly (PNC)
+# 🎟️ Ticketly
 
 **Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform built as a college project at **Politeknik Negeri Cilacap**.
 
@@ -349,7 +349,9 @@ npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch
 
 The interface was designed in Figma before development, following a design-first workflow. The prototype covers user flows for browsing events, ticket purchasing, and the admin dashboard.
 
-### Preview Screenshots
+---
+
+## Preview Screenshots
 
 
 
