@@ -10,6 +10,7 @@ class EventSeeder extends Seeder
 {
     public function run()
     {
+        helper('url');
         $model = new EventModel();
         $ticketModel = new TicketTypeModel(); 
         $path = APPPATH . 'Database/Seeds/data/';
@@ -46,6 +47,7 @@ class EventSeeder extends Seeder
             // 7. Siapkan data event
             $insertData = [
                 'name'          => $data['name'],
+                'slug'          => url_title($data['name'], '-', true),
                 'event_date'    => $data['event_date'],
                 'venue'         => $data['venue'],
                 'poster_image'  => $data['poster_image'],

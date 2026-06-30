@@ -128,8 +128,3 @@ _modules/*
 /vendor
 public/output.css
 
-# AI Guidlines
-.cursorrules
-AGENTS.md
-AI_RULES.md
-/pict-agent/

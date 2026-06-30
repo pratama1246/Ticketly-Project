@@ -1,6 +1,9 @@
-# 🎟️ Ticketly
+# 🎟️ Ticketly (PNC)
 
 **Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform built as a college project at **Politeknik Negeri Cilacap**.
+
+This is the backend and web application repository. The companion mobile application repository can be found here:
+* **Flutter Mobile App Repository:** [github.com/pratama1246/ticketly](https://github.com/pratama1246/ticketly)
 
 It supports 3 main roles / integration paths:
 
@@ -155,11 +158,13 @@ cp env .env
 
 # 4) Configure your .env (DB, Base URL, JWT_SECRET_KEY, etc.)
 
-# 5) Import database
-# Create a MySQL database named 'ticketly' first, then run:
-mysql -u root -p ticketly < ticketly.sql
+# 5) Run database migrations
+# Create a MySQL database named 'ticketly' first, configure your .env, then run:
+php spark migrate
 
-# 6) Run seeders to populate mock users and admin (Optional)
+# 6) Run seeders to populate database with initial data & mock users (Optional)
+php spark db:seed PaymentMethodSeeder
+php spark db:seed EventSeeder
 php spark db:seed AdminUserSeeder
 php spark db:seed FakeUserSeeder
 ```
@@ -224,15 +229,31 @@ email.mailType='html'
 
 ## Database Structure
 
-The complete database structure along with initial seed data is available in the `ticketly.sql` file. Import it directly to your MySQL server to get a database that is ready to use.
+The database schema is managed using CodeIgniter 4 **Migrations** (`app/Database/Migrations/`), and initial data is populated using **Seeds** (`app/Database/Seeds/`).
+
+You can set up or reset the database structure by running:
+```bash
+php spark migrate
+```
+
+And populate the initial data using:
+```bash
+php spark db:seed PaymentMethodSeeder
+php spark db:seed EventSeeder
+php spark db:seed AdminUserSeeder
+php spark db:seed FakeUserSeeder
+```
 
 This project uses the following main tables:
 
-- `users` & `auth_groups_users` (user management & admin/user role mapping)
-- `events` (event data)
-- `tickets` (ticket types and quotas per event)
-- `orders` (transaction history and custom booking status)
-- `order_items` (ordered ticket categories)
+- `users` — Primary user accounts and profile data.
+- `events` — Concerts and events details (name, slug, date, venue, poster, seatmap).
+- `ticket_types` — Ticket tiers, pricing, and available quotas per event.
+- `seats` — Seat mappings for event venues.
+- `orders` — Transactions and booking status (`pending`, `completed`, `cancelled`, `expired`).
+- `order_items` — Ordered ticket categories per transaction.
+- `payment_methods` — Supported payment options (Virtual Account, E-Wallet, etc.).
+- `password_resets` — Password reset verification OTP codes.
 
 ---
 
@@ -310,19 +331,27 @@ For paginated list data, the response includes a sidecar `meta` object:
 
 ## Run the App
 
-Run the CodeIgniter 4 local development server using spark serve:
-
+### 1. Run the CodeIgniter 4 local development server:
 ```bash
 php spark serve
 ```
-
 The application will run at `http://localhost:8080`
+
+### 2. Compile Tailwind CSS (Watch Mode):
+If you need to customize or compile the frontend styles, run the Tailwind CSS CLI:
+```bash
+npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch
+```
 
 ---
 
 ## 🎨 UI/UX Design
 
 The interface was designed in Figma before development, following a design-first workflow. The prototype covers user flows for browsing events, ticket purchasing, and the admin dashboard.
+
+### Preview Screenshots
+
+
 
 ---
 
