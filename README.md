@@ -1,4 +1,4 @@
-# 🎟️ Ticketly (PNC)
+# 🎟️ Ticketly
 
 **Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform built as a college project at **Politeknik Negeri Cilacap**.
 
@@ -18,7 +18,6 @@ It supports 3 main roles / integration paths:
 [![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-v3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Flowbite](https://img.shields.io/badge/Flowbite-v1.6-3F83F8?style=for-the-badge&logo=flowbite&logoColor=white)](https://flowbite.com)
-[![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://figma.com)
 
 ---
 
@@ -66,7 +65,7 @@ It supports 3 main roles / integration paths:
 
 ### Mobile API (Flutter Integration)
 
-- Registration & login (obtaining custom JWT)
+- User authentication (Registration, login via custom JWT, OTP request, and password reset)
 - Home banner/landing events & featured events
 - Detailed event information, ticket categories, & remaining ticket quota
 - Real-time shopping cart (cart) calculation
@@ -90,7 +89,6 @@ It supports 3 main roles / integration paths:
 - HTML & Vanilla JavaScript
 - Tailwind CSS & Flowbite
 - Blade-style CodeIgniter views (layouts & sections)
-- Figma (UI/UX design prototype)
 
 ---
 
@@ -333,12 +331,6 @@ The interface was designed in Figma before development, following a design-first
 - **Hana**
 - **Tama**
 - **Jihan**
-
-Built as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
-
-**Class:** Teknik Informatika 2D  
-**Course:** Pemrograman Web 2  
-**Institution:** Politeknik Negeri Cilacap
 
 ---
 
