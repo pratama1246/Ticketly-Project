@@ -1,6 +1,6 @@
 # 🎟️ Ticketly
 
-**Ticketly** is a **CodeIgniter 4 (PHP 8.1+)** event ticketing platform built as a college project at **Politeknik Negeri Cilacap**.
+**Ticketly** is a robust and modern event ticketing platform powered by **CodeIgniter 4 (PHP 8.1+)**. It provides a comprehensive solution for managing events, selling tickets, and processing bookings. The system features a web-based user portal, an administrative dashboard, and a custom JWT-protected RESTful API for mobile application integration.
 
 This is the backend and web application repository. The companion mobile application repository can be found here:
 * **Flutter Mobile App Repository:** [github.com/pratama1246/ticketly](https://github.com/pratama1246/ticketly)
@@ -12,7 +12,6 @@ It supports 3 main roles / integration paths:
 - **Mobile API (Flutter Integration)**: custom JWT-based authentication, retrieve events/tickets, calculate cart checkout in real-time, and manage booking status.
 
 > The application exposes a custom JWT RESTful API endpoint to receive requests from the mobile Flutter client.
-> Built as a college project at Politeknik Negeri Cilacap, Informatics Engineering Department.
 
 ---
 
