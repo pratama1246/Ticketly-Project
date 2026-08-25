@@ -1,0 +1,79 @@
+services:
+  # -------------------------------------------------------------------------
+  # 1. PHP 8.2-FPM Application Service (CodeIgniter 4 Backend)
+  # -------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: ticketly_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ticketly_net
+
+  # -------------------------------------------------------------------------
+  # 2. Nginx Web Server (Reverse Proxy & Static Asset Server)
+  # -------------------------------------------------------------------------
+  web:
+    image: nginx:alpine
+    container_name: ticketly_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public/uploads:/var/www/html/public/uploads
+    depends_on:
+      - app
+    networks:
+      - ticketly_net
+
+  # -------------------------------------------------------------------------
+  # 3. MySQL 8.4 Database Service
+  # -------------------------------------------------------------------------
+  db:
+    image: mysql:8.4
+    container_name: ticketly_db
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    environment:
+      MYSQL_DATABASE: ticketly
+      MYSQL_USER: ticketly_user
+      MYSQL_PASSWORD: ticketly_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./ticketly_backup.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - ticketly_net
+
+# ---------------------------------------------------------------------------
+# Persistent Volumes
+# ---------------------------------------------------------------------------
+volumes:
+  mysql_data:
+    driver: local
+
+# ---------------------------------------------------------------------------
+# Bridge Network
+# ---------------------------------------------------------------------------
+networks:
+  ticketly_net:
+    driver: bridge
