@@ -128,3 +128,6 @@ _modules/*
 /vendor
 public/output.css
 
+# SQL Database Dumps
+*.sql
+
