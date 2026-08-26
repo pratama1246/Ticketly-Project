@@ -20,8 +20,6 @@ class EventController extends BaseController
     // Query params: ?category=concert&q=keyword&page=1&limit=10
     public function index()
     {
-        (new OrderModel())->autoExpireOrders();
-
         $category = $this->request->getGet('category');
         $keyword  = $this->request->getGet('q');
         $page     = (int) ($this->request->getGet('page') ?? 1);
@@ -72,8 +70,6 @@ class EventController extends BaseController
     // GET /api/events/:slug
     public function show($slug = null)
     {
-        (new OrderModel())->autoExpireOrders();
-
         $event = $this->eventModel
             ->where('slug', $slug)
             ->where('status', 'published')

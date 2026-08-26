@@ -307,11 +307,42 @@ class CheckoutController extends BaseController
         }
 
         $db = \Config\Database::connect();
+        $personalData = $checkoutData['personal_data'];
+
+        // Anti-Calo / Anti-Scalper Policy: Batas Maksimal 4 Tiket per NIK per Event
+        $identityNumber = trim((string) $personalData['identity_number']);
+        $eventId        = (int) $checkoutData['event_id'];
+
+        $alreadyBought = (int) ($db->table('order_items')
+            ->join('orders', 'orders.id = order_items.order_id')
+            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id')
+            ->where('ticket_types.event_id', $eventId)
+            ->where('orders.identity_number', $identityNumber)
+            ->whereIn('orders.status', ['pending', 'completed'])
+            ->selectSum('order_items.quantity')
+            ->get()
+            ->getRow()
+            ->quantity ?? 0);
+
+        $totalRequestedQty = array_sum(array_column($calculation['items'], 'quantity'));
+        $maxLimitPerNik    = 4;
+
+        if (($alreadyBought + $totalRequestedQty) > $maxLimitPerNik) {
+            $remainingQuota = max(0, $maxLimitPerNik - $alreadyBought);
+            $msg = "Batas maksimal pembelian untuk 1 NIK/Identitas pada event ini adalah {$maxLimitPerNik} tiket. Anda telah memesan {$alreadyBought} tiket (Sisa kuota: {$remainingQuota} tiket).";
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => $msg
+                ]);
+            }
+            return redirect()->back()->with('error', $msg);
+        }
+
         $db->transStart();
 
         $randomStr = strtoupper(bin2hex(random_bytes(4))); 
         $trxId = 'TRX-TKT-' . date('Ymd') . '-' . $randomStr;
-        $personalData = $checkoutData['personal_data'];
         
         $orderData = [
             'user_id'         => auth()->loggedIn() ? auth()->id() : null,
@@ -320,7 +351,7 @@ class CheckoutController extends BaseController
             'last_name'       => $personalData['last_name'],
             'email'           => $personalData['email'],
             'phone_number'    => $personalData['phone_number'],
-            'identity_number' => $personalData['identity_number'],
+            'identity_number' => $identityNumber,
             'birth_date'      => $personalData['birth_date'],
             'payment_method'  => $checkoutData['payment_method'],
             'order_total'     => $calculation['grand_total'],
@@ -345,6 +376,21 @@ class CheckoutController extends BaseController
 
         foreach ($calculation['items'] as $ticket) {
             $ticketInfo = $ticketTypeModel->find($ticket['id']);
+
+            // Atomic Stock Check & Decrement (Mencegah Over-selling saat Ticket War)
+            $db->query(
+                'UPDATE ticket_types SET quantity_sold = quantity_sold + ? WHERE id = ? AND (quantity_sold + ?) <= quantity_total',
+                [(int) $ticket['quantity'], (int) $ticket['id'], (int) $ticket['quantity']]
+            );
+
+            if ($db->affectedRows() === 0) {
+                $db->transRollback();
+                $msg = 'Stok untuk tiket ' . $ticketInfo['name'] . ' baru saja habis atau tidak mencukupi.';
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON(['status' => 'error', 'message' => $msg]);
+                }
+                return redirect()->to('/checkout/review_order')->with('error', $msg);
+            }
             
             $isSeating = (strcasecmp($ticketInfo['ticket_category'], 'Seating') === 0);
 
@@ -379,10 +425,6 @@ class CheckoutController extends BaseController
                     'ticket_code'    => $ticketUniqueCode
                 ]);
             }
-
-            $ticketTypeModel->where('id', $ticket['id'])
-                            ->set('quantity_sold', 'quantity_sold + ' . $ticket['quantity'], false)
-                            ->update();
         }
 
         $db->transComplete();
@@ -675,18 +717,14 @@ class CheckoutController extends BaseController
 
         $takenSeatsSql = $takenSeatsQuery->getCompiledSelect();
 
-        $builder = $db->table('seats')
-            ->where('event_id', $eventId)
-            ->where('ticket_type_id', $ticketTypeId);
-
+        $sql = "SELECT id FROM seats WHERE event_id = ? AND ticket_type_id = ?";
         if (!empty($takenSeatsSql)) {
-            $builder->where("id NOT IN ($takenSeatsSql)", null, false);
+            $sql .= " AND id NOT IN ({$takenSeatsSql})";
         }
+        $sql .= " ORDER BY id ASC LIMIT ? FOR UPDATE";
 
-        $availableSeats = $builder->orderBy('id', 'ASC')
-            ->limit($quantity)
-            ->get()
-            ->getResultArray();
+        $query = $db->query($sql, [(int) $eventId, (int) $ticketTypeId, (int) $quantity]);
+        $availableSeats = $query->getResultArray();
 
         if (count($availableSeats) < $quantity) {
             return false; 

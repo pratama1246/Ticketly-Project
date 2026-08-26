@@ -329,7 +329,7 @@ $order = $orderModel->find($id);
 | `app/Controllers/Api/CheckoutController.php` | Full API checkout flow (single-batch query & Midtrans connected) |
 | `app/Models/OrderModel.php` | Includes `autoExpireOrders()` & payment columns |
 
-## Features & Improvements Added (Phase 1 & Phase 2)
+## Features & Improvements Added (Phase 1, Phase 2, & Phase 3)
 
 - **Database Performance & Indexes (Phase 1)**: Migration `AddPerformanceIndexesAndAlterResetCode` adding composite indexes on `orders(status, created_at)`, `orders(user_id)`, `order_items(order_id)`, `order_items(ticket_type_id, seat_id)`, `ticket_types(event_id)`, `events(slug UNIQUE)`, `events(status, category, event_date)`, `seats(event_id, ticket_type_id)`, and `password_resets.code` expanded to `VARCHAR(255)`.
 - **API Rate Limiting (Phase 1)**: `api_rate_limit` filter applied on sensitive endpoints (`auth/login`, `auth/register`, `auth/forgot-password`, `auth/verify-code`, `auth/reset-password`, `checkout/start`).
@@ -340,6 +340,11 @@ $order = $orderModel->find($id);
 - **Midtrans Core API Integration (Phase 2)**: Direct charge mapping for 10 payment methods (`bca`, `bni`, `bri`, `permata/allobank`, `mandiri_bill`, `gopay`, `shopeepay`, `ovo/dana/qris`, `akulaku`) without Snap popup.
 - **Payment Webhook Handler (Phase 2)**: Route `POST /api/payment/webhook` with `SHA512` signature verification, idempotent status update, inventory restore on expiration/cancellation, and automated e-ticket dispatch on settlement.
 - **Payment Details Schema (Phase 2)**: Migration `AddPaymentDetailsToOrders` adding `payment_va_number`, `payment_bill_key`, `payment_biller_code`, `payment_qr_url`, `payment_deeplink_url`, `payment_expired_at`, `midtrans_transaction_id`, `payment_status_raw`.
+- **CLI Background Scheduler (Phase 3)**: Spark command `php spark orders:expire` (`app/Commands/ExpireOrders.php`) for cron job execution, de-coupling heavy expiration writes from public read endpoints (`/api/events`).
+- **Atomic Stock Reservation (Phase 3)**: Conditional atomic queries (`UPDATE ticket_types SET quantity_sold = quantity_sold + ? WHERE (quantity_sold + ?) <= quantity_total`) eliminating over-selling race conditions during ticket wars.
+- **Pessimistic Seat Locking (Phase 3)**: `SELECT ... FOR UPDATE` row-level locks on `assignSeats()` ensuring zero duplicate seat allocations during concurrent checkouts.
+- **Anti-Scalper NIK Quota Limit (Phase 3)**: Strict enforcement of maximum 4 tickets per NIK/identity per event across pending and completed orders.
+- **Idempotency Key (Phase 3)**: Header `X-Idempotency-Key` caching on `POST /api/checkout/start` preventing duplicate order creation from double-clicks or network retries.
 
 ## Existing UI/API Priority
 
