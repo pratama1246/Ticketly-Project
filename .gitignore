@@ -29,20 +29,17 @@ $RECYCLE.BIN/
 
 # Linux
 *~
-.env
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
 #-------------------------
 # Environment Files
 #-------------------------
 # These should never be under version control,
 # as it poses a security risk.
 
+.env
+.env.docker
+.env.*
+!.env.example
+!.env.docker.example
 .vagrant
 Vagrantfile
 

@@ -64,9 +64,12 @@ class ProfileController extends BaseController
             ]);
         }
 
+        $newUsername = trim((string) $this->request->getVar('username'));
+        $newEmail    = trim((string) $this->request->getVar('email'));
+
         $rules = [
             'username' => "required|min_length[3]|max_length[30]|alpha_numeric_space|is_unique[users.username,id,$userId]",
-            'email'    => "required|valid_email|is_unique[users.email,id,$userId]",
+            'email'    => "required|valid_email",
             'foto'     => 'permit_empty|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png,image/webp]|max_size[foto,2048]',
         ];
 
@@ -78,8 +81,26 @@ class ProfileController extends BaseController
             ]);
         }
 
+        $db = \Config\Database::connect();
+
+        // Validasi keunikan email pada tabel auth_identities (Shield identity store)
+        $existingIdentity = $db->table('auth_identities')
+            ->where('type', 'email_password')
+            ->where('secret', $newEmail)
+            ->where('user_id !=', $userId)
+            ->get()
+            ->getRowArray();
+
+        if ($existingIdentity) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'status'  => 'error',
+                'message' => 'Validasi gagal.',
+                'data'    => ['email' => 'Email tersebut sudah digunakan oleh akun lain.']
+            ]);
+        }
+
         $existingUser = $this->userModel->find($userId);
-        $fotoName     = $existingUser['foto'];
+        $fotoName     = $existingUser['foto'] ?? null;
 
         $fileFoto = $this->request->getFile('foto');
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
@@ -94,11 +115,18 @@ class ProfileController extends BaseController
             $fileFoto->move(FCPATH . 'uploads/profile', $fotoName);
         }
 
+        // Update tabel users
         $this->userModel->update($userId, [
-            'username' => $this->request->getVar('username'),
-            'email'    => $this->request->getVar('email'),
+            'username' => $newUsername,
+            'email'    => $newEmail,
             'foto'     => $fotoName,
         ]);
+
+        // Sinkronkan email pada auth_identities agar login tetap sinkron
+        $db->table('auth_identities')
+            ->where('user_id', $userId)
+            ->where('type', 'email_password')
+            ->update(['secret' => $newEmail]);
 
         $updated = $this->userModel->find($userId);
 

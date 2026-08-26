@@ -51,7 +51,11 @@
             <!-- VA and Details -->
             <div class="py-6 space-y-6">
                 <?php 
-                    $vaNumberRaw = '8800' . rand(1000000000, 9999999999);
+                    $hasQr = !empty($order['payment_qr_url']);
+                    $isMandiri = !empty($order['payment_biller_code']) && !empty($order['payment_bill_key']);
+                    $vaNumberRaw = !empty($order['payment_va_number'])
+                        ? $order['payment_va_number']
+                        : (!empty($order['payment_bill_key']) ? $order['payment_bill_key'] : '8800' . substr(preg_replace('/\D/', '', $order['trx_id']), -8));
                     $vaNumberFormatted = implode(' ', str_split($vaNumberRaw, 4));
                 ?>
                 
@@ -63,20 +67,49 @@
                         </div>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nomor Virtual Account</p>
-                        <div class="flex justify-between items-center bg-white border border-slate-200 rounded-xl p-3">
-                            <span id="va-number" class="text-lg sm:text-2xl font-black text-slate-800 tracking-wider">
-                                <?= $vaNumberFormatted ?>
-                            </span>
-                            <button type="button" id="btn-copy-va" class="btn-flat-gray text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 shadow-none border hover:bg-slate-100">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                </svg>
-                                Salin
-                            </button>
+                    <?php if ($hasQr): ?>
+                        <div class="space-y-3 text-center py-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pindai Kode QR untuk Membayar</p>
+                            <div class="inline-block p-3 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                                <img src="<?= esc($order['payment_qr_url']) ?>" alt="QRIS Code" class="w-48 h-48 mx-auto object-contain rounded-xl">
+                            </div>
+                            <p class="text-xs text-slate-400">Dapat dipindai menggunakan BCA, GoPay, OVO, DANA, ShopeePay, atau aplikasi perbankan lainnya.</p>
                         </div>
-                    </div>
+                    <?php elseif ($isMandiri): ?>
+                        <div class="space-y-3">
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kode Perusahaan (Biller Code)</p>
+                                <div class="flex justify-between items-center bg-white border border-slate-200 rounded-xl p-3">
+                                    <span class="text-base font-black text-slate-800 tracking-wider"><?= esc($order['payment_biller_code']) ?></span>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kode Pembayaran (Bill Key)</p>
+                                <div class="flex justify-between items-center bg-white border border-slate-200 rounded-xl p-3">
+                                    <span id="va-number" class="text-lg sm:text-2xl font-black text-slate-800 tracking-wider"><?= esc($order['payment_bill_key']) ?></span>
+                                    <button type="button" id="btn-copy-va" class="btn-flat-gray text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 shadow-none border hover:bg-slate-100">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                        Salin
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="space-y-1.5">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nomor Virtual Account</p>
+                            <div class="flex justify-between items-center bg-white border border-slate-200 rounded-xl p-3">
+                                <span id="va-number" class="text-lg sm:text-2xl font-black text-slate-800 tracking-wider">
+                                    <?= $vaNumberFormatted ?>
+                                </span>
+                                <button type="button" id="btn-copy-va" class="btn-flat-gray text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 shadow-none border hover:bg-slate-100">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                    Salin
+                                </button>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <div class="mt-4 pt-4 border-t-2 border-dashed border-slate-200">
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pembayaran</p>
@@ -218,21 +251,38 @@
     </div>
 </div>
 
-<!-- Modal Error -->
+<!-- Modal Error / Belum Bayar -->
 <div id="payment-error-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full bg-slate-950/70 backdrop-blur-xs transition-all duration-300">
     <div class="relative p-4 w-full max-w-md">
         <div class="relative bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden text-center p-8 animate-fade-in-up">
-            <div class="w-20 h-20 bg-red-50 text-red-600 border border-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-flat-sm">
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+            <div class="w-16 h-16 bg-amber-50 text-amber-500 border border-amber-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-flat-sm">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
             </div>
-            <h2 class="text-2xl font-black text-slate-900 mb-2">Gagal Memproses</h2>
-            <p id="error-message" class="text-slate-600 text-sm font-medium mb-6">Terjadi kesalahan atau waktu habis.</p>
-            <a href="/" class="btn-flat-blue bg-red-600 hover:bg-red-700 text-white w-full text-center">
-                Kembali ke Beranda
-            </a>
+            <h2 id="error-title" class="text-xl font-black text-slate-900 mb-2">Pembayaran Belum Diterima</h2>
+            <p id="error-message" class="text-slate-600 text-sm font-medium mb-6">Pembayaran belum terdeteksi. Silakan selesaikan transfer melalui ATM / M-Banking / E-Wallet Anda terlebih dahulu.</p>
+            <button type="button" onclick="closePaymentModals()" class="btn-flat-blue w-full text-center py-2.5 shadow-sm">
+                Mengerti, Lanjut Bayar
+            </button>
         </div>
     </div>
 </div>
+
+<script>
+window.showCancelModal = function() {
+    const modal = document.getElementById('cancel-modal');
+    if (modal) {
+        const cancelBtn = modal.querySelector('a[href*="/checkout/cancel"]');
+        if (cancelBtn) {
+            cancelBtn.setAttribute('href', '/checkout/cancel/<?= $order['id'] ?>');
+        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+};
+</script>
 
 </main>
 

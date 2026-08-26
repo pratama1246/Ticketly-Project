@@ -17,6 +17,9 @@ $routes->group('', ['namespace' => 'App\Controllers\Public'], static function ($
     $routes->get('/festivals', 'PageController::festivals');
     $routes->get('/events', 'PageController::events');
 
+    $routes->get('/terms', 'LegalController::terms');
+    $routes->get('/privacy', 'LegalController::privacy');
+
     $routes->get('/event/(:segment)', 'EventController::detail/$1');
     $routes->get('/event/(:segment)/select', 'EventController::select/$1');
 });
@@ -35,6 +38,7 @@ $routes->group('', ['namespace' => 'App\Controllers\User'], static function ($ro
         $routes->get('review_order', 'CheckoutController::reviewOrder');
         $routes->post('create_order', 'CheckoutController::createOrder');
         $routes->get('cancel', 'CheckoutController::cancel');
+        $routes->get('cancel/(:num)', 'CheckoutController::cancel/$1');
         $routes->get('pay/(:num)', 'CheckoutController::pay/$1');
         $routes->post('confirm/(:num)', 'CheckoutController::confirmPayment/$1');
     });
@@ -84,41 +88,44 @@ $routes->group('profile', ['namespace' => 'App\Controllers\User', 'filter' => 's
 });
 
 // API Routes
-$routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+$routes->group('api', function ($routes) {
 
-    // Docs
-    $routes->get('docs', 'DocsController::index');
+    // Docs & Legal
+    $routes->get('docs', '\App\Controllers\Api\DocsController::index');
+    $routes->get('terms', '\App\Controllers\Public\LegalController::apiTerms');
+    $routes->get('privacy', '\App\Controllers\Public\LegalController::apiPrivacy');
 
-    // Auth
-    $routes->post('auth/login', 'AuthController::login');
-    $routes->post('auth/register', 'AuthController::register');
-    $routes->post('auth/forgot-password', 'AuthController::forgotPassword');
-    $routes->post('auth/verify-code', 'AuthController::verifyCode');
-    $routes->post('auth/reset-password', 'AuthController::resetPassword');
+    // Auth (dengan Rate Limiting)
+    $routes->post('auth/login', '\App\Controllers\Api\AuthController::login', ['filter' => 'api_rate_limit:10,60']);
+    $routes->post('auth/register', '\App\Controllers\Api\AuthController::register', ['filter' => 'api_rate_limit:5,60']);
+    $routes->post('auth/forgot-password', '\App\Controllers\Api\AuthController::forgotPassword', ['filter' => 'api_rate_limit:5,60']);
+    $routes->post('auth/verify-code', '\App\Controllers\Api\AuthController::verifyCode', ['filter' => 'api_rate_limit:10,60']);
+    $routes->post('auth/reset-password', '\App\Controllers\Api\AuthController::resetPassword', ['filter' => 'api_rate_limit:5,60']);
 
     // Events — featured HARUS di atas (:segment)
-    $routes->get('events/featured', 'EventController::featured');        // paling atas
-    $routes->get('events/landing', 'EventController::landing');
-    $routes->get('events/(:num)/tickets', 'TicketController::index/$1'); // ← naik ke sini
-    $routes->get('events', 'EventController::index');
-    $routes->get('events/(:segment)', 'EventController::show/$1');
+    $routes->get('events/featured', '\App\Controllers\Api\EventController::featured');        // paling atas
+    $routes->get('events/landing', '\App\Controllers\Api\EventController::landing');
+    $routes->get('events/(:num)/tickets', '\App\Controllers\Api\TicketController::index/$1'); // ← naik ke sini
+    $routes->get('events', '\App\Controllers\Api\EventController::index');
+    $routes->get('events/(:segment)', '\App\Controllers\Api\EventController::show/$1');
 
-    // Checkout public
-    $routes->get('checkout/payment-methods', 'CheckoutController::paymentMethods');
-    $routes->post('checkout/calculate', 'CheckoutController::calculate');
+    // Checkout public & Payment Webhook
+    $routes->get('checkout/payment-methods', '\App\Controllers\Api\CheckoutController::paymentMethods');
+    $routes->post('checkout/calculate', '\App\Controllers\Api\CheckoutController::calculate');
+    $routes->post('payment/webhook', '\App\Controllers\Api\PaymentWebhookController::handle');
 
-    // Protected
+    // Protected (JWT Protected)
     $routes->group('', ['filter' => 'api_jwt'], function ($routes) {
-        $routes->post('auth/logout', 'AuthController::logout');
+        $routes->post('auth/logout', '\App\Controllers\Api\AuthController::logout');
 
-        $routes->get('profile', 'ProfileController::index');
-        $routes->post('profile/update', 'ProfileController::update');
+        $routes->get('profile', '\App\Controllers\Api\ProfileController::index');
+        $routes->post('profile/update', '\App\Controllers\Api\ProfileController::update');
 
-        $routes->get('orders', 'OrderController::index');
-        $routes->get('orders/(:num)', 'OrderController::detail/$1');
+        $routes->get('orders', '\App\Controllers\Api\OrderController::index');
+        $routes->get('orders/(:num)', '\App\Controllers\Api\OrderController::detail/$1');
 
-        $routes->post('checkout/start', 'CheckoutController::start');
-        $routes->post('checkout/confirm', 'CheckoutController::confirm');
-        $routes->post('checkout/cancel', 'CheckoutController::cancel');
+        $routes->post('checkout/start', '\App\Controllers\Api\CheckoutController::start', ['filter' => 'api_rate_limit:10,60']);
+        $routes->post('checkout/confirm', '\App\Controllers\Api\CheckoutController::confirm');
+        $routes->post('checkout/cancel', '\App\Controllers\Api\CheckoutController::cancel');
     });
 });

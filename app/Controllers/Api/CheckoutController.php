@@ -174,18 +174,31 @@ class CheckoutController extends BaseController
         $orderModel      = new OrderModel();
         $orderItemsModel = new OrderItemsModel();
 
+        $ticketIds = array_values(array_unique(array_filter(array_map(fn($t) => (int) ($t['ticket_type_id'] ?? 0), $ticketsRaw))));
+        if (empty($ticketIds)) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'status'  => 'error',
+                'message' => 'Format tiket tidak valid.',
+                'data'    => null
+            ]);
+        }
+
+        $ticketsList = $ticketModel->whereIn('id', $ticketIds)->findAll();
+        $ticketsById = array_column($ticketsList, null, 'id');
+
+        // 1. Validasi keberadaan tiket dan kecukupan stok
         foreach ($ticketsRaw as $t) {
-            
-            $ticketDb = $ticketModel->find((int) $t['ticket_type_id']);
-            if (!$ticketDb) {
+            $tId = (int) $t['ticket_type_id'];
+            if (!isset($ticketsById[$tId])) {
                 return $this->response->setStatusCode(404)->setJSON([
                     'status'  => 'error',
-                    'message' => 'Tiket ID ' . $t['ticket_type_id'] . ' tidak ditemukan.',
+                    'message' => 'Tiket ID ' . $tId . ' tidak ditemukan.',
                     'data'    => null
                 ]);
             }
 
-            $remaining = $ticketDb['quantity_total'] - $ticketDb['quantity_sold'];
+            $ticketDb  = $ticketsById[$tId];
+            $remaining = (int) $ticketDb['quantity_total'] - (int) $ticketDb['quantity_sold'];
             if ($remaining < (int) $t['quantity']) {
                 return $this->response->setStatusCode(409)->setJSON([
                     'status'  => 'error',
@@ -195,17 +208,19 @@ class CheckoutController extends BaseController
             }
         }
 
+        // 2. Kalkulasi item dan total harga di memori
         $items    = [];
         $subTotal = 0;
         $totalQty = 0;
 
         foreach ($ticketsRaw as $t) {
-            $ticket    = $ticketModel->find((int) $t['ticket_type_id']);
+            $ticket    = $ticketsById[(int) $t['ticket_type_id']];
             $qty       = (int) $t['quantity'];
             $lineTotal = (int) $ticket['price'] * $qty;
 
             $items[] = [
                 'id'              => $ticket['id'],
+                'event_id'        => $ticket['event_id'],
                 'name'            => $ticket['name'],
                 'ticket_category' => $ticket['ticket_category'],
                 'price'           => (int) $ticket['price'],
@@ -226,32 +241,51 @@ class CheckoutController extends BaseController
         $db->transStart();
 
         $randomStr = strtoupper(bin2hex(random_bytes(4)));
-        $trxId     = 'TRX-' . date('Ymd') . '-' . $randomStr;
+        $trxId     = 'TRX-TKT-' . date('Ymd') . '-' . $randomStr;
 
-        $orderModel->insert([
+        $paymentMethod = (string) $this->request->getVar('payment_method');
+        $firstName     = (string) $this->request->getVar('first_name');
+        $lastName      = (string) ($this->request->getVar('last_name') ?? '');
+        $email         = (string) $this->request->getVar('email');
+        $phoneNumber   = (string) $this->request->getVar('phone_number');
+
+        $orderData = [
             'user_id'         => $userId,
             'trx_id'          => $trxId,
-            'first_name'      => $this->request->getVar('first_name'),
-            'last_name'       => $this->request->getVar('last_name') ?? '',
-            'email'           => $this->request->getVar('email'),
-            'phone_number'    => $this->request->getVar('phone_number'),
+            'first_name'      => $firstName,
+            'last_name'       => $lastName,
+            'email'           => $email,
+            'phone_number'    => $phoneNumber,
             'identity_number' => $this->request->getVar('identity_number'),
             'birth_date'      => $this->request->getVar('birth_date') ?? null,
-            'payment_method'  => $this->request->getVar('payment_method'),
+            'payment_method'  => $paymentMethod,
             'order_total'     => $grandTotal,
-            'status'          => 'pending', // fix: was 'Pending'
-        ]);
+            'status'          => 'pending',
+        ];
 
+        // Panggil Midtrans Core API (/v2/charge)
+        $midtransService = new \App\Libraries\MidtransService();
+        $chargeRes       = $midtransService->createCharge($orderData, $items);
+
+        $orderData['payment_va_number']       = $chargeRes['payment_va_number'] ?? null;
+        $orderData['payment_bill_key']        = $chargeRes['payment_bill_key'] ?? null;
+        $orderData['payment_biller_code']     = $chargeRes['payment_biller_code'] ?? null;
+        $orderData['payment_qr_url']          = $chargeRes['payment_qr_url'] ?? null;
+        $orderData['payment_deeplink_url']    = $chargeRes['payment_deeplink_url'] ?? null;
+        $orderData['payment_expired_at']      = $chargeRes['payment_expired_at'] ?? date('Y-m-d H:i:s', strtotime('+15 minutes'));
+        $orderData['midtrans_transaction_id'] = $chargeRes['midtrans_transaction_id'] ?? null;
+        $orderData['payment_status_raw']      = $chargeRes['payment_status_raw'] ?? 'pending';
+
+        $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();
 
         foreach ($items as $item) {
-            $ticketDb  = $ticketModel->find($item['id']);
-            $isSeating = strcasecmp($ticketDb['ticket_category'], 'Seating') === 0;
+            $isSeating = strcasecmp($item['ticket_category'], 'Seating') === 0;
 
             $assignedSeatIds = [];
             if ($isSeating) {
                 $assignedSeatIds = $this->assignSeats(
-                    $ticketDb['event_id'],
+                    $item['event_id'],
                     $item['id'],
                     $item['quantity']
                 );
@@ -270,7 +304,7 @@ class CheckoutController extends BaseController
                 $randTicket = strtoupper(bin2hex(random_bytes(3)));
                 $ticketCode = sprintf(
                     'TKT-E%02d-%d-%s',
-                    $ticketDb['event_id'],
+                    $item['event_id'],
                     $newOrderId,
                     $randTicket
                 );
@@ -304,11 +338,17 @@ class CheckoutController extends BaseController
             'status'  => 'success',
             'message' => 'Order berhasil dibuat.',
             'data'    => [
-                'order_id'    => $newOrderId,
-                'trx_id'      => $trxId,
-                'grand_total' => (int) $grandTotal,
-                'status'      => 'pending', // fix: was 'Pending'
-                'expires_at'  => date('Y-m-d H:i:s', strtotime('+15 minutes')),
+                'order_id'             => $newOrderId,
+                'trx_id'               => $trxId,
+                'grand_total'          => (int) $grandTotal,
+                'status'               => 'pending',
+                'payment_method'       => $paymentMethod,
+                'payment_va_number'    => $orderData['payment_va_number'],
+                'payment_bill_key'     => $orderData['payment_bill_key'],
+                'payment_biller_code'  => $orderData['payment_biller_code'],
+                'payment_qr_url'       => $orderData['payment_qr_url'],
+                'payment_deeplink_url' => $orderData['payment_deeplink_url'],
+                'expires_at'           => $orderData['payment_expired_at'],
             ]
         ]);
     }
@@ -354,7 +394,38 @@ class CheckoutController extends BaseController
         }
 
         if ($order['status'] !== 'completed') {
-            $orderModel->update($orderId, ['status' => 'completed']);
+            $midtransService = new \App\Libraries\MidtransService();
+            $statusCheck     = $midtransService->checkTransactionStatus($order['trx_id']);
+
+            if (!$statusCheck['is_paid']) {
+                $trxStatus = $statusCheck['transaction_status'];
+                if ($trxStatus === 'expire') {
+                    $orderModel->update($orderId, ['status' => 'expired', 'payment_status_raw' => $trxStatus]);
+                    return $this->response->setStatusCode(410)->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Batas waktu pembayaran telah habis.',
+                        'data'    => null,
+                    ]);
+                }
+                if ($trxStatus === 'cancel' || $trxStatus === 'deny') {
+                    $orderModel->update($orderId, ['status' => 'cancelled', 'payment_status_raw' => $trxStatus]);
+                    return $this->response->setStatusCode(409)->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Pembayaran dibatalkan atau ditolak oleh payment gateway.',
+                        'data'    => null,
+                    ]);
+                }
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Pembayaran belum terdeteksi. Silakan selesaikan pembayaran terlebih dahulu.',
+                    'data'    => null,
+                ]);
+            }
+
+            $orderModel->update($orderId, [
+                'status'             => 'completed',
+                'payment_status_raw' => $statusCheck['transaction_status'],
+            ]);
         }
 
         // --- Start of E-Ticket PDF and Email Dispatch ---

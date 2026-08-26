@@ -1,10 +1,19 @@
 {
+  "scripts": {
+    "dev:css": "npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch",
+    "dev:tunnel": "ngrok http 8080",
+    "dev:serve": "php spark serve --port=8080",
+    "dev": "npx concurrently -n \"PHP,CSS,NGROK\" -c \"blue,green,magenta\" \"php spark serve --port=8080\" \"npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch\" \"ngrok http 8080\"",
+    "dev:watch": "npx concurrently -n \"CSS,NGROK\" -c \"green,magenta\" \"npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch\" \"ngrok http 8080\"",
+    "dev:docker": "docker compose up -d && npx concurrently -n \"CSS,NGROK\" -c \"green,magenta\" \"npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch\" \"ngrok http 8080\""
+  },
   "dependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "@tailwindcss/typography": "^0.5.19",
     "flowbite": "^4.0.0"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "tailwindcss": "^4.3.0"
   }
 }

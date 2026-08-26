@@ -15,6 +15,9 @@ class OrderModel extends Model
     protected $allowedFields    = [
         'user_id', 'trx_id', 'first_name', 'last_name', 'email', 'phone_number',
         'identity_number', 'birth_date', 'payment_method', 'order_total', 'status',
+        'payment_va_number', 'payment_bill_key', 'payment_biller_code',
+        'payment_qr_url', 'payment_deeplink_url', 'payment_expired_at',
+        'midtrans_transaction_id', 'payment_status_raw',
     ];
 
     protected $useTimestamps = true;

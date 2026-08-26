@@ -310,7 +310,7 @@ class CheckoutController extends BaseController
         $db->transStart();
 
         $randomStr = strtoupper(bin2hex(random_bytes(4))); 
-        $trxId = 'TRX-' . date('Ymd') . '-' . $randomStr;
+        $trxId = 'TRX-TKT-' . date('Ymd') . '-' . $randomStr;
         $personalData = $checkoutData['personal_data'];
         
         $orderData = [
@@ -326,6 +326,19 @@ class CheckoutController extends BaseController
             'order_total'     => $calculation['grand_total'],
             'status'          => 'pending'
         ];
+
+        // Panggil Midtrans Core API Charge
+        $midtransService = new \App\Libraries\MidtransService();
+        $chargeRes = $midtransService->createCharge($orderData, $calculation['items']);
+
+        $orderData['payment_va_number']       = $chargeRes['payment_va_number'] ?? null;
+        $orderData['payment_bill_key']        = $chargeRes['payment_bill_key'] ?? null;
+        $orderData['payment_biller_code']     = $chargeRes['payment_biller_code'] ?? null;
+        $orderData['payment_qr_url']          = $chargeRes['payment_qr_url'] ?? null;
+        $orderData['payment_deeplink_url']    = $chargeRes['payment_deeplink_url'] ?? null;
+        $orderData['payment_expired_at']      = $chargeRes['payment_expired_at'] ?? date('Y-m-d H:i:s', strtotime('+15 minutes'));
+        $orderData['midtrans_transaction_id'] = $chargeRes['midtrans_transaction_id'] ?? null;
+        $orderData['payment_status_raw']      = $chargeRes['payment_status_raw'] ?? 'pending';
         
         $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();
@@ -463,8 +476,37 @@ class CheckoutController extends BaseController
             }
         }
 
-        if ($order['status'] != 'completed') {
-            $orderModel->update((int) $orderId, ['status' => 'completed']);
+        // Jika order belum berstatus completed, cek status aslinya ke Midtrans
+        if ($order['status'] !== 'completed') {
+            $midtransService = new \App\Libraries\MidtransService();
+            $statusCheck     = $midtransService->checkTransactionStatus($order['trx_id']);
+
+            if (!$statusCheck['is_paid']) {
+                $trxStatus = $statusCheck['transaction_status'];
+                if ($trxStatus === 'expire') {
+                    $orderModel->update((int) $orderId, ['status' => 'expired', 'payment_status_raw' => $trxStatus]);
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Batas waktu pembayaran telah habis. Silakan buat pesanan baru.',
+                    ]);
+                }
+                if ($trxStatus === 'cancel' || $trxStatus === 'deny') {
+                    $orderModel->update((int) $orderId, ['status' => 'cancelled', 'payment_status_raw' => $trxStatus]);
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Pembayaran dibatalkan atau ditolak.',
+                    ]);
+                }
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Pembayaran belum terdeteksi. Silakan selesaikan transfer melalui ATM / M-Banking / E-Wallet Anda terlebih dahulu.',
+                ]);
+            }
+
+            $orderModel->update((int) $orderId, [
+                'status'             => 'completed',
+                'payment_status_raw' => $statusCheck['transaction_status'],
+            ]);
         }
 
         $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
@@ -563,15 +605,39 @@ class CheckoutController extends BaseController
         ]);
     }
 
-    //BATALKAN PESANAN
-
-    public function cancel()
+    // BATALKAN PESANAN
+    public function cancel($orderId = null)
     {
+        $orderModel      = new OrderModel();
+        $orderItemsModel = new OrderItemsModel();
+        $ticketModel     = new TicketTypeModel();
+
+        $targetOrderId = $orderId ? (int) $orderId : (int) session()->get('pending_order_id');
+
+        if ($targetOrderId > 0) {
+            $order = $orderModel->find($targetOrderId);
+
+            if ($order && strtolower($order['status']) === 'pending') {
+                $orderModel->update($targetOrderId, [
+                    'status'             => 'cancelled',
+                    'payment_status_raw' => 'cancelled_by_user',
+                ]);
+
+                // Kembalikan kuota tiket
+                $items = $orderItemsModel->where('order_id', $targetOrderId)->findAll();
+                foreach ($items as $item) {
+                    $ticketModel->where('id', $item['ticket_type_id'])
+                        ->set('quantity_sold', 'quantity_sold - ' . (int) $item['quantity'], false)
+                        ->update();
+                }
+            }
+        }
+
         session()->remove('checkout_process');
         session()->remove('checkout_expire');
         session()->remove('pending_order_id');
 
-        return redirect()->to('/')->with('warning', 'Pesanan berhasil dibatalkan.');
+        return redirect()->to('/profile/history')->with('warning', 'Pesanan berhasil dibatalkan.');
     }
 
     // PRIVATE HELPER FUNCTIONS

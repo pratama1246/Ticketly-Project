@@ -38,6 +38,8 @@ class ProfileController extends BaseController
     // Halaman Riwayat Transaksi
     public function transactions()
     {
+        $this->orderModel->autoExpireOrders();
+
         $userId = auth()->id();
         $user   = $this->userModel->find($userId);
 

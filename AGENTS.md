@@ -315,14 +315,31 @@ $order = $orderModel->find($id);
 | File | Description |
 |---|---|
 | `app/Config/Routes.php` | All web and API routes |
-| `app/Config/Filters.php` | Filter aliases including `jwt` and `cors` |
+| `app/Config/Filters.php` | Filter aliases including `jwt`, `cors`, and `api_rate_limit` |
+| `app/Config/Midtrans.php` | Midtrans Core API Configuration (Sandbox / Production) |
+| `app/Filters/ApiRateLimitFilter.php` | API Rate Limiter filter (429 JSON response) |
 | `app/Helpers/jwt_helper.php` | `createJWT()` and `decodeJWT()` functions |
 | `app/Filters/JwtFilter.php` | Token validation, injection into `$_SERVER` |
-| `app/Controllers/Api/AuthController.php` | Login, register, logout |
+| `app/Libraries/MidtransService.php` | Midtrans Core API `/v2/charge` handler (10 payment methods) |
+| `app/Controllers/Api/PaymentWebhookController.php` | Midtrans payment notification handler (SHA512 & idempotency) |
+| `app/Controllers/Public/LegalController.php` | Web & API endpoints for Terms & Privacy Policy |
+| `app/Controllers/Api/AuthController.php` | Login, register, logout, Bcrypt hashed single-use OTP |
+| `app/Controllers/Api/ProfileController.php` | Profile get & update with auth_identities sync |
 | `app/Controllers/Api/EventController.php` | List, detail, featured events |
-| `app/Controllers/Api/CheckoutController.php` | Full API checkout flow |
-| `app/Models/OrderModel.php` | Includes `autoExpireOrders()` |
+| `app/Controllers/Api/CheckoutController.php` | Full API checkout flow (single-batch query & Midtrans connected) |
+| `app/Models/OrderModel.php` | Includes `autoExpireOrders()` & payment columns |
 
+## Features & Improvements Added (Phase 1 & Phase 2)
+
+- **Database Performance & Indexes (Phase 1)**: Migration `AddPerformanceIndexesAndAlterResetCode` adding composite indexes on `orders(status, created_at)`, `orders(user_id)`, `order_items(order_id)`, `order_items(ticket_type_id, seat_id)`, `ticket_types(event_id)`, `events(slug UNIQUE)`, `events(status, category, event_date)`, `seats(event_id, ticket_type_id)`, and `password_resets.code` expanded to `VARCHAR(255)`.
+- **API Rate Limiting (Phase 1)**: `api_rate_limit` filter applied on sensitive endpoints (`auth/login`, `auth/register`, `auth/forgot-password`, `auth/verify-code`, `auth/reset-password`, `checkout/start`).
+- **Single-Use Hashed OTP (Phase 1)**: OTP codes stored using `password_hash($code, PASSWORD_BCRYPT)` and deleted immediately upon password reset.
+- **Profile Email Sync (Phase 1)**: `ProfileController::update` validates uniqueness against Shield's `auth_identities` and syncs the secret column.
+- **Single-Batch Ticket Query (Phase 1)**: `CheckoutController::start` retrieves all selected tickets in a single `whereIn` query and indexes in memory.
+- **Legal Compliance (Phase 1)**: `/terms`, `/privacy`, `/api/terms`, and `/api/privacy` routes and views for T&C and Privacy Policy compliance.
+- **Midtrans Core API Integration (Phase 2)**: Direct charge mapping for 10 payment methods (`bca`, `bni`, `bri`, `permata/allobank`, `mandiri_bill`, `gopay`, `shopeepay`, `ovo/dana/qris`, `akulaku`) without Snap popup.
+- **Payment Webhook Handler (Phase 2)**: Route `POST /api/payment/webhook` with `SHA512` signature verification, idempotent status update, inventory restore on expiration/cancellation, and automated e-ticket dispatch on settlement.
+- **Payment Details Schema (Phase 2)**: Migration `AddPaymentDetailsToOrders` adding `payment_va_number`, `payment_bill_key`, `payment_biller_code`, `payment_qr_url`, `payment_deeplink_url`, `payment_expired_at`, `midtrans_transaction_id`, `payment_status_raw`.
 
 ## Existing UI/API Priority
 

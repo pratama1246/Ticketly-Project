@@ -197,6 +197,7 @@ class AuthController extends BaseController
 
         // Generate 6-digit OTP code
         $code = (string) random_int(100000, 999999);
+        $hashedCode = password_hash($code, PASSWORD_BCRYPT);
         $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
         $resetModel = new PasswordResetModel();
@@ -204,10 +205,10 @@ class AuthController extends BaseController
         // Delete old codes for this email
         $resetModel->where('email', $email)->delete();
 
-        // Save new code
+        // Save new hashed code
         $resetModel->save([
             'email'      => $email,
-            'code'       => $code,
+            'code'       => $hashedCode,
             'expires_at' => $expiresAt
         ]);
 
@@ -263,25 +264,25 @@ class AuthController extends BaseController
         }
 
         $email = $this->request->getVar('email');
-        $code  = $this->request->getVar('code');
+        $code  = (string) $this->request->getVar('code');
 
         $resetModel = new PasswordResetModel();
-        $reset = $resetModel->where('email', $email)
-            ->where('code', $code)
-            ->first();
+        $records = $resetModel->where('email', $email)
+            ->where('expires_at >=', date('Y-m-d H:i:s'))
+            ->findAll();
 
-        if (!$reset) {
-            return $this->response->setStatusCode(404)->setJSON([
-                'status'  => 'error',
-                'message' => 'Kode verifikasi tidak valid atau tidak ditemukan.',
-                'data'    => null
-            ]);
+        $matched = false;
+        foreach ($records as $record) {
+            if (password_verify($code, $record['code']) || $code === $record['code']) {
+                $matched = true;
+                break;
+            }
         }
 
-        if (strtotime($reset['expires_at']) < time()) {
-            return $this->response->setStatusCode(410)->setJSON([
+        if (!$matched) {
+            return $this->response->setStatusCode(400)->setJSON([
                 'status'  => 'error',
-                'message' => 'Kode verifikasi telah kedaluwarsa.',
+                'message' => 'Kode verifikasi tidak valid atau telah kedaluwarsa.',
                 'data'    => null
             ]);
         }
@@ -311,26 +312,26 @@ class AuthController extends BaseController
         }
 
         $email    = $this->request->getVar('email');
-        $code     = $this->request->getVar('code');
+        $code     = (string) $this->request->getVar('code');
         $password = $this->request->getVar('password');
 
         $resetModel = new PasswordResetModel();
-        $reset = $resetModel->where('email', $email)
-            ->where('code', $code)
-            ->first();
+        $records = $resetModel->where('email', $email)
+            ->where('expires_at >=', date('Y-m-d H:i:s'))
+            ->findAll();
 
-        if (!$reset) {
-            return $this->response->setStatusCode(404)->setJSON([
-                'status'  => 'error',
-                'message' => 'Kode verifikasi tidak valid atau tidak ditemukan.',
-                'data'    => null
-            ]);
+        $matched = false;
+        foreach ($records as $record) {
+            if (password_verify($code, $record['code']) || $code === $record['code']) {
+                $matched = true;
+                break;
+            }
         }
 
-        if (strtotime($reset['expires_at']) < time()) {
-            return $this->response->setStatusCode(410)->setJSON([
+        if (!$matched) {
+            return $this->response->setStatusCode(400)->setJSON([
                 'status'  => 'error',
-                'message' => 'Kode verifikasi telah kedaluwarsa.',
+                'message' => 'Kode verifikasi tidak valid atau telah kedaluwarsa.',
                 'data'    => null
             ]);
         }
@@ -372,7 +373,7 @@ class AuthController extends BaseController
             ]);
         }
 
-        // Delete the reset code since it has been consumed
+        // Delete the reset code immediately since it has been consumed (single-use)
         $resetModel->where('email', $email)->delete();
 
         return $this->response->setStatusCode(200)->setJSON([

@@ -43,8 +43,9 @@ class Filters extends BaseFilters
 
         // Alias 'api_jwt' digunakan (bukan 'jwt') untuk menghindari konflik
         // dengan authenticator bawaan CodeIgniter Shield yang sudah reserve alias 'jwt'
-        'api_jwt'       => \App\Filters\JwtFilter::class,
-        'cors'          => \App\Filters\CorsFilter::class,
+        'api_jwt'        => \App\Filters\JwtFilter::class,
+        'cors'           => \App\Filters\CorsFilter::class,
+        'api_rate_limit' => \App\Filters\ApiRateLimitFilter::class,
     ];
 
     /**
