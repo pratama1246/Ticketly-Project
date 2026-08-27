@@ -18,6 +18,7 @@ class OrderModel extends Model
         'payment_va_number', 'payment_bill_key', 'payment_biller_code',
         'payment_qr_url', 'payment_deeplink_url', 'payment_expired_at',
         'midtrans_transaction_id', 'payment_status_raw',
+        'voucher_id', 'voucher_code', 'discount_amount',
     ];
 
     protected $useTimestamps = true;

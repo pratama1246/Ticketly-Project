@@ -103,20 +103,36 @@ class CheckoutController extends BaseController
         $taxRate              = 0.11;
         $platformFeePerTicket = 10000;
         $adminFee             = 2500;
-        $taxAmount            = $subTotal * $taxRate;
-        $platformFee          = $platformFeePerTicket * $totalQty;
-        $grandTotal           = $subTotal + $taxAmount + $platformFee + $adminFee;
+        $taxAmount            = (int) round($subTotal * $taxRate);
+        $platformFee          = (int) ($platformFeePerTicket * $totalQty);
+
+        $voucherCode    = trim((string) ($this->request->getVar('voucher_code') ?? ''));
+        $voucherModel   = new \App\Models\VoucherModel();
+        $voucherInfo    = null;
+        $discountAmount = 0;
+
+        if (!empty($voucherCode)) {
+            $vRes = $voucherModel->validateAndCalculate($voucherCode, (int) $subTotal);
+            if ($vRes['valid']) {
+                $voucherInfo    = $vRes;
+                $discountAmount = (int) $vRes['discount_amount'];
+            }
+        }
+
+        $grandTotal = max(0, $subTotal + $taxAmount + $platformFee + $adminFee - $discountAmount);
 
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
-            'message' => 'Kalkulasi berhasil.',
+            'message' => 'Kalkulasi rincian biaya berhasil.',
             'data'    => [
-                'items'        => $items,
-                'sub_total'    => (int) $subTotal,
-                'tax_amount'   => (int) $taxAmount,
-                'platform_fee' => (int) $platformFee,
-                'admin_fee'    => (int) $adminFee,
-                'grand_total'  => (int) $grandTotal,
+                'items'           => $items,
+                'subtotal'        => $subTotal,
+                'tax_amount'      => $taxAmount,
+                'platform_fee'    => $platformFee,
+                'admin_fee'       => $adminFee,
+                'voucher'         => $voucherInfo,
+                'discount_amount' => $discountAmount,
+                'grand_total'     => (int) $grandTotal,
             ]
         ]);
     }
@@ -269,10 +285,25 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        $taxAmount   = $subTotal * 0.11;
+        $taxAmount   = (int) round($subTotal * 0.11);
         $platformFee = 10000 * $totalQty;
         $adminFee    = 2500;
-        $grandTotal  = $subTotal + $taxAmount + $platformFee + $adminFee;
+
+        // Cek dan validasi voucher jika diinput
+        $voucherCode    = trim((string) ($this->request->getVar('voucher_code') ?? ''));
+        $voucherModel   = new \App\Models\VoucherModel();
+        $voucherInfo    = null;
+        $discountAmount = 0;
+
+        if (!empty($voucherCode)) {
+            $vRes = $voucherModel->validateAndCalculate($voucherCode, (int) $subTotal);
+            if ($vRes['valid']) {
+                $voucherInfo    = $vRes;
+                $discountAmount = (int) $vRes['discount_amount'];
+            }
+        }
+
+        $grandTotal = max(0, $subTotal + $taxAmount + $platformFee + $adminFee - $discountAmount);
 
         $db->transStart();
 
@@ -284,6 +315,7 @@ class CheckoutController extends BaseController
         $lastName      = (string) ($this->request->getVar('last_name') ?? '');
         $email         = (string) $this->request->getVar('email');
         $phoneNumber   = (string) $this->request->getVar('phone_number');
+        $attendees     = $this->request->getVar('attendees') ?? []; // Multi-attendee array
 
         $orderData = [
             'user_id'         => $userId,
@@ -296,6 +328,9 @@ class CheckoutController extends BaseController
             'birth_date'      => $this->request->getVar('birth_date') ?? null,
             'payment_method'  => $paymentMethod,
             'order_total'     => $grandTotal,
+            'voucher_id'      => $voucherInfo['voucher_id'] ?? null,
+            'voucher_code'    => $voucherInfo['voucher_code'] ?? null,
+            'discount_amount' => $discountAmount,
             'status'          => 'pending',
         ];
 
@@ -315,6 +350,12 @@ class CheckoutController extends BaseController
         $orderModel->insert($orderData);
         $newOrderId = $orderModel->getInsertID();
 
+        // Update kuota voucher jika berhasil digunakan
+        if (!empty($voucherInfo['voucher_id'])) {
+            $db->query('UPDATE vouchers SET quota_used = quota_used + 1 WHERE id = ?', [(int) $voucherInfo['voucher_id']]);
+        }
+
+        $attendeeIdx = 0;
         foreach ($items as $item) {
             $isSeating = strcasecmp($item['ticket_category'], 'Seating') === 0;
 
@@ -360,14 +401,25 @@ class CheckoutController extends BaseController
                     $randTicket
                 );
 
+                // Ambil data Attendee spesifik jika dikirimkan oleh client
+                $currentAttendee   = is_array($attendees) && isset($attendees[$attendeeIdx]) ? $attendees[$attendeeIdx] : null;
+                $attendeeName      = !empty($currentAttendee['name']) ? trim($currentAttendee['name']) : trim($firstName . ' ' . $lastName);
+                $attendeeEmail     = !empty($currentAttendee['email']) ? trim($currentAttendee['email']) : $email;
+                $attendeeIdentity  = !empty($currentAttendee['identity_number']) ? trim($currentAttendee['identity_number']) : $identityNumber;
+
                 $orderItemsModel->insert([
-                    'order_id'         => $newOrderId,
-                    'ticket_type_id'   => $item['id'],
-                    'quantity'         => 1,
-                    'seat_id'          => $isSeating ? $assignedSeatIds[$i] : null,
-                    'price_per_ticket' => $item['price'],
-                    'ticket_code'      => $ticketCode,
+                    'order_id'                 => $newOrderId,
+                    'ticket_type_id'           => $item['id'],
+                    'quantity'                 => 1,
+                    'seat_id'                  => $isSeating ? $assignedSeatIds[$i] : null,
+                    'price_per_ticket'         => $item['price'],
+                    'ticket_code'              => $ticketCode,
+                    'attendee_name'            => $attendeeName,
+                    'attendee_email'           => $attendeeEmail,
+                    'attendee_identity_number' => $attendeeIdentity,
                 ]);
+
+                $attendeeIdx++;
             }
         }
 

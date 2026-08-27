@@ -109,9 +109,11 @@ $routes->group('api', function ($routes) {
     $routes->get('events', '\App\Controllers\Api\EventController::index');
     $routes->get('events/(:segment)', '\App\Controllers\Api\EventController::show/$1');
 
-    // Checkout public & Payment Webhook
+    // Checkout public, Vouchers & Payment Webhook
     $routes->get('checkout/payment-methods', '\App\Controllers\Api\CheckoutController::paymentMethods');
     $routes->post('checkout/calculate', '\App\Controllers\Api\CheckoutController::calculate');
+    $routes->get('vouchers/active', '\App\Controllers\Api\VoucherController::active');
+    $routes->post('vouchers/apply', '\App\Controllers\Api\VoucherController::apply', ['filter' => 'api_rate_limit:20,60']);
     $routes->post('payment/webhook', '\App\Controllers\Api\PaymentWebhookController::handle');
 
     // Protected (JWT Protected)
@@ -127,5 +129,10 @@ $routes->group('api', function ($routes) {
         $routes->post('checkout/start', '\App\Controllers\Api\CheckoutController::start', ['filter' => 'api_rate_limit:10,60']);
         $routes->post('checkout/confirm', '\App\Controllers\Api\CheckoutController::confirm');
         $routes->post('checkout/cancel', '\App\Controllers\Api\CheckoutController::cancel');
+
+        // Gate Scanner API (Anti-Double Scan Protection)
+        $routes->post('scanner/validate', '\App\Controllers\Api\ScannerController::validateTicket');
+        $routes->post('scanner/checkin', '\App\Controllers\Api\ScannerController::checkIn');
+        $routes->get('scanner/stats/(:num)', '\App\Controllers\Api\ScannerController::stats/$1');
     });
 });

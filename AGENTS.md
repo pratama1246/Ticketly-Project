@@ -329,7 +329,7 @@ $order = $orderModel->find($id);
 | `app/Controllers/Api/CheckoutController.php` | Full API checkout flow (single-batch query & Midtrans connected) |
 | `app/Models/OrderModel.php` | Includes `autoExpireOrders()` & payment columns |
 
-## Features & Improvements Added (Phase 1, Phase 2, Phase 3, & Phase 4)
+## Features & Improvements Added (Phase 1, Phase 2, Phase 3, Phase 4, & Phase 5)
 
 - **Database Performance & Indexes (Phase 1)**: Migration `AddPerformanceIndexesAndAlterResetCode` adding composite indexes on `orders(status, created_at)`, `orders(user_id)`, `order_items(order_id)`, `order_items(ticket_type_id, seat_id)`, `ticket_types(event_id)`, `events(slug UNIQUE)`, `events(status, category, event_date)`, `seats(event_id, ticket_type_id)`, and `password_resets.code` expanded to `VARCHAR(255)`.
 - **API Rate Limiting (Phase 1)**: `api_rate_limit` filter applied on sensitive endpoints (`auth/login`, `auth/register`, `auth/forgot-password`, `auth/verify-code`, `auth/reset-password`, `checkout/start`).
@@ -349,6 +349,9 @@ $order = $orderModel->find($id);
 - **JWT Token Revocation / Blacklist (Phase 4)**: Added `blacklistJWT()` and `isJWTBlacklisted()` in `jwt_helper.php` and `JwtFilter.php`, invalidating tokens immediately upon API logout.
 - **UU PDP PII Masking (Phase 4)**: Helper `masking_helper.php` (`mask_email()`, `mask_phone()`, `mask_nik()`) implemented in `Api/OrderController` for privacy compliance.
 - **Enterprise Security Headers (Phase 4)**: Global middleware `SecurityHeadersFilter.php` injecting `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and `Permissions-Policy`.
+- **Gate Check-in Scanner API & Anti-Double Scan Protection (Phase 5)**: `Api/ScannerController` (`POST /api/scanner/validate`, `POST /api/scanner/checkin`, `GET /api/scanner/stats/:eventId`) with atomic conditional check-in and 409 Conflict fraud rejection.
+- **Promo Vouchers & Discount System (Phase 5)**: Table `vouchers`, `VoucherModel`, `Api/VoucherController` (`GET /api/vouchers/active`, `POST /api/vouchers/apply`), and calculation integration in `CheckoutController::calculate` and `CheckoutController::start`.
+- **Multi-Attendee Registration (Phase 5)**: Field `attendee_name`, `attendee_email`, `attendee_identity_number` per ticket item in `order_items` and checkout request.
 
 ## Existing UI/API Priority
 
