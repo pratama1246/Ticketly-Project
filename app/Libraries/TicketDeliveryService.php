@@ -7,6 +7,7 @@ use App\Models\OrderItemsModel;
 use App\Models\EventModel;
 use Dompdf\Dompdf;
 use CodeIgniter\Email\Email;
+use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
 
 class TicketDeliveryService
 {
@@ -93,7 +94,7 @@ class TicketDeliveryService
         $event   = $eventId ? $eventModel->find($eventId) : null;
 
         $ticketList = [];
-        $qrCode     = new \App\Libraries\QrCodeGenerator();
+        $qrCode     = new QrCodeGenerator();
 
         foreach ($items as $item) {
             $seatLabel = 'Free Seating';
