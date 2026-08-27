@@ -151,77 +151,10 @@ class PaymentWebhookController extends BaseController
     }
 
     /**
-     * Menerbitkan E-Tiket PDF & Mengirimkan Email.
+     * Menerbitkan E-Tiket PDF & Mengirimkan Email via Background Queue.
      */
     protected function dispatchTicketDelivery(int $orderId): void
     {
-        $orderModel      = new OrderModel();
-        $orderItemsModel = new OrderItemsModel();
-        $eventModel      = new EventModel();
-
-        $order = $orderModel->find($orderId);
-        if (!$order) {
-            return;
-        }
-
-        $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id')
-            ->join('seats', 'seats.id = order_items.seat_id', 'left')
-            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
-            ->where('order_id', $orderId)
-            ->findAll();
-
-        if (empty($items)) {
-            return;
-        }
-
-        $event = $eventModel->find($items[0]['event_id']);
-
-        $ticketList = [];
-        $qrCode     = new QrCodeGenerator();
-
-        foreach ($items as $item) {
-            $seatLabel = 'Free Seating';
-            if (!empty($item['label'])) {
-                $seatLabel = $item['label'];
-            } elseif (!empty($item['seat_row'])) {
-                $seatLabel = $item['seat_row'] . '-' . $item['seat_number'];
-            }
-
-            $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
-            $qrSvg     = $qrCode->format('svg')->size(250)->generate($qrContent);
-            $qrBase64  = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
-
-            $ticketList[] = [
-                'type' => $item['ticket_name'],
-                'seat' => $seatLabel,
-                'code' => $item['ticket_code'],
-                'qr'   => $qrBase64,
-            ];
-        }
-
-        try {
-            $htmlContent = view('ticket_template', [
-                'event'   => $event,
-                'order'   => $order,
-                'tickets' => $ticketList,
-            ]);
-
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($htmlContent);
-            $dompdf->setPaper('A4', 'portrait');
-            $dompdf->render();
-            $pdfOutput = $dompdf->output();
-
-            $email = \Config\Services::email();
-            $email->setFrom('noreply@ticketly.mytamakikii.web.id', 'Ticketly System');
-            $email->setTo($order['email']);
-            $email->setSubject('E-Tiket Resmi: ' . ($event['name'] ?? 'Ticketly'));
-            $email->setMessage("$htmlContent<br><br>Terima kasih telah memesan tiket di Ticketly.");
-            $email->attach($pdfOutput, 'attachment', 'E-Ticket-' . $order['trx_id'] . '.pdf', 'application/pdf');
-
-            $email->send();
-        } catch (\Exception $e) {
-            log_message('error', 'Webhook Ticket Delivery Email Exception: ' . $e->getMessage());
-        }
+        \App\Libraries\TicketDeliveryService::pushToQueue($orderId);
     }
 }

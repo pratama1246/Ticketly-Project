@@ -112,16 +112,25 @@ class OrderController extends BaseController
         ]);
     }
 
-    // Helper format order ringkas
+    // Helper format order ringkas dengan PII Masking UU PDP
     private function formatOrder(array $order): array
     {
+        helper('masking');
+
         return [
-            'id'             => $order['id'],
-            'trx_id'         => $order['trx_id'],
-            'order_total'    => (int) $order['order_total'],
-            'status'         => $order['status'],
-            'payment_method' => $order['payment_method'],
-            'created_at'     => $order['created_at'],
+            'id'                 => (int) $order['id'],
+            'trx_id'             => $order['trx_id'],
+            'first_name'         => $order['first_name'] ?? null,
+            'email_masked'       => !empty($order['email']) ? mask_email($order['email']) : null,
+            'phone_masked'       => !empty($order['phone_number']) ? mask_phone($order['phone_number']) : null,
+            'identity_masked'    => !empty($order['identity_number']) ? mask_nik($order['identity_number']) : null,
+            'order_total'        => (int) $order['order_total'],
+            'status'             => $order['status'],
+            'payment_method'     => $order['payment_method'],
+            'payment_va_number'  => $order['payment_va_number'] ?? null,
+            'payment_qr_url'     => $order['payment_qr_url'] ?? null,
+            'payment_expired_at' => $order['payment_expired_at'] ?? null,
+            'created_at'         => $order['created_at'],
         ];
     }
 }

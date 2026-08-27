@@ -562,78 +562,9 @@ class CheckoutController extends BaseController
         }
         $event = $eventModel->find($items[0]['event_id']);
 
-        $ticketList = [];
-        $qrCode = new QrCodeGenerator();
-
-        foreach ($items as $item) {
-            $seatLabel = 'Free Seating';
-            if (!empty($item['label'])) {
-                $seatLabel = $item['label']; 
-            } elseif (!empty($item['seat_row'])) {
-                $seatLabel = $item['seat_row'] . '-' . $item['seat_number'];
-            }
-
-            // Generate QR Unik per Tiket (SVG - tidak butuh imagick extension)
-            $qrContent = !empty($item['ticket_code']) ? $item['ticket_code'] : 'ERR-' . $item['id'];
-            $qrSvg = $qrCode->format('svg')->size(250)->generate($qrContent);
-            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
-
-            $ticketList[] = [
-                'type' => $item['ticket_name'],
-                'seat' => $seatLabel,
-                'code' => $item['ticket_code'],
-                'qr'   => $qrBase64
-            ];
-        }
-
-        $logoPath = FCPATH . 'assets/ticketly-logo.png';
-        $logoBase64 = '';
-        
-        if (file_exists($logoPath)) {
-            $type = pathinfo($logoPath, PATHINFO_EXTENSION);
-            $data = file_get_contents($logoPath);
-            $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        }
-
-        $pdfData = [
-            'event'     => $event,
-            'order'     => $order,
-            'tickets'   => $ticketList,
-            'logoBase64' => $logoBase64
-        ];
-
-        try {
-            $htmlContent = view('ticket_template', [
-                'event'     => $event,
-                'order'     => $order,
-                'tickets'   => $ticketList
-            ]);
-
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($htmlContent);
-            $dompdf->setPaper('A4', 'portrait');
-            $dompdf->render();
-            $pdfOutput = $dompdf->output();
-
-            $email = \Config\Services::email();
-            $email->setFrom('noreply@ticketly.mytamakikii.web.id', 'Ticketly Admin'); 
-            $email->setTo($order['email']);
-            $email->setSubject('E-Tiket: ' . $event['name']);
-            $email->setMessage("$htmlContent<br><br>Terima kasih...");
-            $email->attach($pdfOutput, 'attachment', 'E-Ticket.pdf', 'application/pdf');
-
-            // Cek status kirim
-            if ($email->send()) {
-                // Sukses
-            } else {
-                log_message('error', 'Gagal kirim email: ' . print_r($email->printDebugger(['headers']), true));
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal kirim email. Cek logs.']);
-            }
-
-        } catch (\Exception $e) {
-            log_message('error', 'Exception Email: ' . $e->getMessage());
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
-        }
+        // Kirim E-Tiket via TicketDeliveryService (Background Queue / Process)
+        \App\Libraries\TicketDeliveryService::pushToQueue((int) $order['id']);
+        \App\Libraries\TicketDeliveryService::process((int) $order['id']);
 
         session()->remove('checkout_process');
         session()->remove('checkout_expire');

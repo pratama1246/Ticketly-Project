@@ -154,8 +154,13 @@ class AuthController extends BaseController
     // POST /api/auth/logout
     public function logout()
     {
-        // JWT stateless — invalidasi token dilakukan di sisi Flutter (hapus dari storage)
-        // Tidak call Shield logout karena Shield session tidak dipakai untuk API
+        $authHeader = $this->request->getHeaderLine('Authorization');
+        if (!empty($authHeader) && str_starts_with($authHeader, 'Bearer ')) {
+            $token = substr($authHeader, 7);
+            helper('jwt');
+            blacklistJWT($token);
+        }
+
         return $this->response->setStatusCode(200)->setJSON([
             'status'  => 'success',
             'message' => 'Logout berhasil.',

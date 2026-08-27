@@ -329,7 +329,7 @@ $order = $orderModel->find($id);
 | `app/Controllers/Api/CheckoutController.php` | Full API checkout flow (single-batch query & Midtrans connected) |
 | `app/Models/OrderModel.php` | Includes `autoExpireOrders()` & payment columns |
 
-## Features & Improvements Added (Phase 1, Phase 2, & Phase 3)
+## Features & Improvements Added (Phase 1, Phase 2, Phase 3, & Phase 4)
 
 - **Database Performance & Indexes (Phase 1)**: Migration `AddPerformanceIndexesAndAlterResetCode` adding composite indexes on `orders(status, created_at)`, `orders(user_id)`, `order_items(order_id)`, `order_items(ticket_type_id, seat_id)`, `ticket_types(event_id)`, `events(slug UNIQUE)`, `events(status, category, event_date)`, `seats(event_id, ticket_type_id)`, and `password_resets.code` expanded to `VARCHAR(255)`.
 - **API Rate Limiting (Phase 1)**: `api_rate_limit` filter applied on sensitive endpoints (`auth/login`, `auth/register`, `auth/forgot-password`, `auth/verify-code`, `auth/reset-password`, `checkout/start`).
@@ -345,6 +345,10 @@ $order = $orderModel->find($id);
 - **Pessimistic Seat Locking (Phase 3)**: `SELECT ... FOR UPDATE` row-level locks on `assignSeats()` ensuring zero duplicate seat allocations during concurrent checkouts.
 - **Anti-Scalper NIK Quota Limit (Phase 3)**: Strict enforcement of maximum 4 tickets per NIK/identity per event across pending and completed orders.
 - **Idempotency Key (Phase 3)**: Header `X-Idempotency-Key` caching on `POST /api/checkout/start` preventing duplicate order creation from double-clicks or network retries.
+- **Background Queue Worker (Phase 4)**: Spark command `php spark queue:work` (`app/Commands/TicketQueueWorker.php`) and `TicketDeliveryService` for non-blocking asynchronous E-Ticket PDF Dompdf generation & SMTP email dispatch.
+- **JWT Token Revocation / Blacklist (Phase 4)**: Added `blacklistJWT()` and `isJWTBlacklisted()` in `jwt_helper.php` and `JwtFilter.php`, invalidating tokens immediately upon API logout.
+- **UU PDP PII Masking (Phase 4)**: Helper `masking_helper.php` (`mask_email()`, `mask_phone()`, `mask_nik()`) implemented in `Api/OrderController` for privacy compliance.
+- **Enterprise Security Headers (Phase 4)**: Global middleware `SecurityHeadersFilter.php` injecting `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and `Permissions-Policy`.
 
 ## Existing UI/API Priority
 

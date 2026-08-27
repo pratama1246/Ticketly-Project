@@ -24,6 +24,19 @@ class JwtFilter implements FilterInterface
 
         $token = substr($authHeader, 7);
 
+        helper('jwt');
+
+        // Periksa apakah token sudah di-blacklist (user sudah logout)
+        if (isJWTBlacklisted($token)) {
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Sesi telah berakhir atau Anda telah logout. Silakan login kembali.',
+                    'data'    => null
+                ]);
+        }
+
         try {
             $decoded = decodeJWT($token);
             $_SERVER['JWT_USER_ID'] = $decoded->userId;
