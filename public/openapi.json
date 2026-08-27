@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Ticketly API Documentation",
-    "version": "1.0.0",
-    "description": "Dokumentasi REST API Ticketly untuk aplikasi mobile (Flutter) dan integrasi eksternal. Semua respons sukses maupun error mengembalikan struktur JSON yang konsisten: `{ status, message, data }`."
+    "version": "1.2.0",
+    "description": "Dokumentasi resmi REST API Ticketly untuk Flutter Mobile App & Web Integration. Semua respons sukses dan error mengikuti format baku `{ status, message, data }`."
   },
   "servers": [
     {
@@ -11,42 +11,45 @@
       "description": "Local Development Server"
     }
   ],
+  "tags": [
+    { "name": "Auth", "description": "Otentikasi, Registrasi, Logout & OTP Password Reset" },
+    { "name": "Events", "description": "Katalog Event, Konser, Festival & Tiket" },
+    { "name": "Profile", "description": "Manajemen Profil Akun & Data Pengguna" },
+    { "name": "Checkout", "description": "Kalkulasi Biaya, Midtrans Direct Charge & Pemesanan Tiket" },
+    { "name": "Orders", "description": "Riwayat Transaksi & E-Tiket (UU PDP Data Masking)" },
+    { "name": "Vouchers", "description": "Sistem Voucher Diskon & Kupon Promo" },
+    { "name": "Scanner", "description": "Gate Check-in Scanner API & Anti-Double Scan Protection" },
+    { "name": "Payment", "description": "Midtrans Payment Webhook & Notification Handler" },
+    { "name": "Legal", "description": "Syarat Ketentuan (T&C) & Kebijakan Privasi (Privacy Policy)" }
+  ],
   "components": {
     "securitySchemes": {
       "BearerAuth": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Masukkan JWT token Anda untuk mengakses endpoint yang dilindungi. Dapatkan token dengan memanggil endpoint `/api/auth/login`."
+        "description": "Kirim JWT token pada header `Authorization: Bearer <token>`. Dapatkan token melalui `POST /api/auth/login`."
       }
     },
     "schemas": {
+      "StandardResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "success" },
+          "message": { "type": "string", "example": "Operasi berhasil." },
+          "data": { "nullable": true, "type": "object" }
+        }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
-          "status": {
-            "type": "string",
-            "example": "error"
-          },
-          "message": {
-            "type": "string",
-            "example": "Pesan deskripsi error yang jelas."
-          },
+          "status": { "type": "string", "example": "error" },
+          "message": { "type": "string", "example": "Pesan deskripsi error yang jelas." },
           "data": {
             "nullable": true,
             "oneOf": [
-              {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "example": {
-                  "field_name": "Pesan validasi error untuk field ini."
-                }
-              },
-              {
-                "type": "null"
-              }
+              { "type": "object", "additionalProperties": { "type": "string" }, "example": { "field_name": "Pesan error untuk field ini." } },
+              { "type": "null" }
             ]
           }
         }
@@ -57,7 +60,7 @@
     "/api/auth/login": {
       "post": {
         "summary": "Login Pengguna",
-        "description": "Mengautentikasi pengguna menggunakan email dan password, lalu menghasilkan JWT token.",
+        "description": "Mengautentikasi pengguna dengan email & password, menghasilkan JWT token 7 hari.",
         "tags": ["Auth"],
         "requestBody": {
           "required": true,
@@ -67,82 +70,24 @@
                 "type": "object",
                 "required": ["email", "password"],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "user@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "example": "password123"
-                  }
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" },
+                  "password": { "type": "string", "minLength": 6, "example": "password123" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Login berhasil, token JWT dikembalikan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Login berhasil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsIn..." },
-                        "user": {
-                          "type": "object",
-                          "properties": {
-                            "id": { "type": "integer", "example": 1 },
-                            "username": { "type": "string", "example": "john_doe" },
-                            "email": { "type": "string", "example": "user@example.com" },
-                            "foto": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/profile/random.jpg" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Email atau password salah.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal (misal format email salah atau password kurang dari 6 karakter).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "User tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Login berhasil, token JWT dikembalikan." },
+          "401": { "description": "Email atau password salah." },
+          "422": { "description": "Validasi gagal." }
         }
       }
     },
     "/api/auth/register": {
       "post": {
         "summary": "Registrasi Pengguna Baru",
-        "description": "Mendaftarkan akun user baru ke dalam sistem.",
+        "description": "Mendaftarkan akun pengguna baru ke dalam sistem.",
         "tags": ["Auth"],
         "requestBody": {
           "required": true,
@@ -152,101 +97,36 @@
                 "type": "object",
                 "required": ["username", "email", "password"],
                 "properties": {
-                  "username": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 30,
-                    "example": "john_doe"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "newuser@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "example": "securepassword123"
-                  }
+                  "username": { "type": "string", "example": "john_doe" },
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" },
+                  "password": { "type": "string", "minLength": 8, "example": "password123" }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Registrasi berhasil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Registrasi berhasil. Silakan login." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal (misal username sudah terdaftar atau email duplikat).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "500": {
-            "description": "Gagal membuat akun / Server error.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "201": { "description": "Registrasi berhasil." },
+          "422": { "description": "Validasi gagal (email / username sudah ada)." }
         }
       }
     },
     "/api/auth/logout": {
       "post": {
-        "summary": "Logout Pengguna",
-        "description": "Logout dari sistem. JWT bersifat stateless sehingga pembersihan token sesungguhnya dilakukan di client-side (Flutter).",
+        "summary": "Logout Pengguna (JWT Blacklist Revocation)",
+        "description": "Memasukkan token JWT ke dalam daftar blacklist cache sehingga token tidak dapat digunakan lagi.",
         "tags": ["Auth"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
-          "200": {
-            "description": "Logout berhasil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Logout berhasil." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token tidak valid atau tidak disertakan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Logout berhasil dan token diblacklist." },
+          "401": { "description": "Unauthorized / Token tidak valid." }
         }
       }
     },
     "/api/auth/forgot-password": {
       "post": {
         "summary": "Forgot Password (Request OTP)",
-        "description": "Mengirimkan kode OTP 6-digit ke email yang terdaftar jika email tersebut ada dalam sistem.",
+        "description": "Mengirimkan kode OTP verifikasi 6-digit ke email terdaftar (disimpan dengan enkripsi Bcrypt).",
         "tags": ["Auth"],
         "requestBody": {
           "required": true,
@@ -256,55 +136,22 @@
                 "type": "object",
                 "required": ["email"],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "user@example.com"
-                  }
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Kode OTP berhasil dikirim.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Kode verifikasi telah dikirim ke email Anda." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Email tidak terdaftar.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal (misal email tidak valid).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Kode OTP berhasil dikirim ke email." },
+          "404": { "description": "Email tidak terdaftar." }
         }
       }
     },
     "/api/auth/verify-code": {
       "post": {
         "summary": "Verify OTP Code",
-        "description": "Memvalidasi kode OTP yang dikirimkan ke email.",
+        "description": "Memverifikasi kecocokan kode OTP 6-digit.",
         "tags": ["Auth"],
         "requestBody": {
           "required": true,
@@ -314,67 +161,24 @@
                 "type": "object",
                 "required": ["email", "code"],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "user@example.com"
-                  },
-                  "code": {
-                    "type": "string",
-                    "example": "123456"
-                  }
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" },
+                  "code": { "type": "string", "example": "123456" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Kode OTP berhasil diverifikasi.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Kode verifikasi berhasil diverifikasi." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Kode verifikasi tidak valid atau tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "410": {
-            "description": "Kode verifikasi telah kedaluwarsa.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Kode OTP valid." },
+          "404": { "description": "Kode tidak valid atau salah." },
+          "410": { "description": "Kode OTP telah kedaluwarsa." }
         }
       }
     },
     "/api/auth/reset-password": {
       "post": {
-        "summary": "Reset Password",
-        "description": "Memperbarui kata sandi pengguna dengan yang baru menggunakan kode verifikasi OTP yang valid.",
+        "summary": "Reset Password dengan OTP",
+        "description": "Mengganti kata sandi baru dan langsung menghapus OTP (Single-Use Enforcement).",
         "tags": ["Auth"],
         "requestBody": {
           "required": true,
@@ -384,628 +188,177 @@
                 "type": "object",
                 "required": ["email", "code", "password"],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "user@example.com"
-                  },
-                  "code": {
-                    "type": "string",
-                    "example": "123456"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "example": "newsecurepassword123"
-                  }
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" },
+                  "code": { "type": "string", "example": "123456" },
+                  "password": { "type": "string", "minLength": 8, "example": "newPassword123" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Kata sandi berhasil diubah.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Kata sandi berhasil diubah. Silakan login kembali." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Kode verifikasi tidak valid, tidak ditemukan, atau user tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "410": {
-            "description": "Kode verifikasi telah kedaluwarsa.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal (misal kata sandi kurang dari 8 karakter).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Password berhasil diubah." },
+          "404": { "description": "Kode tidak valid." }
         }
       }
     },
     "/api/events": {
       "get": {
-        "summary": "Daftar Event",
-        "description": "Mendapatkan seluruh event dengan status `published`. Endpoint ini dilengkapi filter kategori, pencarian kata kunci, dan pagination.",
+        "summary": "Daftar Event (Katalog)",
+        "description": "Mengambil daftar event yang dipublikasikan dengan opsi filter kategori, search, dan pagination.",
         "tags": ["Events"],
         "parameters": [
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter berdasarkan kategori event (misal: concert, festival, event)",
-            "required": false,
-            "schema": { "type": "string", "example": "concert" }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "description": "Kata kunci pencarian untuk nama event atau lokasi (venue)",
-            "required": false,
-            "schema": { "type": "string", "example": "Coldplay" }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Nomor halaman pagination",
-            "required": false,
-            "schema": { "type": "integer", "default": 1, "example": 1 }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Jumlah data per halaman (Max: 50)",
-            "required": false,
-            "schema": { "type": "integer", "default": 10, "example": 10 }
-          }
+          { "name": "category", "in": "query", "schema": { "type": "string", "enum": ["concert", "festival", "event"] } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
         ],
         "responses": {
-          "200": {
-            "description": "Daftar event berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Data event berhasil diambil." },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": { "type": "integer", "example": 1 },
-                          "name": { "type": "string", "example": "Soundrenaline 2026" },
-                          "slug": { "type": "string", "example": "soundrenaline-2026" },
-                          "category": { "type": "string", "example": "festival" },
-                          "venue": { "type": "string", "example": "GWK Cultural Park, Bali" },
-                          "event_date": { "type": "string", "example": "2026-09-12 15:00:00" },
-                          "event_end_date": { "type": "string", "nullable": true, "example": "2026-09-13 23:00:00" },
-                          "is_featured": { "type": "boolean", "example": true },
-                          "poster_image": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/events/poster.jpg" }
-                        }
-                      }
-                    },
-                    "meta": {
-                      "type": "object",
-                      "properties": {
-                        "total": { "type": "integer", "example": 15 },
-                        "per_page": { "type": "integer", "example": 10 },
-                        "current_page": { "type": "integer", "example": 1 },
-                        "last_page": { "type": "integer", "example": 2 }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "200": { "description": "Daftar event berhasil diambil." }
         }
       }
     },
     "/api/events/featured": {
       "get": {
-        "summary": "Daftar Event Unggulan (Featured)",
-        "description": "Mengambil semua event bertanda `is_featured = 1` dengan urutan kustom.",
+        "summary": "Event Pilihan (Featured)",
+        "description": "Mengambil daftar event yang ditandai sebagai featured / highlight utama.",
         "tags": ["Events"],
         "responses": {
-          "200": {
-            "description": "Featured events berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Featured events berhasil diambil." },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": { "type": "integer", "example": 1 },
-                          "name": { "type": "string", "example": "Soundrenaline 2026" },
-                          "slug": { "type": "string", "example": "soundrenaline-2026" },
-                          "category": { "type": "string", "example": "festival" },
-                          "venue": { "type": "string", "example": "GWK Cultural Park, Bali" },
-                          "event_date": { "type": "string", "example": "2026-09-12 15:00:00" },
-                          "event_end_date": { "type": "string", "nullable": true, "example": "2026-09-13 23:00:00" },
-                          "is_featured": { "type": "boolean", "example": true },
-                          "poster_image": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/events/poster.jpg" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "200": { "description": "Event featured berhasil diambil." }
         }
       }
     },
     "/api/events/landing": {
       "get": {
-        "summary": "Data Landing Page",
-        "description": "Mengambil data gabungan untuk landing page (featured, concerts, festivals, events). Masing-masing max 4 item.",
+        "summary": "Data Landing Page Event",
+        "description": "Mengambil data gabungan featured, concerts, festivals, dan upcoming events untuk home screen Flutter.",
         "tags": ["Events"],
         "responses": {
-          "200": {
-            "description": "Data landing page berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Data landing page berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "featured": { "type": "array", "items": { "type": "object" } },
-                        "concerts": { "type": "array", "items": { "type": "object" } },
-                        "festivals": { "type": "array", "items": { "type": "object" } },
-                        "events": { "type": "array", "items": { "type": "object" } }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "200": { "description": "Data landing page berhasil diambil." }
         }
       }
     },
     "/api/events/{slug}": {
       "get": {
-        "summary": "Detail Event (Berdasarkan Slug)",
-        "description": "Mengambil detail event beserta tipe tiket yang tersedia.",
+        "summary": "Detail Event berdasarkan Slug",
+        "description": "Mengambil informasi lengkap event, deskripsi, lokasi venue, poster, denah kursi, dan daftar tipe tiket.",
         "tags": ["Events"],
         "parameters": [
-          {
-            "name": "slug",
-            "in": "path",
-            "required": true,
-            "description": "Slug unik dari event",
-            "schema": { "type": "string", "example": "soundrenaline-2026" }
-          }
+          { "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "responses": {
-          "200": {
-            "description": "Detail event berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Detail event berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer", "example": 1 },
-                        "name": { "type": "string", "example": "Soundrenaline 2026" },
-                        "slug": { "type": "string", "example": "soundrenaline-2026" },
-                        "category": { "type": "string", "example": "festival" },
-                        "venue": { "type": "string", "example": "GWK Cultural Park, Bali" },
-                        "event_date": { "type": "string", "example": "2026-09-12 15:00:00" },
-                        "event_end_date": { "type": "string", "nullable": true, "example": "2026-09-13 23:00:00" },
-                        "is_featured": { "type": "boolean", "example": true },
-                        "poster_image": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/events/poster.jpg" },
-                        "description": { "type": "string", "example": "Festival musik terbesar di Indonesia..." },
-                        "seatmap_image": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/events/seatmap.jpg" },
-                        "event_status": { "type": "string", "example": "available", "description": "available | sold_out | almost_sold | ended" },
-                        "total_stock": { "type": "integer", "example": 1000 },
-                        "total_sold": { "type": "integer", "example": 350 },
-                        "tickets": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": { "type": "integer", "example": 5 },
-                              "name": { "type": "string", "example": "Presale 1 - 2 Day Pass" },
-                              "ticket_date": { "type": "string", "example": "2026-09-12" },
-                              "ticket_category": { "type": "string", "example": "Free Seating" },
-                              "price": { "type": "integer", "example": 550000 },
-                              "ui_color": { "type": "string", "example": "orange" },
-                              "description": { "type": "string", "example": "Akses masuk festival untuk 2 hari." },
-                              "quantity_total": { "type": "integer", "example": 500 },
-                              "quantity_sold": { "type": "integer", "example": 200 },
-                              "quantity_left": { "type": "integer", "example": 300 }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Event tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Detail event berhasil diambil." },
+          "404": { "description": "Event tidak ditemukan." }
         }
       }
     },
     "/api/events/{eventId}/tickets": {
       "get": {
-        "summary": "Daftar Tiket Per Event (Berdasarkan Event ID)",
-        "description": "Mengambil daftar tipe tiket yang tersedia untuk sebuah ID event tertentu.",
+        "summary": "Daftar Tipe Tiket per Event",
+        "description": "Mengambil daftar tiket, sisa kuota, dan harga untuk suatu event.",
         "tags": ["Events"],
         "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "description": "ID numerik dari event",
-            "schema": { "type": "integer", "example": 1 }
-          }
+          { "name": "eventId", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "200": {
-            "description": "Data tiket berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Data tiket berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "event_id": { "type": "integer", "example": 1 },
-                        "event_name": { "type": "string", "example": "Soundrenaline 2026" },
-                        "tickets": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": { "type": "integer", "example": 5 },
-                              "name": { "type": "string", "example": "Presale 1 - 2 Day Pass" },
-                              "ticket_date": { "type": "string", "example": "2026-09-12" },
-                              "ticket_category": { "type": "string", "example": "Free Seating" },
-                              "price": { "type": "integer", "example": 550000 },
-                              "ui_color": { "type": "string", "example": "orange" },
-                              "description": { "type": "string", "example": "Akses masuk festival untuk 2 hari." },
-                              "quantity_total": { "type": "integer", "example": 500 },
-                              "quantity_sold": { "type": "integer", "example": 200 },
-                              "quantity_left": { "type": "integer", "example": 300 },
-                              "is_available": { "type": "boolean", "example": true }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Event tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Daftar tiket berhasil diambil." },
+          "404": { "description": "Event tidak ditemukan." }
         }
       }
     },
     "/api/profile": {
       "get": {
         "summary": "Profil Pengguna",
-        "description": "Mendapatkan detail data profil pengguna yang sedang login.",
+        "description": "Mengambil profil pengguna yang sedang login.",
         "tags": ["Profile"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
-          "200": {
-            "description": "Data profil berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Data profil berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer", "example": 1 },
-                        "username": { "type": "string", "example": "john_doe" },
-                        "email": { "type": "string", "example": "user@example.com" },
-                        "foto": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/profile/john.jpg" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "User tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Data profil berhasil diambil." },
+          "401": { "description": "Unauthorized." }
         }
       }
     },
     "/api/profile/update": {
       "post": {
-        "summary": "Perbarui Profil Pengguna",
-        "description": "Memperbarui informasi akun user seperti username, email, dan foto profil. Mendukung upload foto dalam format multipart/form-data.",
+        "summary": "Update Profil & Foto",
+        "description": "Memperbarui username, email (sinkron ke auth_identities), password, dan foto profil.",
         "tags": ["Profile"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
-          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["username", "email"],
                 "properties": {
-                  "username": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 30,
-                    "example": "john_doe_updated"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "john_new@example.com"
-                  },
-                  "foto": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "File gambar (jpg, jpeg, png, webp, max 2MB)"
-                  }
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" },
+                  "foto": { "type": "string", "format": "binary" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Profil berhasil diperbarui.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Profil berhasil diperbarui." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer", "example": 1 },
-                        "username": { "type": "string", "example": "john_doe_updated" },
-                        "email": { "type": "string", "example": "john_new@example.com" },
-                        "foto": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/profile/random_new.jpg" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi gagal (misal file bukan gambar, ukuran terlalu besar, atau email sudah dipakai orang lain).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Profil berhasil diperbarui." },
+          "422": { "description": "Validasi gagal." }
         }
       }
     },
     "/api/checkout/payment-methods": {
       "get": {
-        "summary": "Metode Pembayaran Aktif",
-        "description": "Mendapatkan semua metode pembayaran aktif yang dikelompokkan berdasarkan tipenya.",
+        "summary": "Daftar Metode Pembayaran Midtrans",
+        "description": "Mengambil 10 metode pembayaran Direct Charge (BCA, BNI, BRI, Permata, Mandiri Bill, Gopay, ShopeePay, QRIS, Akulaku).",
         "tags": ["Checkout"],
         "responses": {
-          "200": {
-            "description": "Metode pembayaran berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Metode pembayaran berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "ewallet": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": { "type": "integer", "example": 1 },
-                              "name": { "type": "string", "example": "OVO" },
-                              "code": { "type": "string", "example": "ovo" },
-                              "type": { "type": "string", "example": "ewallet" },
-                              "logo_image": { "type": "string", "nullable": true, "example": "http://localhost:8080/uploads/payments/ovo.png" }
-                            }
-                          }
-                        },
-                        "virtual_account": {
-                          "type": "array",
-                          "items": { "type": "object" }
-                        },
-                        "other": {
-                          "type": "array",
-                          "items": { "type": "object" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "200": { "description": "Daftar metode pembayaran berhasil diambil." }
         }
       }
     },
     "/api/checkout/calculate": {
       "post": {
-        "summary": "Kalkulasi Tagihan Tiket",
-        "description": "Menghitung total rincian biaya tiket (subtotal, pajak 11%, platform fee, biaya admin, dan total bayar) sebelum checkout dimulai.",
+        "summary": "Kalkulasi Rincian Biaya & Diskon Voucher",
+        "description": "Menghitung subtotal, pajak PPN 11%, platform fee, admin fee, dan potongan diskon voucher secara dinamis.",
         "tags": ["Checkout"],
         "requestBody": {
           "required": true,
           "content": {
-            "application/x-www-form-urlencoded": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": ["tickets"],
                 "properties": {
                   "tickets": {
                     "type": "array",
-                    "description": "Daftar tiket dan quantity. Dikirimkan dalam format array form parameter. Contoh: `tickets[0][ticket_type_id]=5&tickets[0][quantity]=2`",
                     "items": {
                       "type": "object",
+                      "required": ["ticket_type_id", "quantity"],
                       "properties": {
-                        "ticket_type_id": { "type": "integer", "example": 5 },
+                        "ticket_type_id": { "type": "integer", "example": 1 },
                         "quantity": { "type": "integer", "example": 2 }
                       }
                     }
-                  }
+                  },
+                  "voucher_code": { "type": "string", "example": "TIKETLYHEMAT20" }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Kalkulasi sukses.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Kalkulasi berhasil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "items": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "ticket_type_id": { "type": "integer", "example": 5 },
-                              "name": { "type": "string", "example": "Presale 1" },
-                              "ticket_category": { "type": "string", "example": "Free Seating" },
-                              "price": { "type": "integer", "example": 550000 },
-                              "quantity": { "type": "integer", "example": 2 },
-                              "subtotal": { "type": "integer", "example": 1100000 }
-                            }
-                          }
-                        },
-                        "sub_total": { "type": "integer", "example": 1100000 },
-                        "tax_amount": { "type": "integer", "example": 121000 },
-                        "platform_fee": { "type": "integer", "example": 20000 },
-                        "admin_fee": { "type": "integer", "example": 2500 },
-                        "grand_total": { "type": "integer", "example": 1243500 }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Data tiket tidak valid atau tidak ada tiket valid yang dipilih.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Kalkulasi rincian biaya berhasil." },
+          "422": { "description": "Tiket tidak valid." }
         }
       }
     },
     "/api/checkout/start": {
       "post": {
-        "summary": "Mulai Proses Order (Checkout)",
-        "description": "Membuat order baru dengan status `pending`. Stok tiket akan langsung terpotong / berkurang. Jika dalam 15 menit pembayaran tidak dikonfirmasi, order otomatis hangus.",
+        "summary": "Start Checkout (Midtrans Direct Charge, Voucher & Multi-Attendee)",
+        "description": "Membuat pesanan dengan proteksi Idempotency Key, Anti-Scalper NIK Limit (max 4 tiket), Atomic Stock Reservation, Pessimistic Seat Locking, dan Direct Charge Midtrans.",
         "tags": ["Checkout"],
-        "security": [
-          { "BearerAuth": [] }
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "X-Idempotency-Key", "in": "header", "schema": { "type": "string", "format": "uuid" }, "description": "UUIDv4 Idempotency Key mencegah double charge." }
         ],
         "requestBody": {
           "required": true,
@@ -1015,20 +368,33 @@
                 "type": "object",
                 "required": ["first_name", "email", "phone_number", "identity_number", "payment_method", "tickets"],
                 "properties": {
-                  "first_name": { "type": "string", "maxLength": 100, "example": "John" },
-                  "last_name": { "type": "string", "example": "Doe" },
-                  "email": { "type": "string", "format": "email", "example": "customer@example.com" },
-                  "phone_number": { "type": "string", "description": "Hanya angka, tanda tambah, strip, spasi, kurung.", "example": "081234567890" },
-                  "identity_number": { "type": "string", "description": "Nomor KTP/Passport.", "example": "3201234567890001" },
-                  "birth_date": { "type": "string", "format": "date", "example": "1995-10-25" },
-                  "payment_method": { "type": "string", "example": "ovo" },
+                  "first_name": { "type": "string", "example": "Budi" },
+                  "last_name": { "type": "string", "example": "Santoso" },
+                  "email": { "type": "string", "format": "email", "example": "budi@gmail.com" },
+                  "phone_number": { "type": "string", "example": "081234567890" },
+                  "identity_number": { "type": "string", "example": "3201234567890001" },
+                  "birth_date": { "type": "string", "format": "date", "example": "1998-05-12" },
+                  "payment_method": { "type": "string", "example": "bca_va" },
+                  "voucher_code": { "type": "string", "example": "TIKETLYHEMAT20" },
                   "tickets": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "ticket_type_id": { "type": "integer", "example": 5 },
+                        "ticket_type_id": { "type": "integer", "example": 2 },
                         "quantity": { "type": "integer", "example": 2 }
+                      }
+                    }
+                  },
+                  "attendees": {
+                    "type": "array",
+                    "description": "Data pemegang tiket per lembar (Multi-Attendee Registration)",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string", "example": "Budi Santoso" },
+                        "email": { "type": "string", "example": "budi@gmail.com" },
+                        "identity_number": { "type": "string", "example": "3201234567890001" }
                       }
                     }
                   }
@@ -1038,73 +404,18 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Order berhasil dibuat.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Order berhasil dibuat." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "order_id": { "type": "integer", "example": 24 },
-                        "trx_id": { "type": "string", "example": "TRX-20260627-8E4A0CFF" },
-                        "grand_total": { "type": "integer", "example": 1243500 },
-                        "status": { "type": "string", "example": "pending" },
-                        "expires_at": { "type": "string", "example": "2026-06-27 20:33:53" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "Validasi input gagal.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "Salah satu Tiket ID tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "409": {
-            "description": "Stok tiket tidak mencukupi atau kursi kosong untuk kategori Seating sudah habis.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "201": { "description": "Order berhasil dibuat dan payment charge Midtrans dikembalikan." },
+          "409": { "description": "Stok habis / Kursi bentrok." },
+          "422": { "description": "Batas kuota NIK terlampaui / Validasi gagal." }
         }
       }
     },
     "/api/checkout/confirm": {
       "post": {
         "summary": "Konfirmasi Pembayaran Order",
-        "description": "Mengubah status order menjadi `completed`. Secara otomatis akan men-generate E-Ticket PDF dengan QR Code unik dan mengirimkannya ke email pembeli.",
+        "description": "Mengecek status asli pembayaran ke Midtrans Core API dan menerbitkan E-Tiket PDF.",
         "tags": ["Checkout"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -1113,71 +424,25 @@
                 "type": "object",
                 "required": ["order_id"],
                 "properties": {
-                  "order_id": { "type": "integer", "example": 24 }
+                  "order_id": { "type": "integer", "example": 102 }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Pembayaran berhasil dikonfirmasi.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Pembayaran dikonfirmasi." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "order_id": { "type": "integer", "example": 24 },
-                        "trx_id": { "type": "string", "example": "TRX-20260627-8E4A0CFF" },
-                        "status": { "type": "string", "example": "completed" },
-                        "email": { "type": "string", "example": "customer@example.com" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "Order tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "410": {
-            "description": "Order sudah kadaluarsa (status `expired`).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Pembayaran dikonfirmasi dan tiket diterbitkan." },
+          "400": { "description": "Pembayaran belum terdeteksi." },
+          "410": { "description": "Order telah kedaluwarsa." }
         }
       }
     },
     "/api/checkout/cancel": {
       "post": {
-        "summary": "Batalkan Order Pending",
-        "description": "Membatalkan order dengan status `pending` secara manual. Status order akan berubah menjadi `cancelled` dan sisa stok tiket akan dikembalikan.",
+        "summary": "Batalkan Pesanan",
+        "description": "Membatalkan pesanan pending dan mengembalikan kuota tiket secara otomatis.",
         "tags": ["Checkout"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -1186,178 +451,196 @@
                 "type": "object",
                 "required": ["order_id"],
                 "properties": {
-                  "order_id": { "type": "integer", "example": 24 }
+                  "order_id": { "type": "integer", "example": 102 }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Order berhasil dibatalkan.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Order berhasil dibatalkan." },
-                    "data": { "type": "object", "nullable": true, "example": null }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "Order tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "409": {
-            "description": "Gagal membatalkan karena order tidak berstatus pending (misal sudah completed).",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Pesanan berhasil dibatalkan dan stok dikembalikan." }
         }
       }
     },
     "/api/orders": {
       "get": {
-        "summary": "Riwayat Transaksi Pengguna",
-        "description": "Mengambil semua daftar transaksi/order yang pernah dibuat oleh user yang sedang login.",
+        "summary": "Riwayat Transaksi Pengguna (UU PDP Masked)",
+        "description": "Mengambil riwayat transaksi milik user login dengan penyamaran data sensitif (PII Masking).",
         "tags": ["Orders"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
-          "200": {
-            "description": "Riwayat order berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Riwayat order berhasil diambil." },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": { "type": "integer", "example": 24 },
-                          "trx_id": { "type": "string", "example": "TRX-20260627-8E4A0CFF" },
-                          "order_total": { "type": "integer", "example": 1243500 },
-                          "status": { "type": "string", "example": "completed", "description": "pending | completed | cancelled | expired" },
-                          "payment_method": { "type": "string", "example": "ovo" },
-                          "created_at": { "type": "string", "example": "2026-06-27 20:18:53" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
+          "200": { "description": "Riwayat transaksi berhasil diambil." }
         }
       }
     },
     "/api/orders/{id}": {
       "get": {
-        "summary": "Detail Transaksi / E-Ticket",
-        "description": "Mengambil informasi detail transaksi tertentu beserta daftar tiket, nomor kursi, dan kode tiket unik untuk ditukarkan di venue.",
+        "summary": "Detail Transaksi & E-Tiket",
+        "description": "Mengambil detail pesanan, rincian kursi, data attendee, dan barcode e-tiket unik.",
         "tags": ["Orders"],
-        "security": [
-          { "BearerAuth": [] }
-        ],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID numerik order",
-            "schema": { "type": "integer", "example": 24 }
-          }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "200": {
-            "description": "Detail order berhasil diambil.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "string", "example": "success" },
-                    "message": { "type": "string", "example": "Detail order berhasil diambil." },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer", "example": 24 },
-                        "trx_id": { "type": "string", "example": "TRX-20260627-8E4A0CFF" },
-                        "order_total": { "type": "integer", "example": 1243500 },
-                        "status": { "type": "string", "example": "completed" },
-                        "payment_method": { "type": "string", "example": "ovo" },
-                        "created_at": { "type": "string", "example": "2026-06-27 20:18:53" },
-                        "items": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": { "type": "integer", "example": 45 },
-                              "ticket_code": { "type": "string", "example": "TKT-E01-24-DA7B" },
-                              "ticket_name": { "type": "string", "example": "Presale 1 - 2 Day Pass" },
-                              "ticket_category": { "type": "string", "example": "Free Seating" },
-                              "event_name": { "type": "string", "example": "Soundrenaline 2026" },
-                              "event_date": { "type": "string", "example": "2026-09-12 15:00:00" },
-                              "seat_label": { "type": "string", "example": "Free Seating" },
-                              "price_per_ticket": { "type": "integer", "example": 550000 }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+          "200": { "description": "Detail pesanan berhasil diambil." },
+          "404": { "description": "Pesanan tidak ditemukan." }
+        }
+      }
+    },
+    "/api/vouchers/active": {
+      "get": {
+        "summary": "Daftar Voucher Promo Aktif",
+        "description": "Mengambil daftar promo voucher publik yang sedang aktif beserta syarat minimum belanja dan maksimal diskon.",
+        "tags": ["Vouchers"],
+        "responses": {
+          "200": { "description": "Daftar voucher promo aktif berhasil diambil." }
+        }
+      }
+    },
+    "/api/vouchers/apply": {
+      "post": {
+        "summary": "Validasi & Cek Diskon Voucher",
+        "description": "Mengecek keabsahan kode voucher terhadap subtotal belanja dan menghitung potongan harga.",
+        "tags": ["Vouchers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["code", "subtotal"],
+                "properties": {
+                  "code": { "type": "string", "example": "TIKETLYHEMAT20" },
+                  "subtotal": { "type": "integer", "example": 200000 }
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized / Token tidak valid.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "Order tidak ditemukan.",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        },
+        "responses": {
+          "200": { "description": "Voucher valid dan diskon berhasil dihitung." },
+          "400": { "description": "Voucher tidak valid / kuota habis / syarat tidak terpenuhi." }
+        }
+      }
+    },
+    "/api/scanner/validate": {
+      "post": {
+        "summary": "Gate Scanner: Preview Validasi Tiket",
+        "description": "Memeriksa status tiket, nama penonton, dan keabsahan QR code tanpa mengubah status check-in.",
+        "tags": ["Scanner"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ticket_code"],
+                "properties": {
+                  "ticket_code": { "type": "string", "example": "TKT-E02-54-5D3A44" }
+                }
               }
             }
           }
+        },
+        "responses": {
+          "200": { "description": "Tiket valid dan siap check-in." },
+          "400": { "description": "Status pesanan belum lunas." },
+          "404": { "description": "Tiket tidak ditemukan." }
+        }
+      }
+    },
+    "/api/scanner/checkin": {
+      "post": {
+        "summary": "Gate Scanner: Eksekusi Check-in (Anti-Double Scan Protection)",
+        "description": "Melakukan check-in tiket penonton secara atomic. Jika tiket sudah pernah di-scan sebelumnya, sistem otomatis menolak dengan kode 409 Conflict.",
+        "tags": ["Scanner"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ticket_code"],
+                "properties": {
+                  "ticket_code": { "type": "string", "example": "TKT-E02-54-5D3A44" },
+                  "gate": { "type": "string", "example": "Gate VIP Barat" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Check-in berhasil. Penonton diizinkan masuk." },
+          "409": { "description": "PERINGATAN: Tiket ganda terdeteksi (sudah pernah di-check-in sebelumnya)." },
+          "404": { "description": "Tiket tidak ditemukan." }
+        }
+      }
+    },
+    "/api/scanner/stats/{eventId}": {
+      "get": {
+        "summary": "Gate Scanner: Real-time Gate Statistics",
+        "description": "Mengambil statistik langsung kehadiran penonton di gate (Total tiket terjual, penonton yang sudah masuk, penonton di luar, dan persentase).",
+        "tags": ["Scanner"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "eventId", "in": "path", "required": true, "schema": { "type": "integer", "example": 2 } }
+        ],
+        "responses": {
+          "200": { "description": "Statistik kehadiran gate berhasil diambil." },
+          "404": { "description": "Event tidak ditemukan." }
+        }
+      }
+    },
+    "/api/payment/webhook": {
+      "post": {
+        "summary": "Midtrans Payment Webhook Handler",
+        "description": "Menerima notifikasi status pembayaran dari Midtrans dengan verifikasi SHA512 signature, update pesanan idempotent, dan pengiriman otomatis e-tiket.",
+        "tags": ["Payment"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["order_id", "status_code", "gross_amount", "signature_key", "transaction_status"],
+                "properties": {
+                  "order_id": { "type": "string", "example": "TRX-20260827-ABC12345" },
+                  "status_code": { "type": "string", "example": "200" },
+                  "gross_amount": { "type": "string", "example": "250000.00" },
+                  "signature_key": { "type": "string", "example": "9a8b7c6d5e4f..." },
+                  "transaction_status": { "type": "string", "example": "settlement" },
+                  "fraud_status": { "type": "string", "example": "accept" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Webhook berhasil diproses." },
+          "403": { "description": "Signature key Midtrans tidak valid." }
+        }
+      }
+    },
+    "/api/terms": {
+      "get": {
+        "summary": "Syarat & Ketentuan (Terms & Conditions)",
+        "description": "Mengambil dokumen syarat dan ketentuan resmi penggunaan platform Ticketly dalam format JSON.",
+        "tags": ["Legal"],
+        "responses": {
+          "200": { "description": "Syarat & Ketentuan berhasil diambil." }
+        }
+      }
+    },
+    "/api/privacy": {
+      "get": {
+        "summary": "Kebijakan Privasi (Privacy Policy - UU PDP)",
+        "description": "Mengambil dokumen kebijakan privasi dan perlindungan data pribadi pengguna sesuai UU PDP.",
+        "tags": ["Legal"],
+        "responses": {
+          "200": { "description": "Kebijakan privasi berhasil diambil." }
         }
       }
     }
