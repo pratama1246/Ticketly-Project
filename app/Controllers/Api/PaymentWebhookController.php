@@ -7,8 +7,7 @@ use App\Models\OrderModel;
 use App\Models\OrderItemsModel;
 use App\Models\TicketTypeModel;
 use App\Models\EventModel;
-use Dompdf\Dompdf;
-use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
+
 
 class PaymentWebhookController extends BaseController
 {
@@ -151,10 +150,10 @@ class PaymentWebhookController extends BaseController
     }
 
     /**
-     * Menerbitkan E-Tiket PDF & Mengirimkan Email via Background Queue.
+     * Menerbitkan E-Tiket PDF & Mengirimkan Email via TicketDeliveryService.
      */
     protected function dispatchTicketDelivery(int $orderId): void
     {
-        \App\Libraries\TicketDeliveryService::pushToQueue($orderId);
+        \App\Libraries\TicketDeliveryService::process($orderId);
     }
 }

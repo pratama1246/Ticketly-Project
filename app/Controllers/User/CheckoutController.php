@@ -10,8 +10,8 @@ use App\Models\OrderModel;
 use App\Models\OrderItemsModel;
 use App\Models\PaymentMethodModel;
 
-use Dompdf\Dompdf;
-use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
+
+
 
 class CheckoutController extends BaseController
 {
@@ -501,8 +501,6 @@ class CheckoutController extends BaseController
         $this->response->setHeader('Content-Type', 'application/json');
 
         $orderModel = new OrderModel();
-        $orderItemsModel = new OrderItemsModel();
-        $eventModel = new EventModel();
         
         $order = $orderModel->find((int) $orderId);
         if (!$order) {
@@ -551,19 +549,7 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        $items = $orderItemsModel->select('order_items.*, seats.label, seats.seat_row, seats.seat_number, ticket_types.name as ticket_name, ticket_types.event_id') 
-            ->join('seats', 'seats.id = order_items.seat_id', 'left')
-            ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
-            ->where('order_id', $orderId)
-            ->findAll();
-
-        if (empty($items)) {
-             return $this->response->setJSON(['status' => 'error', 'message' => 'Tiket tidak ditemukan']);
-        }
-        $event = $eventModel->find($items[0]['event_id']);
-
-        // Kirim E-Tiket via TicketDeliveryService (Background Queue / Process)
-        \App\Libraries\TicketDeliveryService::pushToQueue((int) $order['id']);
+        // Kirim E-Tiket via TicketDeliveryService
         \App\Libraries\TicketDeliveryService::process((int) $order['id']);
 
         session()->remove('checkout_process');

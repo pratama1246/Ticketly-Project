@@ -8,8 +8,7 @@ use App\Models\TicketTypeModel;
 use App\Models\OrderModel;
 use App\Models\OrderItemsModel;
 use App\Models\PaymentMethodModel;
-use Dompdf\Dompdf;
-use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
+
 
 class CheckoutController extends BaseController
 {
@@ -483,8 +482,7 @@ class CheckoutController extends BaseController
             ]);
         }
 
-        // Kirim E-Tiket via TicketDeliveryService (Background Queue / Process)
-        \App\Libraries\TicketDeliveryService::pushToQueue((int) $orderId);
+        // Kirim E-Tiket via TicketDeliveryService
         \App\Libraries\TicketDeliveryService::process((int) $orderId);
 
         return $this->response->setStatusCode(200)->setJSON([
