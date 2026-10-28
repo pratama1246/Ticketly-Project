@@ -32,13 +32,58 @@ class OrderController extends BaseController
             ]);
         }
 
-        $orders = $this->orderModel
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'DESC')
-            ->findAll();
+        $status  = $this->request->getGet('status');
+        $include = $this->request->getGet('include');
 
-        $formatted = array_map(function ($order) {
-            return $this->formatOrder($order);
+        $builder = $this->orderModel->where('user_id', $userId);
+        if (!empty($status)) {
+            $builder->where('status', strtolower($status));
+        }
+        $orders = $builder->orderBy('created_at', 'DESC')->findAll();
+
+        $itemsByOrder = [];
+        if ($include === 'items' && !empty($orders)) {
+            $orderIds = array_column($orders, 'id');
+            $allItems = $this->orderItemsModel
+                ->select('order_items.*, ticket_types.name as ticket_name,
+                          ticket_types.ticket_category, events.name as event_name,
+                          events.slug as event_slug, events.event_date,
+                          events.poster_image, events.venue as venue,
+                          seats.label as seat_label')
+                ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
+                ->join('events', 'events.id = ticket_types.event_id', 'left')
+                ->join('seats', 'seats.id = order_items.seat_id', 'left')
+                ->whereIn('order_id', $orderIds)
+                ->findAll();
+
+            foreach ($allItems as $item) {
+                $orderId = (int) $item['order_id'];
+                $itemsByOrder[$orderId][] = [
+                    'id'                       => $item['id'],
+                    'ticket_code'              => $item['ticket_code'],
+                    'ticket_name'              => $item['ticket_name'],
+                    'ticket_category'          => $item['ticket_category'],
+                    'event_name'               => $item['event_name'],
+                    'event_date'               => $item['event_date'],
+                    'venue'                    => $item['venue'] ?? '',
+                    'seat_label'               => $item['seat_label'] ?? 'Free Seating',
+                    'price_per_ticket'         => (int) $item['price_per_ticket'],
+                    'attendee_name'            => $item['attendee_name'] ?? null,
+                    'attendee_email'           => $item['attendee_email'] ?? null,
+                    'attendee_identity_number' => $item['attendee_identity_number'] ?? null,
+                    'event_poster'             => $item['poster_image']
+                        ? base_url($item['poster_image'])
+                        : null,
+                ];
+            }
+        }
+
+        $formatted = array_map(function ($order) use ($include, $itemsByOrder) {
+            $base = $this->formatOrder($order);
+            if ($include === 'items') {
+                $base['items'] = $itemsByOrder[(int) $order['id']] ?? [];
+            }
+            return $base;
         }, $orders);
 
         return $this->response->setStatusCode(200)->setJSON([
@@ -78,7 +123,7 @@ class OrderController extends BaseController
             ->select('order_items.*, ticket_types.name as ticket_name,
                       ticket_types.ticket_category, events.name as event_name,
                       events.slug as event_slug, events.event_date,
-                      events.poster_image,
+                      events.poster_image, events.venue as venue,
                       seats.label as seat_label')
             ->join('ticket_types', 'ticket_types.id = order_items.ticket_type_id', 'left')
             ->join('events', 'events.id = ticket_types.event_id', 'left')
@@ -88,15 +133,19 @@ class OrderController extends BaseController
 
         $formattedItems = array_map(function ($item) {
             return [
-                'id'              => $item['id'],
-                'ticket_code'     => $item['ticket_code'],
-                'ticket_name'     => $item['ticket_name'],
-                'ticket_category' => $item['ticket_category'],
-                'event_name'      => $item['event_name'],
-                'event_date'      => $item['event_date'],
-                'seat_label'      => $item['seat_label'] ?? 'Free Seating',
-                'price_per_ticket'=> (int) $item['price_per_ticket'],
-                'event_poster'    => $item['poster_image']
+                'id'                       => $item['id'],
+                'ticket_code'              => $item['ticket_code'],
+                'ticket_name'              => $item['ticket_name'],
+                'ticket_category'          => $item['ticket_category'],
+                'event_name'               => $item['event_name'],
+                'event_date'               => $item['event_date'],
+                'venue'                    => $item['venue'] ?? '',
+                'seat_label'               => $item['seat_label'] ?? 'Free Seating',
+                'price_per_ticket'         => (int) $item['price_per_ticket'],
+                'attendee_name'            => $item['attendee_name'] ?? null,
+                'attendee_email'           => $item['attendee_email'] ?? null,
+                'attendee_identity_number' => $item['attendee_identity_number'] ?? null,
+                'event_poster'             => $item['poster_image']
                     ? base_url($item['poster_image'])
                     : null,
             ];
